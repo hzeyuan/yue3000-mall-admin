@@ -1,31 +1,19 @@
 import request from '@/utils/request'
 
 // 登陆 判断账号密码是否正确
-export async function  login(username, password) {
+export async function  login(email, password) {
   try {
     return await request({
-      url: 'http://192.168.1.110:1337/admin/login',
+      url: '/admin/login',
       method: 'post',
       data: {
-        email: username,
+        email,
         password
       }
     })
   } catch (e) {
   }
 }
-// export function login(username, password) {
-//   return request({
-//     url: '/admin/login',
-//     method: 'post',
-//     data: {
-//       username,
-//       password
-//     }
-//   })
-// }
-
-
 
 // 根据Token获取用户的基本信息
 export async function getInfo() {

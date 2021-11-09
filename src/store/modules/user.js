@@ -27,10 +27,10 @@ const user = {
   actions: {
     // 登录
     async Login({ commit }, userInfo) {
-      console.log(userInfo)
       const username = userInfo.username.trim()
       const res = await login(username, userInfo.password)
-      setToken(res.token)
+      // cooke存贮token
+      setToken(res.data.token)
 
       // 储存token
       commit('SET_TOKEN', res.token)

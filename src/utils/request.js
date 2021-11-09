@@ -5,14 +5,16 @@ import { getToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api的base_url
+  baseURL: 'http://192.168.1.114:1337/',
   timeout: 15000 // 请求超时时间
 })
 
 // 请求拦截器
 service.interceptors.request.use(config => {
+  // 让每个请求携带自定义token 请根据实际情况自行修改
   if (store.getters.token) {
-    config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    const token = getToken()
+    config.headers['Authorization'] = 'Bearer ' + token
   }
   return config
 }, error => {

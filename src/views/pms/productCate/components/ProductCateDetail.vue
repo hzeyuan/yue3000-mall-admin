@@ -187,6 +187,7 @@
                   type: 'success',
                   duration: 1000
                 });
+                this.$router.back();
               })
             })
           } else {

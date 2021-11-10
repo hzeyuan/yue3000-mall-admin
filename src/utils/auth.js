@@ -1,18 +1,18 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'loginToken'
 
+const TokenKey = 'loginToken'
 // 获取
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return window.sessionStorage.getItem(TokenKey)
 }
 
 // 写入
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  return window.sessionStorage.setItem(TokenKey, token)
 }
 
 // 删除
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  return window.sessionStorage.removeItem(TokenKey)
 }

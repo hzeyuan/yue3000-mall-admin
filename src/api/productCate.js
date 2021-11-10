@@ -97,11 +97,35 @@ export async function fetchList (e) {
     method: 'get'
   })
 }
+// 获取分类树形列表
+export async function fetchTreeList () {
+  return await request({
+    url: `/categories/structure`,
+    method: 'get'
+  })
+}
 
+//删除分类列表
 export function deleteProductCate(id) {
   return request({
-    url:'/productCategory/delete/'+id,
-    method:'post'
+    url:`/categories/${id}`,
+    method:'delete'
+  })
+}
+// 增加分类
+export function addProductCate(data) {
+  return request({
+    url: '/categories',
+    method: 'post',
+    data
+  })
+}
+// 修改分类
+export function updateProductCate(id ,data) {
+  return request({
+    url: `/categories/${id}`,
+    method: 'put',
+    data
   })
 }
 
@@ -113,13 +137,13 @@ export function createProductCate(data) {
   })
 }
 
-export function updateProductCate(id,data) {
-  return request({
-    url:'/productCategory/update/'+id,
-    method:'post',
-    data:data
-  })
-}
+// export function updateProductCate(id,data) {
+//   return request({
+//     url:'/productCategory/update/'+id,
+//     method:'post',
+//     data:data
+//   })
+// }
 
 export function getProductCate(id) {
   return request({

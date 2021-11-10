@@ -7,9 +7,20 @@
       <el-form-item label="分类名称：" prop="name">
         <el-input v-model="productCate.name"></el-input>
       </el-form-item>
+      <el-form-item label="分类级别：" prop="pid">
+        <el-select v-model="productCate.level"
+                   placeholder="请选择分类">
+          <el-option
+            v-for="item in levelList"
+            :key="item.id"
+            :label="item.label"
+            :value="item.level">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="上级分类：" prop="pid">
         <el-select v-model="productCate.pid"
-                   placeholder="请选择分类">
+                   :disabled="!productCate.level" placeholder="请选择分类">
           <el-option
             v-for="item in selectProductCateList"
             :key="item.id"
@@ -34,7 +45,8 @@
         <el-input type="textarea" :autosize="true" v-model="productCate.desc"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('productCateFrom')">提交</el-button>
+        <el-button v-if="!isEdit" type="primary" @click="addSubmit('productCateFrom')">提交</el-button>
+        <el-button v-if="isEdit" type="primary" @click="onSubmit('productCateFrom')">修改</el-button>
         <el-button v-if="!isEdit" @click="resetForm('productCateFrom')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -42,11 +54,8 @@
 </template>
 
 <script>
-  import {fetchList, createProductCate, updateProductCate, getProductCate} from '@/api/productCate';
-  import {fetchListWithAttr} from '@/api/productAttrCate';
-  import {getProductAttrInfo} from '@/api/productAttr';
+  import {fetchList,addProductCate, updateProductCate} from '@/api/productCate';
   import SingleUpload from '@/components/Upload/singleUpload';
-
   const defaultProductCate = {
 
     // 分类名称
@@ -55,6 +64,8 @@
     pid: '',
     // 排序
     sort_order: 0,
+    // 分类级别
+    level: '',
     // 图标
     icon_url: '',
     // 图片
@@ -67,6 +78,15 @@
   export default {
     name: "ProductCateDetail",
     components: {SingleUpload},
+    watch: {
+      'productCate.level': {
+        deep: true,
+        handler: function () {
+          this.productCate.pid = ''
+          this.getSelectProductCateList()
+        }
+      }
+    },
     props: {
       // 判断进入的是什么窗口 false为增加分类
       isEdit: {
@@ -90,6 +110,10 @@
             {required: true, message: '请选择分类类型', trigger: 'blur'},
           ]
         },
+        levelList: [
+          {id: 1, level: 'L1', label: '一级菜单' },
+          {id: 2, level: 'L2', label: '二级菜单' }
+        ],
         filterAttrs: [],
         filterProductAttrList: [{
           value: []
@@ -97,19 +121,22 @@
       }
     },
     created() {
-      this.getSelectProductCateList();
       if (this.isEdit) {
+        this.getSelectProductCateList();
         const id = this.$route.query.id
         this.getCategoriesById(id)
       }
-      this.getProductAttrCateList();
     },
     methods: {
-      // 获取分类一级菜单
+      // 获取上一级菜单列表
       async getSelectProductCateList() {
-        const res = await fetchList('?level=l1')
-        res.unshift({id: 0, name: '无上级分类'});
-        this.selectProductCateList = res;
+        if(this.productCate.level === 'L1'){
+          this.productCate.pid = 0
+          this.selectProductCateList = [{id: 0, name: '无上级分类'}]
+        } else {
+          const res = await fetchList(`?level=${this.productCate.level}`)
+          this.selectProductCateList = res;
+        }
       },
       // 根据ID获取分类详细
       async getCategoriesById (id) {
@@ -117,38 +144,23 @@
         this.productCate = res[0]
       },
       // 修改分类信息
-      onSubmit(formName) {
+      onSubmit(formName){
         this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.$confirm('是否提交数据', '提示', {
+          if(valid){
+            this.$confirm('是否修改该条数据', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
-            }).then(() => {
-              if (this.isEdit) {
-                this.productCate.productAttributeIdList = this.getProductAttributeIdList();
-                updateProductCate(this.$route.query.id, this.productCate).then(response => {
-                  this.$message({
-                    message: '修改成功',
-                    type: 'success',
-                    duration: 1000
-                  });
-                  this.$router.back();
+            }).then(()=>{
+              updateProductCate(this.$route.query.id, this.productCate).then (res =>{
+                this.$message({
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 1000
                 });
-              } else {
-                this.productCate.productAttributeIdList = this.getProductAttributeIdList();
-                createProductCate(this.productCate).then(response => {
-                  this.$refs[formName].resetFields();
-                  this.resetForm(formName);
-                  this.$message({
-                    message: '提交成功',
-                    type: 'success',
-                    duration: 1000
-                  });
-                });
-              }
-            });
-
+                this.$router.back();
+              })
+            })
           } else {
             this.$message({
               message: '验证失败',
@@ -157,75 +169,41 @@
             });
             return false;
           }
-        });
+        })
+      },
+      // 添加分类信息
+      addSubmit(formName){
+        this.$refs[formName].validate((valid) => {
+          if(valid){
+            this.$confirm('是否添加该条数据', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(()=>{
+              addProductCate(this.productCate).then (res =>{
+                console.log(res)
+                this.$message({
+                  message: '添加成功',
+                  type: 'success',
+                  duration: 1000
+                });
+              })
+            })
+          } else {
+            this.$message({
+              message: '验证失败',
+              type: 'error',
+              duration: 1000
+            });
+            return false;
+          }
+        })
       },
       // 重置表单属性
       resetForm(formName) {
         this.$refs[formName].resetFields();
         this.productCate = Object.assign({}, defaultProductCate);
-        this.getSelectProductCateList();
-        this.filterProductAttrList = [{
-          value: []
-        }];
       },
-
-      getProductAttrCateList() {
-        fetchListWithAttr().then(response => {
-          let list = response.data;
-          for (let i = 0; i < list.length; i++) {
-            let productAttrCate = list[i];
-            let children = [];
-            if (productAttrCate.productAttributeList != null && productAttrCate.productAttributeList.length > 0) {
-              for (let j = 0; j < productAttrCate.productAttributeList.length; j++) {
-                children.push({
-                  label: productAttrCate.productAttributeList[j].name,
-                  value: productAttrCate.productAttributeList[j].id
-                })
-              }
-            }
-            this.filterAttrs.push({label: productAttrCate.name, value: productAttrCate.id, children: children});
-          }
-        });
-      },
-      getProductAttributeIdList() {
-        //获取选中的筛选商品属性
-        let productAttributeIdList = [];
-        for (let i = 0; i < this.filterProductAttrList.length; i++) {
-          let item = this.filterProductAttrList[i];
-          if (item.value !== null && item.value.length === 2) {
-            productAttributeIdList.push(item.value[1]);
-          }
-        }
-        return productAttributeIdList;
-      },
-      removeFilterAttr(productAttributeId) {
-        if (this.filterProductAttrList.length === 1) {
-          this.$message({
-            message: '至少要留一个',
-            type: 'warning',
-            duration: 1000
-          });
-          return;
-        }
-        var index = this.filterProductAttrList.indexOf(productAttributeId);
-        if (index !== -1) {
-          this.filterProductAttrList.splice(index, 1)
-        }
-      },
-      handleAddFilterAttr() {
-        if (this.filterProductAttrList.length === 3) {
-          this.$message({
-            message: '最多添加三个',
-            type: 'warning',
-            duration: 1000
-          });
-          return;
-        }
-        this.filterProductAttrList.push({
-          value: null,
-          key: Date.now()
-        });
-      }
     },
   }
 </script>

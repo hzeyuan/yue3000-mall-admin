@@ -12,7 +12,7 @@
     </el-card>
     <div class="table-container">
       <el-table ref="productCateTable" style="width: 100%" :data="list" row-key="id" border
-                v-loading = "listLoading">
+                v-loading = "listLoading"  :tree-props="{children: 'child', hasChildren: 'hasChildren'}">
         <el-table-column label="编号"
                          width="50" align="center" type="index"
                          :index="indexMethod">
@@ -62,102 +62,20 @@
 </template>
 
 <script>
-import {fetchList, deleteProductCate, updateShowStatus, updateNavStatus} from '@/api/productCate'
+import {fetchList, fetchTreeList, deleteProductCate, updateShowStatus, updateNavStatus} from '@/api/productCate'
 
 export default {
   name: "productCateList",
   data() {
     return {
       // 分类列表
-      list: [
-        {
-          description: null,
-          icon: null,
-          id: 1,
-          keywords: "服装",
-          level: 0,
-          name: "服装",
-          navStatus: 1,
-          parentId: 0,
-          productCount: 100,
-          productUnit: "件",
-          showStatus: 1,
-          sort: 1
-        },
-        {
-          description: null,
-          icon: null,
-          id: 2,
-          keywords: "手机数码",
-          level: 0,
-          name: "手机数码",
-          navStatus: 1,
-          parentId: 0,
-          productCount: 100,
-          productUnit: "件",
-          showStatus: 1,
-          sort: 1
-        },
-        {
-          description: null,
-          icon: null,
-          id: 3,
-          keywords: "家用电器",
-          level: 0,
-          name: "家用电器",
-          navStatus: 1,
-          parentId: 0,
-          productCount: 100,
-          productUnit: "件",
-          showStatus: 1,
-          sort: 1
-        },
-        {
-          description: null,
-          icon: null,
-          id: 4,
-          keywords: "家具家装",
-          level: 0,
-          name: "家具家装",
-          navStatus: 1,
-          parentId: 0,
-          productCount: 100,
-          productUnit: "件",
-          showStatus: 1,
-          sort: 1
-        },
-        {
-          description: null,
-          icon: null,
-          id: 5,
-          keywords: "汽车用品",
-          level: 0,
-          name: "汽车用品",
-          navStatus: 1,
-          parentId: 0,
-          productCount: 100,
-          productUnit: "件",
-          showStatus: 1,
-          sort: 1
-        },
-      ],
-      // 一级菜单个数 已弃用
-      total: null,
+      list: [],
       // 请求加载动画
       listLoading: true,
-      // 分页菜单  已弃用
-      listQuery: {
-        // 页码
-        pageNum: 1,
-        // 每页条数
-        pageSize: 5
-      },
-      // 请求参数 父类菜单id 已弃用
-      parentId: 0
     }
   },
   created() {
-    this.reqGetList()
+    this.reqGetTreeList()
   },
   watch: {
     $route(route) {
@@ -166,60 +84,14 @@ export default {
     }
   },
   methods: {
-    // 分类数据请求
-    async reqGetList () {
-      const res = await fetchList('')
-      this.initList(res)
-    },
-    // 分类菜单初始化树形结构
-    initList (List) {
-      const map = {};
-      const val = [];
-      List.forEach ((item) => {
-        map[item.id] = item;
-      })
-      List.forEach((item) => {
-        const parent = map[item.pid];
-        if (parent) {
-          (parent.children || (parent.children = [])).push(item);
-        } else {
-          val.push(item);
-        }
-      });
-      console.log(val)
-      this.list = val
-      this.total = val.length
+    // 树形分类数据请求
+    async reqGetTreeList () {
+      const res = await fetchTreeList()
+      this.list = res
       this.listLoading = false
-    },
-
-
-    resetParentId() {
-      this.listQuery.pageNum = 1;
-      if (this.$route.query.parentId != null) {
-        this.parentId = this.$route.query.parentId;
-      } else {
-        this.parentId = 0;
-      }
     },
     handleAddProductCate() {
       this.$router.push('/pms/addProductCate');
-    },
-    getList() {
-      this.listLoading = true;
-      fetchList(this.parentId, this.listQuery).then(response => {
-        this.listLoading = false;
-        this.list = response.data.list;
-        this.total = response.data.total;
-      });
-    },
-    handleSizeChange(val) {
-      this.listQuery.pageNum = 1;
-      this.listQuery.pageSize = val;
-      this.getList();
-    },
-    handleCurrentChange(val) {
-      this.listQuery.pageNum = val;
-      this.getList();
     },
     handleNavStatusChange(index, row) {
       let data = new URLSearchParams();
@@ -241,7 +113,7 @@ export default {
     },
     // 删除分类
     handleDelete(index, row) {
-      this.$confirm('是否要删除该品牌', '提示', {
+      this.$confirm('是否要删除该分类', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -252,10 +124,11 @@ export default {
             type: 'success',
             duration: 1000
           });
-          this.getList();
+          this.reqGetTreeList();
         });
       });
     },
+    // 列表序号生成
     indexMethod (index) {
       return index + 1
     }
@@ -268,13 +141,6 @@ export default {
         return '二级';
       }
     },
-    disableNextLevel(value) {
-      if (value === 0) {
-        return false;
-      } else {
-        return true;
-      }
-    }
   }
 }
 </script>

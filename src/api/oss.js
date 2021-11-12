@@ -1,7 +1,9 @@
 import request from '@/utils/request'
-export function policy() {
-  return request({
-    url:'/aliyun/oss/policy',
-    method:'get',
+
+export async function policy(data) {
+  return await request({
+    url:'/upload',
+    method:'post',
+    data
   })
 }

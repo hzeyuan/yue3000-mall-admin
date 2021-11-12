@@ -43,6 +43,7 @@ export default {
     },
     logout() {
       this.$store.dispatch('LogOut').then(() => {
+        // menu 菜单写死了 该语句没有效果
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
     }

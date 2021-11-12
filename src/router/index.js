@@ -52,7 +52,7 @@ export const asyncRouterMap = [
       {
         path: 'addProduct',
         name: 'addProduct',
-        component: () => import('@/views/pms/product/add'),
+        component: () => import('@/views/pms/add/index'),
         meta: {title: '添加商品', icon: 'product-add'}
       },
       {

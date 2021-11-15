@@ -45,6 +45,8 @@ const defaultProductParam = {
     }
   ],
   specifications: [],
+  spec1:{},
+  spec2:{},
   specifications_products: [  //产品规格
     {
 
@@ -66,6 +68,8 @@ export default {
       text: '',
       options: []
     };
+  },
+  methods:{
   }
 }
 </script>

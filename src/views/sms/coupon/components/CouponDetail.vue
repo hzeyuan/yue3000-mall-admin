@@ -28,32 +28,52 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="总发行量：" prop="publishCount">
-        <el-input v-model.number="coupon.publishCount" placeholder="只能输入正整数" class="input-width"></el-input>
+      <el-form-item label="总发行量：" prop="total">
+        <el-input v-model.number="coupon.total" placeholder="只能输入正整数" class="input-width"></el-input>
       </el-form-item>
-      <el-form-item label="面额：" prop="amount">
-        <el-input v-model.number="coupon.amount" placeholder="面值只能是数值，限2位小数" class="input-width">
+      <el-form-item label="面额：" prop="discount">
+        <el-input v-model.number="coupon.discount" placeholder="面值只能是数值，限2位小数" class="input-width">
           <template slot="append">元</template>
         </el-input>
       </el-form-item>
       <el-form-item label="每人限领：">
-        <el-input v-model="coupon.perLimit" placeholder="只能输入正整数" class="input-width">
+        <el-input v-model="coupon.limit" placeholder="只能输入正整数" class="input-width">
           <template slot="append">张</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="使用门槛：" prop="minPoint">
-        <el-input v-model.number="coupon.minPoint" placeholder="只能输入正整数" class="input-width">
+      <el-form-item label="使用门槛：" prop="min">
+        <el-input v-model.number="coupon.min" placeholder="只能输入正整数" class="input-width">
           <template slot="prepend">满</template>
           <template slot="append">元可用</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="领取日期：" prop="enableTime">
+      <!-- <el-form-item label="领取日期：" prop="enableTime">
         <el-date-picker type="date" placeholder="选择日期" v-model="coupon.enableTime" class="input-width"></el-date-picker>
+      </el-form-item> -->
+      <el-form-item label="生效状态">
+        <el-select v-model="coupon.status">
+          <el-option
+            v-for="type in statusOptions"
+            :key="type.value"
+            :label="type.label"
+            :value="type.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+        <el-form-item label="显示区域">
+        <el-select v-model="coupon.display_type">
+          <el-option
+            v-for="type in displayTypeOptions"
+            :key="type.value"
+            :label="type.label"
+            :value="type.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="有效期：">
-        <el-date-picker type="date" placeholder="选择日期" v-model="coupon.startTime" style="width: 150px"></el-date-picker>
+        <el-date-picker type="date" placeholder="选择日期" v-model="coupon.begin_time" style="width: 150px"></el-date-picker>
         <span style="margin-left: 20px;margin-right: 20px">至</span>
-        <el-date-picker type="date" placeholder="选择日期" v-model="coupon.endTime" style="width: 150px"></el-date-picker>
+        <el-date-picker type="date" placeholder="选择日期" v-model="coupon.end_time" style="width: 150px"></el-date-picker>
       </el-form-item>
       <el-form-item label="可使用商品：">
         <el-radio-group v-model="coupon.useType">
@@ -126,13 +146,13 @@
           </el-table-column>
         </el-table>
       </el-form-item>
-      <el-form-item label="备注：">
+      <el-form-item label="描述：">
         <el-input
           class="input-width"
           type="textarea"
           :rows="5"
           placeholder="请输入内容"
-          v-model="coupon.note">
+          v-model="coupon.desc">
         </el-input>
       </el-form-item>
       <el-form-item>
@@ -150,14 +170,17 @@
     type: 0,
     name: null,
     platform: 0,
-    amount: null,
-    perLimit: 1,
-    minPoint: null,
-    startTime: null,
-    endTime: null,
+    status: 0,
+    display_type: 0,
+    discount: null,
+    limit: 1,
+    min: null,
+    begin_time: null,
+    end_time: null,
     useType: 0,
-    note: null,
-    publishCount: null,
+    desc: null,
+    total: null,
+    shop_id:0,
     productRelationList: [],
     productCategoryRelationList: []
   };
@@ -178,6 +201,34 @@
       label: '注册赠券',
       value: 3
     }
+  ];
+  const defaultStatusOptions = [
+    {
+      label: '生效',
+      value: 0
+    },
+    {
+      label: '不生效',
+      value: 1
+    },
+    {
+      label: '待定',
+      value: 2
+    },
+  ];
+  const defaultDisplayTypeOptions = [
+    {
+      label: '显示在首页和商店页面',
+      value: 0
+    },
+    {
+      label: '只显示在商店',
+      value: 1
+    },
+    {
+      label: '待定',
+      value: 2
+    },
   ];
   const defaultPlatformOptions = [
     {
@@ -206,18 +257,20 @@
         coupon: Object.assign({}, defaultCoupon),
         typeOptions: Object.assign({}, defaultTypeOptions),
         platformOptions: Object.assign({}, defaultPlatformOptions),
+        statusOptions: Object.assign({}, defaultStatusOptions),
+        displayTypeOptions: Object.assign({}, defaultDisplayTypeOptions),
         rules: {
           name: [
             {required: true, message: '请输入优惠券名称', trigger: 'blur'},
             {min: 2, max: 140, message: '长度在 2 到 140 个字符', trigger: 'blur'}
           ],
-          publishCount: [
+          total: [
             {type: 'number',required: true, message: '只能输入正整数', trigger: 'blur'}
           ],
-          amount: [
+          discount: [
             {type: 'number',required: true,message: '面值只能是数值，0.01-10000，限2位小数',trigger: 'blur'}
           ],
-          minPoint: [
+          min: [
             {type: 'number',required: true,message: '只能输入正整数',trigger: 'blur'}
           ]
         },
@@ -256,8 +309,10 @@
                   this.$router.back();
                 });
               }else{
+                console.log('coupon', this.coupon)
                 createCoupon(this.coupon).then(response=>{
                   this.$refs[formName].resetFields();
+
                   this.$message({
                     message: '提交成功',
                     type: 'success',

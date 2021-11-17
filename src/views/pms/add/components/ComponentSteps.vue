@@ -1,4 +1,5 @@
 <template>
+<!--  商品添加进度条-->
   <div class="steps-box">
     <el-steps direction="vertical" :active="instep" >
       <el-step class="step" :title="item.title" :key="index"

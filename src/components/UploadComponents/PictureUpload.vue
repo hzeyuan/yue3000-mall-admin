@@ -24,12 +24,18 @@ import {policy} from '@/api/oss'
 
 export default {
   name: "PictureUpload",
+  props: {
+    // 数据列表 可以防抖
+    gallery: Array,
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       // 有默认数据时，该数组会对组件数据做第一次处理
       fileList: [],
-      // 数据列表 可以防抖
-      gallery: [],
       // 最多上传的图片数量
       limit: 8,
       textarea: '',
@@ -47,10 +53,10 @@ export default {
       const form_data = new FormData();
       form_data.append("files", e.file);
       const res = await policy(form_data)
-      console.log('res', res)
-      this.gallery.push(res[0])
+      console.log('res', res[0].url)
+      this.gallery.push(res[0].url)
     },
-    // 删除图片 并对galler数据进行处理
+    // 删除图片 并对gallery数据进行处理
     handleRemove (file) {
       this.gallery.splice(this.gallery.findIndex(item => item.id === file.id), 1)
       console.log(this.gallery)
@@ -71,6 +77,11 @@ export default {
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+    }
+  },
+  mounted() {
+    if (this.isEdit){
+      this.fileList = this.gallery
     }
   }
 }

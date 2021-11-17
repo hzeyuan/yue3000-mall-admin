@@ -70,3 +70,11 @@ export function getProduct(id) {
   })
 }
 
+//添加商品
+export function postGoods(data) {
+  return request({
+    url:'/goods',
+    method: 'post',
+    data
+  })
+}

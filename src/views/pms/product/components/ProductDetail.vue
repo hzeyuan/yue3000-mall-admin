@@ -1,36 +1,26 @@
 <template> 
   <el-card class="form-container" shadow="never">
-    <el-steps :active="active" finish-status="success" align-center>
-      <el-step title="填写商品信息"></el-step>
-      <el-step title="填写商品促销"></el-step>
-      <el-step title="填写商品属性"></el-step>
-      <el-step title="选择商品关联"></el-step>
-    </el-steps>
+
     <product-info-detail
-      v-show="showStatus[0]"
       v-model="productParam"
       :is-edit="isEdit"
       @nextStep="nextStep">
     </product-info-detail>
+
+    <el-divider></el-divider>
     <product-sale-detail
-      v-show="showStatus[1]"
       v-model="productParam"
-      :is-edit="isEdit"
-      @nextStep="nextStep"
-      @prevStep="prevStep">
+      :is-edit="isEdit">
     </product-sale-detail>
+    <el-divider></el-divider>
     <product-attr-detail
-      v-show="showStatus[2]"
       v-model="productParam"
-      :is-edit="isEdit"
-      @nextStep="nextStep"
-      @prevStep="prevStep">
+      :is-edit="isEdit">
     </product-attr-detail>
+    <el-divider></el-divider>
     <product-relation-detail
-      v-show="showStatus[3]"
       v-model="productParam"
       :is-edit="isEdit"
-      @prevStep="prevStep"
       @finishCommit="finishCommit">
     </product-relation-detail>
   </el-card>
@@ -40,68 +30,54 @@
   import ProductSaleDetail from './ProductSaleDetail';
   import ProductAttrDetail from './ProductAttrDetail';
   import ProductRelationDetail from './ProductRelationDetail';
-  import {createProduct,getProduct,updateProduct} from '@/api/product';
+  import {postGoods,createProduct,getProduct,updateProduct} from '@/api/product';
 
   const defaultProductParam = {
-    albumPics: '',
-    brandId: null,
-    brandName: '',
-    deleteStatus: 0,
-    description: '',
-    detailDesc: '',
-    detailHtml: '',
-    detailMobileHtml: '',
-    detailTitle: '',
-    feightTemplateId: 0,
-    flashPromotionCount: 0,
-    flashPromotionId: 0,
-    flashPromotionPrice: 0,
-    flashPromotionSort: 0,
-    giftPoint: 0,
-    giftGrowth: 0,
-    keywords: '',
-    lowStock: 0,
-    name: '',
-    newStatus: 0,
-    note: '',
-    originalPrice: 0,
-    pic: '',
-    //会员价格{memberLevelId: 0,memberPrice: 0,memberLevelName: null}
-    memberPriceList: [],
-    //商品满减
-    productFullReductionList: [{fullPrice: 0, reducePrice: 0}],
-    //商品阶梯价格
-    productLadderList: [{count: 0,discount: 0,price: 0}],
-    previewStatus: 0,
-    price: 0,
-    productAttributeCategoryId: null,
-    //商品属性相关{productAttributeId: 0, value: ''}
-    productAttributeValueList: [],
-    //商品sku库存信息{lowStock: 0, pic: '', price: 0, sale: 0, skuCode: '', spData: '', stock: 0}
-    skuStockList: [],
-    //商品相关专题{subjectId: 0}
-    subjectProductRelationList: [],
-    //商品相关优选{prefrenceAreaId: 0}
-    prefrenceAreaProductRelationList: [],
-    productCategoryId: null,
-    productCategoryName: '',
-    productSn: '',
-    promotionEndTime: '',
-    promotionPerLimit: 0,
-    promotionPrice: null,
-    promotionStartTime: '',
-    promotionType: 0,
-    publishStatus: 0,
-    recommandStatus: 0,
-    sale: 0,
-    serviceIds: '',
-    sort: 0,
-    stock: 0,
-    subTitle: '',
-    unit: '',
-    usePointLimit: 0,
-    verifyStatus: 0,
-    weight: 0
+    name: '',                //商品名称
+    category_id: '',         //分类id
+    gallery: [
+    ],          //图片URL地址数组
+    keywords: '',            //商品关键字
+    brief:'',                //简单描述
+    is_on_sale: false,       //是否在售
+    sort_order: '',          //商品排序
+    pic_url: '',             //商品展示图片 默认为商品轮播图的第一个
+    share_url: '',           //分享链接
+    is_new: true,              //是否新
+    is_hot: false,              //是否热
+    unit: '',                //商品单位
+    quantity: 100,            //商品数量
+    counter_price: 0 ,       //柜台价格
+    retail_price: 0,         //零售价格
+    detail: '',              //商品详情
+    goods_products: [
+      // {
+      //   specifications:['红','小'],  //规格选项名
+      //   number: '',        //商品库存
+      //   price: '',         //商品价格
+      //   pic_url: ''        //商品图片
+      // },
+      // {
+      //   specifications:['红','大'],  //规格选项名
+      //   number: '',        //商品库存
+      //   price: '',         //商品价格
+      //   pic_url: ''        //商品图片
+      // }
+    ],   //商品规格表
+    goods_attributes: [
+      // {
+      //   attribute: '',     //属性名称
+      //   value: []           //属性值
+      // }
+    ], //商品属性
+    goods_specifications: [
+      // {
+      //   specification: '',     //规格名
+      //   value: [''],           //规格值
+      //   pic_url: '',           //规格图片
+      // }
+    ],//产品规格
+    shop: 0                  //店铺id
   };
   export default {
     name: 'ProductDetail',
@@ -112,11 +88,12 @@
         default: false
       }
     },
+
     data() {
       return {
         active: 0,
         productParam: Object.assign({}, defaultProductParam),
-        showStatus: [true, false, false, false]
+        showStatus: [false, true, true, true]
       }
     },
     created(){
@@ -132,6 +109,7 @@
           this.showStatus[i] = false;
         }
       },
+      // 上一组数据
       prevStep() {
         if (this.active > 0 && this.active < this.showStatus.length) {
           this.active--;
@@ -139,6 +117,7 @@
           this.showStatus[this.active] = true;
         }
       },
+      // 下一组数据
       nextStep() {
         if (this.active < this.showStatus.length - 1) {
           this.active++;
@@ -146,6 +125,7 @@
           this.showStatus[this.active] = true;
         }
       },
+      // 提交数据
       finishCommit(isEdit) {
         this.$confirm('是否要提交该产品', '提示', {
           confirmButtonText: '确定',
@@ -162,7 +142,7 @@
               this.$router.back();
             });
           }else{
-            createProduct(this.productParam).then(response=>{
+            postGoods(this.productParam).then(response=>{
               this.$message({
                 type: 'success',
                 message: '提交成功',

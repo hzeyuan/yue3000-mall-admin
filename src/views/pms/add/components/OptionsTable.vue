@@ -1,10 +1,21 @@
 <template>
   <div class="OptionsTable">
-    <el-table :data="OptionsTableData"
+    <el-table :data="OptionsTable" :span-method="objectSpanMethod"
               border style="width: 100%">
-      <el-table-column label="规格">
+      <el-table-column :label="item.specification? item.specification:'商品规格'"
+                       v-for="(item, index) in OptionsTitle" :key="index">
         <template slot-scope="scope">
-          {{scope.row.name | name }}
+          {{scope.row.specifications[index] | specifications }}
+        </template>
+      </el-table-column>
+      <el-table-column label="价格">
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.price" size="mini"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column label="库存">
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.quantity" size="mini"></el-input>
         </template>
       </el-table-column>
     </el-table>
@@ -12,35 +23,38 @@
 </template>
 
 <script>
+import {multiply} from '@/utils/multiply'
+
 export default {
   name: "OptionsTable",
   props:{
-    OptionsTable: Array
-  },
-  computed: {
-    OptionsTableData () {
-      let tableData = []
-      this.OptionsTable.forEach((item) => {
-        item.options.forEach((iteming,)=>{
-          tableData.push({name: iteming.name})
-        })
-      })
-      return tableData
-    },
-    OptionsTableLabel () {
-      // let tableTitle = []
-      // this.OptionsTable.forEach((item) => {
-      //   tableTitle.push(item.title)
-      // })
-      return ''
-    }
+    OptionsTable: Array,
+    OptionsTitle: Array,
   },
   methods: {
+    objectSpanMethod({ row, column, rowIndex, columnIndex }){
+      if (columnIndex === 0) {
+        if (this.OptionsTitle.length  === 2) {
+          let a = this.OptionsTitle[1].value.length
+          if (rowIndex % a === 0) {
+            return {
+              rowspan: a,
+              colspan: 1
+            };
+          } else {
+            return {
+              rowspan: 0,
+              colspan: 0
+            };
+          }
+        }
+      }
+    }
   },
-  mounted() {
+  computed: {
   },
   filters: {
-    name(value) {
+    specifications(value) {
       if (value === '') {
         return '规格';
       } else {

@@ -46,9 +46,9 @@
     <div>
       <div>商品描述：</div>
       <div>
-        <textarea autocomplete="off" rows="2" placeholder="请输入内容"
-                  class="el-textarea__inner" style="min-height: 33px;
-                  margin-top: 0px; margin-bottom: 0px; height: 130px;">
+        <textarea rows="2" placeholder="请输入内容"
+                  class="el-textarea__inner" v-model="value.brief"
+                  style="min-height: 33px;margin-top: 0px; margin-bottom: 0px; height: 130px;">
         </textarea>
       </div>
     </div>
@@ -63,6 +63,9 @@ export default {
   name: "CardInform",
   components: {
     PictureUpload
+  },
+  props: {
+    value: Object,
   },
   data() {
     return {

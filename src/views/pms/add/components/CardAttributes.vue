@@ -33,6 +33,9 @@
 <script>
 export default {
   name: "CardAttributes",
+  props: {
+    value: Object
+  },
   data() {
     return {
       // 表单值

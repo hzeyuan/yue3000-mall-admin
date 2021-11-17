@@ -66,6 +66,9 @@ export default {
     InputTable,
     OptionsTable
   },
+  props: {
+    value: Object
+  },
   data() {
     return {
       // 商品是否存在规格
@@ -83,9 +86,7 @@ export default {
     onSpecification () {
       this.formLabelAlign.optionsTable.push({
         title: '',
-        options: [
-          {name: ''}
-        ]
+        specs: [""]
       })
     },
     // 关闭规格表格

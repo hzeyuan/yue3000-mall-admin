@@ -13,23 +13,16 @@
     <div class="input-box">
       <span>商品名称：</span>
       <el-input style="width: 630px"
-        type="text" placeholder="请输入内容" v-model="text"
+        type="text" placeholder="请输入内容" v-model="value.name"
         maxlength="60" show-word-limit>
       </el-input>
     </div>
     <div class="nev">
-      <div class="input-box">
-        <el-input prefix-icon="el-icon-search" style="width: 200px"
-                  placeholder="搜索分类" round>
-        </el-input>
-      </div>
-      <el-cascader-panel :options="options" :value="option"
+      <el-cascader-panel :options="options" :value="value.category_id"
                          style="width: 500px; margin: auto"
                          :props="{value:'id',label:'name',children: 'child'}">
       </el-cascader-panel>
     </div>
-    <div class="option">商品分类为{{ option }}</div>
-    <el-button type="danger" size="medium">下一步</el-button>
   </el-card>
 </template>
 
@@ -39,6 +32,7 @@ import {fetchTreeList} from '@/api/productCate'
 export default {
   name: "card",
   props: {
+    value: Object
   },
   data () {
     return {

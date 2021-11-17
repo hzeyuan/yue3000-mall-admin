@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchList(params) {
   return request({
-    url:'/product/list',
+    url:'/goods',
     method:'get',
     params:params
   })
@@ -17,33 +17,36 @@ export function fetchSimpleList(params) {
 
 export function updateDeleteStatus(params) {
   return request({
-    url:'/product/update/deleteStatus',
-    method:'post',
-    params:params
+    url:`/goods`,
+    method:'delete',
+    params,
   })
 }
 
-export function updateNewStatus(params) {
+// 批量更新为新品
+export function updateNewStatus(data) {
   return request({
-    url:'/product/update/newStatus',
-    method:'post',
-    params:params
+    url:'/goods/bulk/new',
+    method:'put',
+    data:data
   })
 }
 
-export function updateRecommendStatus(params) {
+// 批量设置为推荐
+export function updateRecommendStatus(data) {
   return request({
-    url:'/product/update/recommendStatus',
-    method:'post',
-    params:params
+    url:'/goods/bulk/recommend',
+    method:'put',
+    data:data
   })
 }
-
-export function updatePublishStatus(params) {
+// 批量设置上/下架
+export function updatePublishStatus(data) {
+  
   return request({
-    url:'/product/update/publishStatus',
-    method:'post',
-    params:params
+    url:'/goods/bulk/is_on_sale',
+    method:'put',
+    data:data
   })
 }
 

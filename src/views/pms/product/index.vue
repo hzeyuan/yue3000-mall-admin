@@ -37,7 +37,7 @@
           <el-form-item label="商品货号：">
             <el-input
               style="width: 203px"
-              v-model="listQuery.productSn"
+              v-model="listQuery.goods_sn"
               placeholder="商品货号"
             ></el-input>
           </el-form-item>
@@ -49,7 +49,7 @@
             >
             </el-cascader>
           </el-form-item>
-          <el-form-item label="商品品牌：">
+          <!-- <el-form-item label="商品品牌：">
             <el-select
               v-model="listQuery.brandId"
               placeholder="请选择品牌"
@@ -63,10 +63,10 @@
               >
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="上架状态：">
             <el-select
-              v-model="listQuery.publishStatus"
+              v-model="listQuery.is_on_sale"
               placeholder="全部"
               clearable
             >
@@ -79,7 +79,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="审核状态：">
+          <!-- <el-form-item label="审核状态：">
             <el-select
               v-model="listQuery.verifyStatus"
               placeholder="全部"
@@ -93,7 +93,7 @@
               >
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
       </div>
     </el-card>
@@ -128,7 +128,7 @@
             <p>{{ scope.row.name }}</p>
             <div>
               <p>商品id：{{ scope.row.id }}</p>
-              <p>状态：{{ scope.row.is_on_sale?'在售中':"已下架"}}</p>
+              <p>状态：{{ scope.row.is_on_sale?'在售中':'已下架'}}</p>
             </div>
             <div>商品编号：{{scope.row.goods_sn}}</div>
           </template>
@@ -354,9 +354,9 @@ const defaultListQuery = {
   keyword: null,
   page: 1,
   pageSize: 5,
-  publishStatus: null,
+  is_on_sale: null,
   verifyStatus: null,
-  productSn: null,
+  product_sn: null,
   productCategoryId: null,
   brandId: null,
 };
@@ -419,7 +419,7 @@ export default {
       publishStatusOptions: [
         {
           value: 1,
-          label: "上架",
+          label: "在售中",
         },
         {
           value: 0,
@@ -440,8 +440,8 @@ export default {
   },
   created() {
     this.getList();
-    this.getBrandList();
-    this.getProductCateList();
+    // this.getBrandList();
+    // this.getProductCateList();
   },
   watch: {
     selectProductCateValue: function (newValue) {
@@ -599,6 +599,7 @@ export default {
     handleAddProduct() {
       this.$router.push({ path: "/pms/addProduct" });
     },
+    // 批量操作
     handleBatchOperate() {
       if (this.operateType == null) {
         this.$message({
@@ -670,17 +671,17 @@ export default {
     handlePublishStatusChange(index, row) {
       let ids = [];
       ids.push(row.id);
-      this.updatePublishStatus(row.publishStatus, ids);
+      this.updatePublishStatus(row.is_on_sale, ids);
     },
     handleNewStatusChange(index, row) {
       let ids = [];
       ids.push(row.id);
-      this.updateNewStatus(row.newStatus, ids);
+      this.updateNewStatus(row.is_new, ids);
     },
     handleRecommendStatusChange(index, row) {
       let ids = [];
       ids.push(row.id);
-      this.updateRecommendStatus(row.recommandStatus, ids);
+      this.updateRecommendStatus(row.is_best, ids);
     },
     handleResetSearch() {
       this.selectProductCateValue = [];
@@ -709,10 +710,11 @@ export default {
     handleShowLog(index, row) {
       console.log("handleShowLog", row);
     },
+    //批量更新上下架
     updatePublishStatus(publishStatus, ids) {
       let params = new URLSearchParams();
       params.append("ids", ids);
-      params.append("publishStatus", publishStatus);
+      params.append("status", publishStatus);
       updatePublishStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
@@ -721,10 +723,11 @@ export default {
         });
       });
     },
+    //批量更新新品状态
     updateNewStatus(newStatus, ids) {
       let params = new URLSearchParams();
       params.append("ids", ids);
-      params.append("newStatus", newStatus);
+      params.append("status", newStatus);
       updateNewStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
@@ -733,10 +736,11 @@ export default {
         });
       });
     },
+    // 批量更新推荐状态
     updateRecommendStatus(recommendStatus, ids) {
       let params = new URLSearchParams();
       params.append("ids", ids);
-      params.append("recommendStatus", recommendStatus);
+      params.append("status", recommendStatus);
       updateRecommendStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
@@ -745,10 +749,12 @@ export default {
         });
       });
     },
+    // 删除商品
     updateDeleteStatus(deleteStatus, ids) {
       let params = new URLSearchParams();
       params.append("ids", ids);
-      params.append("deleteStatus", deleteStatus);
+      console.log('ids',params,ids);
+      params.append("status", deleteStatus);
       updateDeleteStatus(params).then((response) => {
         this.$message({
           message: "删除成功",

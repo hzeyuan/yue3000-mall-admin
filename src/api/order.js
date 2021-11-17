@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchList(params) {
   return request({
-    url:'/order/list',
+    url:'/orders',
     method:'get',
     params:params
   })

@@ -15,7 +15,7 @@
       </el-table-column>
       <el-table-column label="库存">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.quantity" size="mini"></el-input>
+          <el-input v-model="scope.row.number" size="mini"></el-input>
         </template>
       </el-table-column>
     </el-table>

@@ -53,7 +53,6 @@
       'value.goods_specifications': {
         deep: true,
         handler(){
-          console.log('123')
           let arrobj = []
           let a = this.value.goods_specifications
           if (a.length === 1){
@@ -79,7 +78,7 @@
           arrobj = arrMultiply(arrobj, this.value.goods_products)
           this.value.goods_products = arrobj
         }
-      }
+      },
     },
     computed:{
       productsShow(){
@@ -87,9 +86,6 @@
           return false
         }
         return true
-      },
-      optionsTable(){
-        return this.value.goods_products
       },
     },
     data() {

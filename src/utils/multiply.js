@@ -35,11 +35,31 @@ export function arrMultiply (arr1, arr2) {
   for (let i = 0;i < arr1.length; i++) {
     products.forEach((item) => {
       if (_.isEqual(item.specifications, arr1[i].specifications)) {
-        console.log('arr1[i]' ,arr1[i])
-        console.log('item' ,item)
         arr1[i] =item
       }
     })
   }
   return arr1
+}
+
+
+export function getSpecifications (arr){
+  // arr[{'':[]}]--->arr[{'':''}]
+  let specifications=[]
+  arr.forEach((item) => {
+    item.value.forEach((iteming) =>{
+      specifications.push({
+        specification: item.specification,
+        value: iteming,
+        pic_url: item.pic_url
+      })
+    })
+  })
+  return specifications
+}
+
+export function setSpecifications (arr) {
+  // arr[{'':''}]--->arr[{'':[]}]
+  let specifications=[]
+  return specifications
 }

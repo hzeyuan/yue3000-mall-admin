@@ -30,7 +30,9 @@
   import ProductSaleDetail from './ProductSaleDetail';
   import ProductAttrDetail from './ProductAttrDetail';
   import ProductRelationDetail from './ProductRelationDetail';
+  import {getSpecifications,setSpecifications} from '@/utils/multiply'
   import {postGoods,createProduct,getProduct,updateProduct} from '@/api/product';
+  import _ from "lodash";
 
   const defaultProductParam = {
     name: '',                //商品名称
@@ -43,10 +45,9 @@
     sort_order: '',          //商品排序
     pic_url: '',             //商品展示图片 默认为商品轮播图的第一个
     share_url: '',           //分享链接
-    is_new: true,              //是否新
-    is_hot: false,              //是否热
+    is_new: true,            //是否新
+    is_hot: false,           //是否热
     unit: '',                //商品单位
-    quantity: 100,            //商品数量
     counter_price: 0 ,       //柜台价格
     retail_price: 0,         //零售价格
     detail: '',              //商品详情
@@ -73,6 +74,7 @@
     goods_specifications: [
       // {
       //   specification: '',     //规格名
+      //   value: ''
       //   value: [''],           //规格值
       //   pic_url: '',           //规格图片
       // }
@@ -136,19 +138,21 @@
             updateProduct(this.$route.query.id,this.productParam).then(response=>{
               this.$message({
                 type: 'success',
-                message: '提交成功',
+                message: '修改成功',
                 duration:1000
               });
               this.$router.back();
             });
           }else{
-            postGoods(this.productParam).then(response=>{
+            let data= _.cloneDeep(this.productParam)
+            data.goods_specifications = getSpecifications(this.productParam.goods_specifications)
+            postGoods(data).then(response=>{
               this.$message({
                 type: 'success',
-                message: '提交成功',
+                message: '添加成功',
                 duration:1000
               });
-              location.reload();
+              this.$router.back();
             });
           }
         })

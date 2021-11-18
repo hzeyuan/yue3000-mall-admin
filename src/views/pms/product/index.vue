@@ -740,6 +740,7 @@ export default {
     updateRecommendStatus(recommendStatus, ids) {
       let params = new URLSearchParams();
       params.append("ids", ids);
+      console.log(ids);
       params.append("status", recommendStatus);
       updateRecommendStatus(params).then((response) => {
         this.$message({

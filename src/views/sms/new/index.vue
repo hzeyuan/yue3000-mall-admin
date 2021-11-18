@@ -21,10 +21,10 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="商品名称：">
-            <el-input v-model="listQuery.productName" class="input-width" placeholder="商品名称"></el-input>
+            <el-input v-model="listQuery.keyword" class="input-width" placeholder="商品名称"></el-input>
           </el-form-item>
           <el-form-item label="推荐状态：">
-            <el-select v-model="listQuery.recommendStatus" placeholder="全部" clearable class="input-width">
+            <el-select v-model="listQuery.is_best" placeholder="全部" clearable class="input-width">
               <el-option v-for="item in recommendOptions"
                          :key="item.value"
                          :label="item.label"
@@ -48,10 +48,10 @@
                 v-loading="listLoading" border>
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="编号" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+          <template slot-scope="scope">{{scope.row.goods_sn}}</template>
         </el-table-column>
         <el-table-column label="商品名称" align="center">
-          <template slot-scope="scope">{{scope.row.productName}}</template>
+          <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
         <el-table-column label="是否推荐" width="200" align="center">
           <template slot-scope="scope">
@@ -59,15 +59,15 @@
               @change="handleRecommendStatusStatusChange(scope.$index, scope.row)"
               :active-value="1"
               :inactive-value="0"
-              v-model="scope.row.recommendStatus">
+              v-model="scope.row.is_best">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="排序" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.sort}}</template>
+          <template slot-scope="scope">{{scope.row.sort_order}}</template>
         </el-table-column>
         <el-table-column label="状态" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.recommendStatus | formatRecommendStatus}}</template>
+          <template slot-scope="scope">{{scope.row.is_best | formatRecommendStatus}}</template>
         </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
@@ -111,7 +111,7 @@
         layout="total, sizes,prev, pager, next,jumper"
         :page-size="listQuery.pageSize"
         :page-sizes="[5,10,15]"
-        :current-page.sync="listQuery.pageNum"
+        :current-page.sync="listQuery.page"
         :total="total">
       </el-pagination>
     </div>
@@ -141,7 +141,7 @@
           @size-change="handleDialogSizeChange"
           @current-change="handleDialogCurrentChange"
           layout="prev, pager, next"
-          :current-page.sync="dialogData.listQuery.pageNum"
+          :current-page.sync="dialogData.listQuery.page"
           :page-size="dialogData.listQuery.pageSize"
           :page-sizes="[5,10,15]"
           :total="dialogData.total">
@@ -174,7 +174,7 @@
   import {fetchList as fetchProductList} from '@/api/product';
 
   const defaultListQuery = {
-    pageNum: 1,
+    page: 1,
     pageSize: 5,
     productName: null,
     recommendStatus: null
@@ -221,7 +221,7 @@
           multipleSelection:[],
           listQuery:{
             keyword: null,
-            pageNum: 1,
+            page: 1,
             pageSize: 5
           }
         },
@@ -246,23 +246,23 @@
         this.listQuery = Object.assign({}, defaultListQuery);
       },
       handleSearchList() {
-        this.listQuery.pageNum = 1;
+        this.listQuery.page = 1;
         this.getList();
       },
       handleSelectionChange(val){
         this.multipleSelection = val;
       },
       handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
+        this.listQuery.page = 1;
         this.listQuery.pageSize = val;
         this.getList();
       },
       handleCurrentChange(val) {
-        this.listQuery.pageNum = val;
+        this.listQuery.page = val;
         this.getList();
       },
       handleRecommendStatusStatusChange(index,row){
-        this.updateRecommendStatusStatus(row.id,row.recommendStatus);
+        this.updateRecommendStatusStatus(row.id,row.is_best);
       },
       handleDelete(index,row){
         this.deleteProduct(row.id);
@@ -305,12 +305,12 @@
         this.getDialogList();
       },
       handleDialogSizeChange(val) {
-        this.dialogData.listQuery.pageNum = 1;
+        this.dialogData.listQuery.page = 1;
         this.dialogData.listQuery.pageSize = val;
         this.getDialogList();
       },
       handleDialogCurrentChange(val) {
-        this.dialogData.listQuery.pageNum = val;
+        this.dialogData.listQuery.page = val;
         this.getDialogList();
       },
       handleDialogSelectionChange(val){
@@ -371,10 +371,11 @@
       },
       getList() {
         this.listLoading = true;
+        console.log(this.listQuery);
         fetchList(this.listQuery).then(response => {
           this.listLoading = false;
-          this.list = response.data.list;
-          this.total = response.data.total;
+          this.list = response.list;
+          this.total = response.pagination.pageCount;
         })
       },
       updateRecommendStatusStatus(ids,status){
@@ -385,7 +386,7 @@
         }).then(() => {
           let params=new URLSearchParams();
           params.append("ids",ids);
-          params.append("recommendStatus",status);
+          params.append("status",status);
           updateRecommendStatus(params).then(response=>{
             this.getList();
             this.$message({
@@ -409,6 +410,7 @@
         }).then(() => {
           let params=new URLSearchParams();
           params.append("ids",ids);
+          params.append("status",1);
           deleteNewProduct(params).then(response=>{
             this.getList();
             this.$message({

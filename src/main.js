@@ -12,14 +12,12 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import router from './router'
 import store from './store'
-import _ from 'lodash'
 
 import '@/icons' // icon
 import '@/permission' // permission control
 
 Vue.use(ElementUI, { locale })
 Vue.use(VCharts)
-Vue.prototype._ = _
 Vue.config.productionTip = false
 
 new Vue({

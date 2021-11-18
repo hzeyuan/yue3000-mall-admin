@@ -6,7 +6,6 @@
       </el-form-item>
       <el-form-item label="商品分类：">
         <el-cascader-panel :options="options" v-model="category_id"
-                           style="width: 500px; margin: auto"
                            :props="{value:'id',label:'name',children: 'child'}">
         </el-cascader-panel>
       </el-form-item>

@@ -1,6 +1,5 @@
 <template> 
   <el-card class="form-container" shadow="never">
-
     <product-info-detail
       v-model="productParam"
       :is-edit="isEdit"
@@ -30,8 +29,10 @@
   import ProductSaleDetail from './ProductSaleDetail';
   import ProductAttrDetail from './ProductAttrDetail';
   import ProductRelationDetail from './ProductRelationDetail';
+  // 处理商品规格的工具
   import {getSpecifications,setSpecifications} from '@/utils/multiply'
-  import {postGoods,createProduct,getProduct,updateProduct} from '@/api/product';
+
+  import {postGoods,updataGoods} from '@/api/product';
   import _ from "lodash";
 
   const defaultProductParam = {
@@ -90,12 +91,9 @@
         default: false
       }
     },
-
     data() {
       return {
-        active: 0,
         productParam: Object.assign({}, defaultProductParam),
-        showStatus: [false, true, true, true]
       }
     },
     created(){
@@ -106,27 +104,6 @@
       }
     },
     methods: {
-      hideAll() {
-        for (let i = 0; i < this.showStatus.length; i++) {
-          this.showStatus[i] = false;
-        }
-      },
-      // 上一组数据
-      prevStep() {
-        if (this.active > 0 && this.active < this.showStatus.length) {
-          this.active--;
-          this.hideAll();
-          this.showStatus[this.active] = true;
-        }
-      },
-      // 下一组数据
-      nextStep() {
-        if (this.active < this.showStatus.length - 1) {
-          this.active++;
-          this.hideAll();
-          this.showStatus[this.active] = true;
-        }
-      },
       // 提交数据
       finishCommit(isEdit) {
         this.$confirm('是否要提交该产品', '提示', {

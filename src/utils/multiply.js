@@ -42,7 +42,6 @@ export function arrMultiply (arr1, arr2) {
   return arr1
 }
 
-
 export function getSpecifications (arr){
   // arr[{'':[]}]--->arr[{'':''}]
   let specifications=[]

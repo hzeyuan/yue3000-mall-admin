@@ -70,6 +70,15 @@ export function getProduct(id) {
   })
 }
 
+// 获取商品参数
+export function updateGoods(data) {
+  return request({
+    url:'/goods',
+    method: 'update',
+    data
+  })
+}
+
 //添加商品
 export function postGoods(data) {
   return request({

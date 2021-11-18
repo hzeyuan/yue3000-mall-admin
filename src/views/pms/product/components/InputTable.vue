@@ -1,29 +1,16 @@
 <template>
   <div class="InputTable">
-    <el-form label-position="right" label-width="80px"
-             style="overflow: hidden; margin: auto" :model="optionsData">
+    <el-form label-position="right" label-width="80px" style="overflow: hidden; margin: auto" :model="optionsData">
       <el-form-item label="名称">
         <el-input v-model="optionsData.specification" placeholder="输入规格名称；例如：颜色、尺寸等。"
                   style="width: 310px">
         </el-input>
       </el-form-item>
-
-      <el-form-item v-for="(item, index) in optionsData.value" :key="index"
-                    :label="'选项' + (index + 1) + ':'">
+      <el-form-item :label="'选项' + (index + 1) + ':'"
+        v-for="(item, index) in optionsData.value" :key="index">
         <el-input v-model="optionsData.value[index]" placeholder="输入规格选项；例如：红色、白色等。" style="width: 310px"></el-input>
         <i class="el-icon-delete" @click.prevent="onDelete(index)" v-if="optionsData.value.length > 1" ></i>
       </el-form-item>
-
-<!--      <el-form-item v-for="(item, index) in optionsData.value" :key="index"-->
-<!--                    :label="'选项' + (index + 1) + '：'">-->
-<!--        <el-input v-model="item.name" placeholder="输入规格选项；例如：红色、白色等。"-->
-<!--                  style="width: 310px">-->
-<!--        </el-input>-->
-<!--        <i class="el-icon-delete" @click.prevent="onDelete(index)"-->
-<!--           v-if="optionsData.specs.value > 1" >-->
-<!--        </i>-->
-<!--      </el-form-item>-->
-
       <el-form-item label="">
         <InputButton span="添加选项" style="width: 310px"
                      @click.native="addOptions">
@@ -31,6 +18,7 @@
       </el-form-item>
     </el-form>
     <div class="close">
+<!--      插槽 用于放置右上角删除该规格项的图标-->
       <slot>
       </slot>
     </div>
@@ -52,12 +40,12 @@ export default {
     return {}
   },
   methods: {
-    // 添加规格
+    // 添加规格项
     addOptions () {
       this.optionsData.value.push("")
       // console.log(this.optionsData.value)
     },
-    // 删除第index个规格
+    // 删除第index个规格项
     onDelete (index) {
       this.optionsData.value.splice(index,1)
     }

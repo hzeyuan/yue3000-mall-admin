@@ -69,17 +69,24 @@ export function getProduct(id) {
     method:'get',
   })
 }
-
 // 获取商品参数
-export function updateGoods(data) {
+export function getGoods(id) {
   return request({
-    url:'/goods',
+    url:`/goods/${id}`,
+    method: 'get'
+  })
+}
+
+// 修改商品参数
+export function updateGoods(id,data) {
+  return request({
+    url:`/goods/${id}`,
     method: 'update',
     data
   })
 }
 
-//添加商品
+// 添加商品
 export function postGoods(data) {
   return request({
     url:'/goods',

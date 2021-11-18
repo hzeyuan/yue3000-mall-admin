@@ -56,21 +56,24 @@
         <el-table-column label="优惠劵描述" align="center">
           <template slot-scope="scope">{{scope.row.desc}}</template>
         </el-table-column>
-        <el-table-column label="优惠券类型" width="100" align="center">
+        <!-- <el-table-column label="优惠券类型" width="100" align="center">
           <template slot-scope="scope">{{scope.row.type | formatType}}</template>
-        </el-table-column>
-        <el-table-column label="可使用商品" width="100" align="center">
+        </el-table-column> -->
+        <!-- <el-table-column label="可使用商品" width="100" align="center">
           <template slot-scope="scope">{{scope.row.useType | formatUseType}}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="使用门槛" width="140" align="center">
           <template slot-scope="scope">满{{scope.row.min}}元可用</template>
         </el-table-column>
         <el-table-column label="面值" width="100" align="center">
           <template slot-scope="scope">{{scope.row.discount}}元</template>
         </el-table-column>
-        <el-table-column label="适用平台" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.platform | formatPlatform}}</template>
+         <el-table-column label="优惠码" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.code}}</template>
         </el-table-column>
+        <!-- <el-table-column label="适用平台" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.platform | formatPlatform}}</template>
+        </el-table-column> -->
         <el-table-column label="有效期" width="200" align="center">
           <template slot-scope="scope">{{scope.row.begin_time|formatDate}}至{{scope.row.end_time|formatDate}}</template>
         </el-table-column>
@@ -111,9 +114,11 @@
   import {fetchList,deleteCoupon} from '@/api/coupon';
   import {formatDate} from '@/utils/date';
   const defaultListQuery = {
-    pageNum: 1,
-    pageSize: 10,
+    // pageNum: 1,
+    // pageSize: 10,
     shop_id:1,
+    //获取的展示的类型all为全部
+    scence: "shop_all",
     name: null,
     type: null
   };

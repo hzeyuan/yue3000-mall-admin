@@ -18,7 +18,7 @@
       <el-form-item label="优惠券名称：" prop="name">
         <el-input v-model="coupon.name" class="input-width"></el-input>
       </el-form-item>
-      <el-form-item label="适用平台：">
+      <!-- <el-form-item label="适用平台：">
         <el-select v-model="coupon.platform">
           <el-option
             v-for="item in platformOptions"
@@ -27,7 +27,7 @@
             :value="item.value">
           </el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="总发行量：" prop="total">
         <el-input v-model.number="coupon.total" placeholder="只能输入正整数" class="input-width"></el-input>
       </el-form-item>
@@ -45,6 +45,11 @@
         <el-input v-model.number="coupon.min" placeholder="只能输入正整数" class="input-width">
           <template slot="prepend">满</template>
           <template slot="append">元可用</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="优惠码" prop="code">
+        <el-input v-model.number="coupon.code" placeholder="限六位数" class="input-width">
+          <template slot="append">元</template>
         </el-input>
       </el-form-item>
       <!-- <el-form-item label="领取日期：" prop="enableTime">
@@ -69,6 +74,11 @@
             :value="type.value">
           </el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="有效天数">
+        <el-input v-model="coupon.days" placeholder="有效天数覆盖有效期" class="input-width">
+          <template slot="append">天</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="有效期：">
         <el-date-picker type="date" placeholder="选择日期" v-model="coupon.begin_time" style="width: 150px"></el-date-picker>
@@ -175,14 +185,16 @@
     discount: null,
     limit: 1,
     min: null,
+    days: null,
     begin_time: null,
     end_time: null,
     useType: 0,
     desc: null,
     total: null,
-    shop_id:0,
+    shop_id:1,
     productRelationList: [],
-    productCategoryRelationList: []
+    productCategoryRelationList: [],
+    code: ''
   };
   const defaultTypeOptions = [
     {
@@ -222,7 +234,7 @@
       value: 0
     },
     {
-      label: '只显示在商店',
+      label: '不显示（优惠码）',
       value: 1
     },
     {
@@ -272,6 +284,9 @@
           ],
           min: [
             {type: 'number',required: true,message: '只能输入正整数',trigger: 'blur'}
+          ],
+          code: [
+            {type: 'string',min:6,max:6 ,required: true,message: '限6位数',trigger: 'blur'}
           ]
         },
         selectProduct:null,

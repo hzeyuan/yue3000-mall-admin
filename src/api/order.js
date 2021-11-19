@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchList(params) {
   return request({
-    url:'/order/list',
+    url:'/orders',
     method:'get',
     params:params
   })
@@ -22,11 +22,11 @@ export function deleteOrder(params) {
     params:params
   })
 }
-
+// 发货api
 export function deliveryOrder(data) {
   return request({
-    url:'/order/update/delivery',
-    method:'post',
+    url:`/orders/delivery`,
+    method:'put',
     data:data
   });
 }

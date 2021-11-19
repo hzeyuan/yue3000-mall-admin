@@ -17,9 +17,9 @@
         <el-table-column label="手机号码" width="160" align="center">
           <template slot-scope="scope">{{scope.row.receiverPhone}}</template>
         </el-table-column>
-        <el-table-column label="邮政编码" width="160" align="center">
+        <!-- <el-table-column label="邮政编码" width="160" align="center">
           <template slot-scope="scope">{{scope.row.receiverPostCode}}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="收货地址" align="center">
           <template slot-scope="scope">{{scope.row.address}}</template>
         </el-table-column>
@@ -29,9 +29,9 @@
                        v-model="scope.row.deliveryCompany"
                        size="small">
               <el-option v-for="item in companyOptions"
-                         :key="item"
-                         :label="item"
-                         :value="item">
+                         :key="item.key"
+                         :label="item.value"
+                         :value="item.key">
               </el-option>
             </el-select>
           </template>
@@ -51,7 +51,7 @@
 </template>
 <script>
   import {deliveryOrder} from '@/api/order'
-  const defaultLogisticsCompanies=["顺丰快递","圆通快递","中通快递","韵达快递"];
+  const defaultLogisticsCompanies=[{key:'SF',value:'顺丰快递'},{key:"2",value:'圆通快递'},{key:"3",value:"中通快递"},{key:"4",value:"韵达快递"}];
   export default {
     name: 'deliverOrderList',
     data() {
@@ -68,6 +68,7 @@
       }
     },
     methods:{
+
       cancel(){
         this.$router.back();
       },

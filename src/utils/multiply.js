@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 // 2个数组多对多匹配
+['a','b'],[' ',]
 export function multiply (arr1, arr2){
   //传入的情况有2种
 // 第一次传值 2个都是一维数组
@@ -31,25 +32,26 @@ export function multiply (arr1, arr2){
 
 // 2个数组互相比较 数组1中和数组2中相同项使用数组2  相同项为数组中某一元素
 export function arrMultiply (arr1, arr2) {
-  const products=  _.cloneDeep(arr2)
+
   for (let i = 0;i < arr1.length; i++) {
-    products.forEach((item) => {
+    arr2.forEach((item) => {
       if (_.isEqual(item.specifications, arr1[i].specifications)) {
-        arr1[i] =item
+        arr1[i] =_.cloneDeep(item)
       }
     })
   }
   return arr1
 }
 
-export function getSpecifications (arr){
-  // arr[{'':[]}]--->arr[{'':''}]
+//arr[{'key':'',value:['','','']}] -> arr[{'':''}]
+export function getSpecifications (arr){  
+  console.log('arr',arr);
   let specifications=[]
   arr.forEach((item) => {
-    item.value.forEach((iteming) =>{
+    item.value.forEach((value) =>{
       specifications.push({
         specification: item.specification,
-        value: iteming,
+        value,
         pic_url: item.pic_url
       })
     })

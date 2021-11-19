@@ -23,22 +23,22 @@
 </template>
 
 <script>
-import {multiply} from '@/utils/multiply'
 
 export default {
   name: "OptionsTable",
   props:{
     OptionsTable: Array,
-    OptionsTitle: Array,
+    OptionsTitle: Array, // [{},{key:'颜色'：value:['红’,'黑']}] 
   },
   methods: {
+    //
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
       if (columnIndex === 0) {
         if (this.OptionsTitle.length  === 2) {
-          let a = this.OptionsTitle[1].value.length
-          if (rowIndex % a === 0) {
+          let rowspan = this.OptionsTitle[1].value.length
+          if (rowIndex % rowspan === 0) {
             return {
-              rowspan: a,
+              rowspan,
               colspan: 1
             };
           } else {

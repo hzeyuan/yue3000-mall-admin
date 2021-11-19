@@ -66,9 +66,6 @@
         <el-table-column label="排序" width="160" align="center">
           <template slot-scope="scope">{{scope.row.sort_order}}</template>
         </el-table-column>
-        <el-table-column label="状态" width="160" align="center">
-          <template slot-scope="scope">{{scope.row.is_best | formatRecommendStatus}}</template>
-        </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
             <el-button size="mini"
@@ -262,7 +259,11 @@
         this.getList();
       },
       handleRecommendStatusStatusChange(index,row){
-        this.updateRecommendStatusStatus(row.id,row.is_best);
+         //保持switch点击前的状态
+        const toStatus = row.is_best;
+        // 将显示状态改回原来的
+        row.is_best = row.is_best === 1 ? 0 : 1
+        this.updateRecommendStatusStatus(row.id,toStatus);
       },
       handleDelete(index,row){
         this.deleteProduct(row.id);
@@ -399,7 +400,6 @@
             type: 'success',
             message: '已取消操作!'
           });
-          this.getList();
         });
       },
       deleteProduct(ids){

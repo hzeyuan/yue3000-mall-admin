@@ -5,30 +5,7 @@
              label-width="120px"
              style="width: 680px"
              size="small">
-      <el-form-item label="关联专题：">
-        <el-transfer
-          style="display: inline-block"
-          filterable
-          :filter-method="filterMethod"
-          filter-placeholder="请输入专题名称"
-          v-model="selectSubject"
-          :titles="subjectTitles"
-          :data="subjectList">
-        </el-transfer>
-      </el-form-item>
-      <el-form-item label="关联优选：">
-        <el-transfer
-          style="display: inline-block"
-          filterable
-          :filter-method="filterMethod"
-          filter-placeholder="请输入优选名称"
-          v-model="selectPrefrenceArea"
-          :titles="prefrenceAreaTitles"
-          :data="prefrenceAreaList">
-        </el-transfer>
-      </el-form-item>
       <el-form-item style="text-align: center">
-        <el-button size="medium" @click="handlePrev">上一步，填写商品属性</el-button>
         <el-button type="primary" size="medium" @click="handleFinishCommit">完成，提交商品</el-button>
       </el-form-item>
     </el-form>

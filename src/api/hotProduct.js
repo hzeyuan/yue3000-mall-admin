@@ -7,6 +7,7 @@ export function fetchList(params) {
   });
 }
 
+// 批量推荐
 export function updateRecommendStatus(data) {
   return request({
     url: "/goods/bulk/recommend",
@@ -14,6 +15,8 @@ export function updateRecommendStatus(data) {
     data: data
   });
 }
+
+// 批量删除热门
 export function deleteHotProduct(data) {
   return request({
     url: "/goods/bulk/deleted",

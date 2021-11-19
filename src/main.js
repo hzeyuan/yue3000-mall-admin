@@ -18,7 +18,6 @@ import '@/permission' // permission control
 
 Vue.use(ElementUI, { locale })
 Vue.use(VCharts)
-
 Vue.config.productionTip = false
 
 new Vue({

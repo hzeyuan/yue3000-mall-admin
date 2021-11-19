@@ -1,21 +1,15 @@
 <template>
   <div class="InputTable">
-    <el-form label-position="right" label-width="80px"
-             style="overflow: hidden; margin: auto"
-             :model="optionsData">
+    <el-form label-position="right" label-width="80px" style="overflow: hidden; margin: auto" :model="optionsData">
       <el-form-item label="名称">
-        <el-input v-model="optionsData.title" placeholder="输入规格名称；例如：颜色、尺寸等。"
+        <el-input v-model="optionsData.specification" placeholder="输入规格名称；例如：颜色、尺寸等。"
                   style="width: 310px">
         </el-input>
       </el-form-item>
-      <el-form-item :label="'选项' + (index + 1) "
-        v-for="(item, index) in optionsData.options" :key="index">
-        <el-input v-model="item.name" placeholder="输入规格选项；例如：红色、白色等。"
-                  style="width: 310px">
-        </el-input>
-        <i class="el-icon-delete" @click.prevent="onDelete(index)"
-           v-if="optionsData.options.length > 1" >
-        </i>
+      <el-form-item :label="'选项' + (index + 1) + ':'"
+        v-for="(item, index) in optionsData.value" :key="index">
+        <el-input v-model="optionsData.value[index]" placeholder="输入规格选项；例如：红色、白色等。" style="width: 310px"></el-input>
+        <i class="el-icon-delete" @click.prevent="onDelete(index)" v-if="optionsData.value.length > 1" ></i>
       </el-form-item>
       <el-form-item label="">
         <InputButton span="添加选项" style="width: 310px"
@@ -24,6 +18,7 @@
       </el-form-item>
     </el-form>
     <div class="close">
+<!--      插槽 用于放置右上角删除该规格项的图标-->
       <slot>
       </slot>
     </div>
@@ -45,13 +40,14 @@ export default {
     return {}
   },
   methods: {
-    // 添加规格
+    // 添加规格项
     addOptions () {
-      this.optionsData.options.push({name:''})
+      this.optionsData.value.push("")
+      // console.log(this.optionsData.value)
     },
-    // 删除第index个规格
+    // 删除第index个规格项
     onDelete (index) {
-      this.optionsData.options.splice(index,1)
+      this.optionsData.value.splice(index,1)
     }
   }
 }

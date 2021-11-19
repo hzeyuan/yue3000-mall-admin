@@ -160,29 +160,31 @@
               @click="handleViewOrder(scope.$index, scope.row)"
               >查看订单</el-button
             >
-            <el-button
+            <!-- <el-button
               size="mini"
               @click="handleCloseOrder(scope.$index, scope.row)"
               v-show="scope.row.status === 0"
               >关闭订单</el-button
-            >
+            > -->
             <el-button
               size="mini"
               @click="handleDeliveryOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 1"
+              v-show="scope.row.status === 200"
               >订单发货</el-button
             >
+            <!-- 300:已发货，400：已收货 -->
             <el-button
               size="mini"
               @click="handleViewLogistics(scope.$index, scope.row)"
-              v-show="scope.row.status === 2 || scope.row.status === 3"
+              v-show="scope.row.status === 300 || scope.row.status === 400"
               >订单跟踪</el-button
             >
+            <!-- 600：已关闭订单，700：已完成订单  -->
             <el-button
               size="mini"
               type="danger"
               @click="handleDeleteOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 4"
+              v-show="scope.row.status === 600 || scope.row.status === 700"
               >删除订单</el-button
             >
           </template>
@@ -243,7 +245,7 @@
         >
       </span>
     </el-dialog>
-    <logistics-dialog v-model="logisticsDialogVisible"></logistics-dialog>
+    <logistics-dialog :orderTraces="orderTraces" v-model="logisticsDialogVisible"></logistics-dialog>
   </div>
 </template>
 <script>
@@ -336,7 +338,9 @@ export default {
           value: 3,
         },
       ],
+      // 订单物流
       logisticsDialogVisible: false,
+      orderTraces:[]
     };
   },
   created() {
@@ -397,6 +401,7 @@ export default {
       this.closeOrder.dialogVisible = true;
       this.closeOrder.orderIds = [row.id];
     },
+    // 处理订单发货
     handleDeliveryOrder(index, row) {
       let listItem = this.covertOrder(row);
       this.$router.push({
@@ -405,6 +410,10 @@ export default {
       });
     },
     handleViewLogistics(index, row) {
+      if(!row.traces)return 
+      const traces =  [...row.traces];
+      traces.reverse()
+      this.orderTraces =traces;
       this.logisticsDialogVisible = true;
     },
     handleDeleteOrder(index, row) {
@@ -425,7 +434,7 @@ export default {
         //批量发货
         let list = [];
         for (let i = 0; i < this.multipleSelection.length; i++) {
-          if (this.multipleSelection[i].status === 1) {
+          if (this.multipleSelection[i].status === 200) {
             list.push(this.covertOrder(this.multipleSelection[i]));
           }
         }
@@ -525,20 +534,20 @@ export default {
       });
     },
     covertOrder(order) {
-      let address =
-        order.receiverProvince +
-        order.receiverCity +
-        order.receiverRegion +
-        order.receiverDetailAddress;
+      // let address =
+      //   order.receiverProvince +
+      //   order.receiverCity +
+      //   order.receiverRegion +
+      //   order.receiverDetailAddress;
       let listItem = {
         orderId: order.id,
-        orderSn: order.orderSn,
-        receiverName: order.receiverName,
-        receiverPhone: order.receiverPhone,
-        receiverPostCode: order.receiverPostCode,
-        address: address,
-        deliveryCompany: null,
-        deliverySn: null,
+        orderSn: order.order_sn,
+        receiverName: order.username,
+        receiverPhone: order.phone,
+        // receiverPostCode: order.receiverPostCode, // todo；邮政编号
+        address: order.address,
+        deliveryCompany: order.ship_channel,
+        deliverySn: order.ship_sn,
       };
       return listItem;
     },

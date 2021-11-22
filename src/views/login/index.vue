@@ -9,7 +9,7 @@
         <div style="text-align: center">
           <svg-icon icon-class="login-mall" style="width: 56px;height: 56px;color: #409EFF"></svg-icon>
         </div>
-        <h2 class="login-title color-main">mall-admin-web</h2>
+        <h2 class="login-title color-main">悦千电商后台</h2>
         <el-form-item prop="username">
           <el-input name="username"
                     type="text"
@@ -40,39 +40,22 @@
           <el-button style="width: 45%" type="primary" :loading="loading" @click.native.prevent="handleLogin">
             登录
           </el-button>
-          <el-button style="width: 45%" type="primary" @click.native.prevent="handleTry">
-            获取体验账号
-          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <img :src="login_center_bg" class="login-center-layout">
-    <el-dialog
-      title="公众号二维码"
-      :visible.sync="dialogVisible"
-      :show-close="false"
-      :center="true"
-      width="30%">
-      <div style="text-align: center">
-        <span class="font-title-large"><span class="color-main font-extra-large">关注公众号</span>回复<span class="color-main font-extra-large">体验</span>获取体验账号</span>
-        <br>
-        <img src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/banner/qrcode_for_macrozheng_258.jpg" width="160" height="160" style="margin-top: 10px">
-      </div>
-      <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="dialogConfirm">确定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
   import {isvalidUsername} from '@/utils/validate';
-  import {setSupport,getSupport,setCookie,getCookie} from '@/utils/support';
+  import {setCookie} from '@/utils/support';
   import login_center_bg from '@/assets/images/login_center_bg.png'
 
   export default {
     name: 'login',
     data() {
+      // 用户名验证
       const validateUsername = (rule, value, callback) => {
         if (!isvalidUsername(value)) {
           callback(new Error('请输入正确的用户名'))
@@ -80,6 +63,7 @@
           callback()
         }
       };
+      // 密码验证
       const validatePass = (rule, value, callback) => {
         if (value.length < 3) {
           callback(new Error('密码不能小于3位'))
@@ -99,14 +83,9 @@
         loading: false,
         pwdType: 'password',
         login_center_bg,
-        dialogVisible:false,
-        supportDialogVisible:false
       }
     },
     created() {
-      // this.loginForm.username = getCookie("username");
-      // this.loginForm.password = getCookie("password");
-
       if(this.loginForm.username === undefined||this.loginForm.username==null||this.loginForm.username===''){
         this.loginForm.username = 'admin';
       }
@@ -129,11 +108,6 @@
         // 判断参数验证 合法进入网络 不合法打印参数填写不合法
         this.$refs.loginForm.validate(valid => {
           if (valid) {
-            // let isSupport = getSupport();
-            // if(isSupport===undefined||isSupport==null){
-            //   this.dialogVisible =true;
-            //   return;
-            // }
             this.loading = true; // 打开按钮点击的加载框
             // 执行vuex中的异步函数 'Login'
             this.$store.dispatch('Login', this.loginForm).then(() => {
@@ -149,22 +123,11 @@
               console.log('err',err);
             })
           } else {
-            console.log('参数验证不合法！');
+            console.log('参数验证不合法!');
             return false
           }
         })
       },
-      handleTry(){
-        this.dialogVisible =true
-      },
-      dialogConfirm(){
-        this.dialogVisible =false;
-        setSupport(true);
-      },
-      dialogCancel(){
-        this.dialogVisible = false;
-        setSupport(false);
-      }
     }
   }
 </script>

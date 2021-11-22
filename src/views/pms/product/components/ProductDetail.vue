@@ -41,7 +41,7 @@
         <el-switch v-model="goods.is_on_sale"></el-switch>
       </el-form-item>
       <el-form-item label="商品排序：">
-        <el-input v-model="goods.sort_order"></el-input>
+        <el-input v-model.number="goods.sort_order" oninput="value=value.replace(/[^0-9]/g,'')"></el-input>
       </el-form-item>
       <el-form-item label="商品推荐：">
         <span style="margin-right: 10px">新品</span>
@@ -53,10 +53,11 @@
         <el-input v-model="goods.unit"></el-input>
       </el-form-item>
       <el-form-item label="柜台价格：">
-        <el-input v-model="goods.counter_price"></el-input>
+        <el-input v-model.number="goods.counter_price" @change="data=>goods.counter_price=funFormatPrice(data)"
+                  oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
       </el-form-item>
       <el-form-item label="零售价格：">
-        <el-input v-model="goods.retail_price"></el-input>
+        <el-input v-model.number="goods.retail_price" oninput="value=value.replace(/[^0-9.]/g,'')"></el-input>
       </el-form-item>
       <el-form-item label="商品详情：">
         <el-input v-model="goods.detail"></el-input>
@@ -83,7 +84,7 @@
         </InputTable>
       </el-form-item>
       <!--      增加商品规格-->
-      <el-form-item label="" v-show="productsShow">
+      <el-form-item label="" v-show="goods.goods_specifications.length === 1">
         <InputButton
           span="增加商品规格"
           @click.native="addSpecification"
@@ -173,7 +174,6 @@ const defaultProductParam = {
     //   pic_url: '',           //规格图片
     // }
   ], //产品规格
-  shop: 0, //店铺id
 };
 export default {
   name: "ProductDetail",
@@ -244,6 +244,9 @@ export default {
         ],
         category_id: [
           { required: true, message: "请选择商品分类", trigger: "blur" },
+        ],
+        number: [
+          { required: true, message: "请输入正确的金额", trigger: "blur" },
         ],
       },
     };
@@ -317,6 +320,10 @@ export default {
         });
       });
     },
+    // 价格保留2位小数
+    funFormatPrice (value) {
+      return value
+    }
   },
 };
 </script>

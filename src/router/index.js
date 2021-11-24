@@ -26,13 +26,34 @@ export const constantRouterMap = [
     path: '',
     component: Layout,
     redirect: '/home',
-    children: [{
+    children: [
+      {
       path: 'home',
       name: 'home',
       component: () => import('@/views/home/index'),
       meta: {title: '首页', icon: 'home'}
-    }]
-  }
+    }, {
+      path: 'appMy',
+      name: 'appMy',
+      component: () => import('@/views/decorate/appMy/index'),
+      meta: {title: '装修', icon: 'home'},
+      hidden: true
+    }, {
+      path: 'addAppMy',
+      name: 'addAppMy',
+      component: () => import('@/views/decorate/appMy/add'),
+      meta: {title: '添加功能项', icon: 'home'},
+      hidden: true
+    }, {
+      path: 'updateAppMy:id',
+      name: 'updateAppMy',
+      component: () => import('@/views/decorate/appMy/update'),
+      meta: {title: '修改功能项', icon: 'home'},
+      hidden: true
+    }
+]
+  },
+
 ]
 
 // 异步处理页面列表

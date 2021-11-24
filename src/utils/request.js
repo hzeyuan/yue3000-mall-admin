@@ -26,6 +26,7 @@ service.interceptors.request.use(config => {
 //响应拦截 对相应的状态码进行操作
 service.interceptors.response.use(res => {
 // 响应成功 返回结果中的数据项data
+  console.log('Promise',res.data)
   return res.data
 }, err => {
 //  响应失败 根据返回是否有结果进行判定

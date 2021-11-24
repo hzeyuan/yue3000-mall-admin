@@ -1,4 +1,3 @@
-<!--首页主要区域-->
 <template>
   <div class="app-container">
     <!--    左侧-->
@@ -221,7 +220,6 @@
   </div>
 </template>
 
-
 <script>
   import {timeLeftZero} from '@/utils/date';
   import {getDashboard} from '@/api/home.js'
@@ -325,9 +323,6 @@
             x2: 15,
             y2: 20,
           },
-          tooltip: {
-            trigger: 'axis'
-          },
           xAxis: {
             type: 'time',
             // splitNumber: 10,
@@ -353,7 +348,10 @@
             {//真实数据
               data: this.EchartsData.date,
               type: 'line',
-              smooth: true
+              smooth: true,
+              tooltip: {
+                trigger: 'axis'
+              }
             },
             {// 假数据用于展开X轴
               data: this.EchartsData.time24,

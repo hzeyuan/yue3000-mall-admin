@@ -254,9 +254,7 @@ export default {
   created() {
     this.reqTreeClass();
     if (this.isEdit) {
-      getGoods(this.$route.query.id).then((response) => {
-        this.productParam = response.data;
-      });
+      this.reqGetGoods()
     }
   },
   methods: {
@@ -264,6 +262,11 @@ export default {
     async reqTreeClass() {
       const res = await fetchTreeList();
       this.options = res;
+    },
+
+    // 修改商品页面的请求商品数据
+    async reqGetGoods(id){
+
     },
     // 商品添加规格项
     addSpecification() {

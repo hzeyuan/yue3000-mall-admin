@@ -40,3 +40,11 @@ export function str2Date(dateStr, separator) {
   let date = new Date(year, month - 1, day);
   return date;
 }
+
+export function timeLeftZero (date) {
+  if (date > 10){
+    return date.toString()
+  } else {
+    return `0${date}`
+  }
+}

@@ -71,6 +71,7 @@ export function getProduct(id) {
     method: "get"
   });
 }
+
 // 获取商品参数
 export function getGoods(id) {
   return request({

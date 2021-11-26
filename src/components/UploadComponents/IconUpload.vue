@@ -30,6 +30,12 @@ export default {
       default: false
     }
   },
+  watch: {
+    icon () {
+      this.gallery = this.icon
+      this.fileList.push({url: this.icon})
+    }
+  },
   computed: {
     // 计算图片数量 若为1 则隐藏上传窗口
     upShow () {
@@ -75,13 +81,6 @@ export default {
       return this.$confirm('确定删除该图片？');
     },
   },
-  mounted() {
-    if (this.isEdge){
-      this.gallery = this.icon
-      console.log('icon', this.icon)
-      this.fileList.push({url: this.icon})
-    }
-  }
 }
 </script>
 

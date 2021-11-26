@@ -21,23 +21,25 @@ export async function getAppMyById (id) {
 // 添加App我的页面功能
 export function addAppMy (data) {
   return request({
-      method: 'put',
-      url: 'menu/list',
+      method: 'post',
+      url: 'menu',
       data
   })
 }
 
 // 修改App我的页面功能
-export async function updateAppMy (id, data) {
+export function updateAppMy (id, data) {
   return request({
-    method: 'post',
-    url: `menu/list${id}`,
+    method: 'put',
+    url: `menu/${id}`,
     data
   })
 }
 
 // 根据ID删除App我的页面功能
-export async function deleteAppMyById (id) {
-  console.log('删除数据'+ id + '成功')
-  return
+export function deleteAppMyById (id) {
+  return request({
+    method: 'delete',
+    url: `menu/${id}`
+  })
 }

@@ -31,9 +31,11 @@ export default {
     }
   },
   watch: {
-    icon () {
-      this.gallery = this.icon
-      this.fileList.push({url: this.icon})
+    icon (newValue,oldValue) {
+      if (newValue === oldValue){
+        this.gallery = this.icon
+        this.fileList.push({url: this.icon})
+      }
     }
   },
   computed: {

@@ -32,25 +32,26 @@ export const constantRouterMap = [
       name: 'home',
       component: () => import('@/views/home/index'),
       meta: {title: '首页', icon: 'home'}
-    }, {
-      path: 'appMy',
-      name: 'appMy',
-      component: () => import('@/views/decorate/appMy/index'),
-      meta: {title: '装修', icon: 'home'},
-      hidden: true
-    }, {
-      path: 'addAppMy',
-      name: 'addAppMy',
-      component: () => import('@/views/decorate/appMy/add'),
-      meta: {title: '添加功能项', icon: 'home'},
-      hidden: true
-    }, {
-      path: 'updateAppMy:id',
-      name: 'updateAppMy',
-      component: () => import('@/views/decorate/appMy/update'),
-      meta: {title: '修改功能项', icon: 'home'},
-      hidden: true
-    }
+    },
+    //   {
+    //   path: 'appMy',
+    //   name: 'appMy',
+    //   component: () => import('@/views/decorate/appMy/index'),
+    //   meta: {title: '装修', icon: 'home'},
+    //   hidden: true
+    // }, {
+    //   path: 'addAppMy',
+    //   name: 'addAppMy',
+    //   component: () => import('@/views/decorate/appMy/add'),
+    //   meta: {title: '添加功能项', icon: 'home'},
+    //   hidden: true
+    // }, {
+    //   path: 'updateAppMy:id',
+    //   name: 'updateAppMy',
+    //   component: () => import('@/views/decorate/appMy/update'),
+    //   meta: {title: '修改功能项', icon: 'home'},
+    //   hidden: true
+    // }
 ]
   },
 
@@ -64,7 +65,8 @@ export const asyncRouterMap = [
     redirect: '/pms/product',
     name: 'pms',
     meta: {title: '商品', icon: 'product'},
-    children: [{
+    children: [
+      {
       path: 'product',
       name: 'product',
       component: () => import('@/views/pms/product/index'),
@@ -309,6 +311,35 @@ export const asyncRouterMap = [
         name: 'updateHomeAdvertise',
         component: () => import('@/views/sms/advertise/update'),
         meta: {title: '编辑广告'},
+        hidden:true
+      }
+    ]
+  },
+  {
+    path: '/decorate',
+    component: Layout,
+    redirect: '/decorate/appMy',
+    name: 'decorate',
+    meta: {title: '装修', icon: 'sms'},
+    children: [
+      {
+        path: 'appMy',
+        name: 'appMy',
+        component: () => import('@/views/decorate/appMy/index'),
+        meta: {title: '个人中心', icon: 'sms-ad'},
+      },
+      {
+        path: 'updateAppMy',
+        name: 'updateAppMy',
+        component: () => import('@/views/decorate/appMy/update'),
+        meta: {title: '菜单项编辑'},
+        hidden:true
+      },
+      {
+        path: 'addAppMy',
+        name: 'addAppMy',
+        component: () => import('@/views/decorate/appMy/add'),
+        meta: {title: '菜单项添加'},
         hidden:true
       }
     ]

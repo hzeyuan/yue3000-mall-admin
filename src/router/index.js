@@ -329,7 +329,7 @@ export const asyncRouterMap = [
         meta: {title: '个人中心', icon: 'sms-ad'},
       },
       {
-        path: 'updateAppMy',
+        path: 'updateAppMy:id',
         name: 'updateAppMy',
         component: () => import('@/views/decorate/appMy/update'),
         meta: {title: '菜单项编辑'},

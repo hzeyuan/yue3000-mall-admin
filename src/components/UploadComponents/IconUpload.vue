@@ -32,7 +32,7 @@ export default {
   },
   watch: {
     icon (newValue,oldValue) {
-      if (newValue === oldValue){
+      if (newValue !== oldValue){
         this.gallery = this.icon
         this.fileList.push({url: this.icon})
       }

@@ -292,8 +292,8 @@ router.beforeEach((to, from, next) => {
             id: 30,
             level: 0,
             name: "decorate",
-            parentId: 0,
-            sort: 0,
+            parentId: 31,
+            sort: 1,
             title: "装修"
           },
           {
@@ -301,10 +301,9 @@ router.beforeEach((to, from, next) => {
             hidden: 0,
             icon: "sms",
             id: 31,
-            level: 0,
             name: "appMy",
             parentId: 0,
-            sort: 0,
+            sort: 1,
             title: "个人中心"
           },
         ]

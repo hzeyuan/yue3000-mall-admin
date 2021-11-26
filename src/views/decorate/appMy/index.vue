@@ -31,8 +31,10 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="phone" style="">
-        <iframe src="http://localhost:8080/mobile/pages/user/user" style="width: 100%; height: 100%"></iframe>
+      <div class="phone" ref="phone">
+        <div class="model-content" v-if="iframeShow">
+          <iframe frameborder="no" src="http://localhost:8080/mobile/pages/user/user" style="width: 100%; height: 100%"></iframe>
+        </div>
       </div>
     </div>
   </el-card>
@@ -49,6 +51,7 @@ export default {
   },
   data () {
     return {
+      iframeShow: false,
       ListData: [],
       tableLoading: false
     }
@@ -56,8 +59,10 @@ export default {
   methods: {
     // 获取数据列表
     async reqGetAppMy () {
+      this.iframeShow = false
       const res = await getAppMy()
       this.ListData = res.menu_list
+      this.iframeShow = true
     },
     // 点击跳转到添加页面
     ontoAdd () {
@@ -115,8 +120,23 @@ export default {
   }
   .phone{
     float: right;
-    width: 360px;
-    height: 600px;
+    width: 350px;
+    height: 709px;
+    z-index: 10;
+    padding: 8px 12.5px 9.5px  11.5px;
+    border-radius: 30px;
+    background-image: url("https://www.uviewui.com/common/iPhone13.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    .model-content{
+      border-radius: 43px;
+      height: 100%;
+    }
+    iframe{
+      width: 100%;
+      height: 100%;
+      border-radius: 43px;
+    }
   }
 }
 </style>

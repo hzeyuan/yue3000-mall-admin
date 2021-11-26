@@ -284,7 +284,29 @@ router.beforeEach((to, from, next) => {
             parentId: 21,
             sort: 0,
             title: "资源列表"
-          }
+          },
+          {
+            createTime: "2020-02-02T06:50:36.000+00:00",
+            hidden: 0,
+            icon: "sms",
+            id: 30,
+            level: 0,
+            name: "decorate",
+            parentId: 0,
+            sort: 0,
+            title: "装修"
+          },
+          {
+            createTime: "2020-02-07T08:31:13.000+00:00",
+            hidden: 0,
+            icon: "sms",
+            id: 31,
+            level: 0,
+            name: "appMy",
+            parentId: 0,
+            sort: 0,
+            title: "个人中心"
+          },
         ]
         const username = 'admin'
         store.dispatch('GenerateRoutes', { menus,username }).then(() => { // 生成可访问的路由表

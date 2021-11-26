@@ -53,7 +53,7 @@ export default {
       myRules: {
         name: [
           {required: true, message: '请输入活动名称', trigger: 'blur'},
-          {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+          {min: 3, max: 10, message: '长度在 3 到 5 个字符', trigger: 'blur'}
         ],
         link_address: [
           {required: true, message: '请输入路由', trigger: 'blur'},
@@ -114,7 +114,7 @@ export default {
           }).then(()=>{
             // 对上传数据进行修改
             this.myData.image = this.$refs.uploadIcon.gallery
-            updateAppMy(this.myData).then (res =>{
+            updateAppMy(this.$route.params.id,this.myData).then (res =>{
               console.log(res)
               this.$message({
                 message: '修改成功',

@@ -171,7 +171,7 @@ router.beforeEach((to, from, next) => {
             icon: "sms-flash",
             id: 101,
             level: 1,
-            name: "register-award",
+            name: "register-reward",
             parentId: 12,
             sort: 0,
             title: "注册奖励"
@@ -181,6 +181,17 @@ router.beforeEach((to, from, next) => {
             hidden: 0,
             icon: "sms-flash",
             id: 102,
+            level: 1,
+            name: "invite-reward",
+            parentId: 12,
+            sort: 0,
+            title: "邀请奖励"
+          },
+          {
+            createTime: "2020-02-04T08:19:22.000+00:00",
+            hidden: 0,
+            icon: "sms-flash",
+            id: 103,
             level: 1,
             name: "sign-daily",
             parentId: 12,

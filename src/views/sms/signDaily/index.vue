@@ -16,6 +16,10 @@
         </div>
       </div>
       <div class="body-box">
+        <div class="menu-title">
+          <div class="menu-item" :class='{show: menuShow === 1}' @click="menuShow = 1">签到设置</div>
+          <div class="menu-item" :class='{show: menuShow === 2}' @click="menuShow = 2">签到记录</div>
+        </div>
       </div>
     </el-card>
   </div>
@@ -27,6 +31,7 @@ export default {
   data () {
     return {
       topOpen: false,
+      menuShow: 1,
     }
   },
 }
@@ -57,6 +62,30 @@ export default {
         padding: 0;
         margin: 0;
       }
+    }
+  }
+  .body-box{
+    .menu-title{
+      overflow: hidden;
+      padding: 2px 0 0 2px;
+      background-color: #f2f2f2;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      .menu-item{
+        float: left;
+        cursor: pointer;
+        height: 40px;
+        padding: 0 15px;
+        text-align: center;
+        line-height: 40px;
+        color: #666;
+        font-size: 14px;
+      }
+    }
+    .show{
+      font-weight: bold;
+      background-color: #fff;
+      color: #000;
     }
   }
 }

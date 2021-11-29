@@ -7,7 +7,7 @@ import request from "@/utils/request";
  * 会员下单奖励积分数：type：MarketingConfig;  name = orderAwardConfig
  * 注册奖励积分数：type：MarketingConfig;  name = register_award_integral
  * 注册奖励优惠卷：type：MarketingConfig;  name = register_award_coupon
- * 邀请会员积分奖励：type：MarketingConfig;  name = register_award_coupon
+ * 邀请会员积分奖励：type：MarketingConfig;  name = invited_award_integral
  **/
 
 // 获取基础参数

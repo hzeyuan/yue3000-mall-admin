@@ -222,10 +222,16 @@ export const asyncRouterMap = [
         meta: {title: '下单奖励', icon: 'sms-flash'}
       },
       {
-        path: 'register-award',
-        name: 'register-award',
+        path: 'register-reward',
+        name: 'register-reward',
         component: () => import('@/views/sms/registerAward/index'),
         meta: {title: '注册奖励', icon: 'sms-flash'}
+      },
+      {
+        path: 'invite-reward',
+        name: 'invite-reward',
+        component: () => import('@/views/sms/inviteReward/index'),
+        meta: {title: '邀请奖励', icon: 'sms-flash'}
       },
       {
         path: 'sign-daily',

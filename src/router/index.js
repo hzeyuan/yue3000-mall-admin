@@ -216,6 +216,24 @@ export const asyncRouterMap = [
     meta: {title: '营销', icon: 'sms'},
     children: [
       {
+        path: 'order-reward',
+        name: 'order-reward',
+        component: () => import('@/views/sms/orderReward/index'),
+        meta: {title: '下单奖励', icon: 'sms-flash'}
+      },
+      {
+        path: 'register-award',
+        name: 'register-award',
+        component: () => import('@/views/sms/registerAward/index'),
+        meta: {title: '注册奖励', icon: 'sms-flash'}
+      },
+      {
+        path: 'sign-daily',
+        name: 'sign-daily',
+        component: () => import('@/views/sms/signDaily/index'),
+        meta: {title: '会员签到', icon: 'sms-flash'}
+      },
+      {
         path: 'flash',
         name: 'flash',
         component: () => import('@/views/sms/flash/index'),

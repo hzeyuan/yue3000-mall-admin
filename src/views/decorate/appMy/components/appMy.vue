@@ -49,7 +49,9 @@ export default {
   },
   data () {
     return {
+      // 数据表单
       myData: Object.assign({}, defaultMyData),
+      // 表单验证规则
       myRules: {
         name: [
           {required: true, message: '请输入活动名称', trigger: 'blur'},
@@ -59,8 +61,6 @@ export default {
           {required: true, message: '请输入路由', trigger: 'blur'},
         ]
       },
-      icon: '11111',
-      iconShow: true,
     }
   },
   methods: {
@@ -68,11 +68,10 @@ export default {
     async reqGetAppMyData (id) {
       const res = await getAppMyById(id)
       this.myData = res
-      this.$forceUpdate()
     },
     // 添加数据到服务器
-    onAddAppMy(myForm) {
-      this.$refs[myForm].validate((valid) => {
+    onAddAppMy(ref) {
+      this.$refs[ref].validate((valid) => {
         if (valid) {
           // 表单验证成功
           this.$confirm('是否添加该条数据', '提示', {
@@ -103,8 +102,8 @@ export default {
       });
     },
     // 对服务器数据进行修改
-    onUpdateAppMy(myForm) {
-      this.$refs[myForm].validate((valid) => {
+    onUpdateAppMy(ref) {
+      this.$refs[ref].validate((valid) => {
         if (valid) {
           // 表单验证成功
           this.$confirm('是否修改该条数据', '提示', {
@@ -136,8 +135,8 @@ export default {
       });
     },
     // 重置表单属性
-    onresetForm(myForm) {
-      this.$refs[myForm].resetFields();
+    onresetForm(ref) {
+      this.$refs[ref].resetFields();
     }
   },
   created() {

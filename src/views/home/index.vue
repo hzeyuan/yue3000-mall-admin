@@ -313,6 +313,7 @@
           data.push([parseInt(time[i]),value[i]])
         }
         this.EchartsData.date =  data
+        this.initEcharts()
       },
       // 初始化图表
       initEcharts () {
@@ -364,9 +365,8 @@
       },
     },
     mounted() {
-      // this.reqGetDashboard()
+      this.reqGetDashboard()
       this.funInitTime24()
-      this.initEcharts()
     }
   }
 </script>

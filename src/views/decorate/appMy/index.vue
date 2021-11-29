@@ -47,12 +47,14 @@ import {getAppMy, deleteAppMyById} from "@/api/decorate";
 export default {
   name: "appMyList",
   components: {
-
   },
   data () {
     return {
+      // 用于刷新页面手机窗口
       iframeShow: false,
+      // 数据列表
       ListData: [],
+      // 表格数据刷新遮罩层的显示
       tableLoading: false
     }
   },
@@ -99,10 +101,7 @@ export default {
   },
   filters: {
     conversionUse (value) {
-      if(value == 1) {
-        return true
-      }
-      return false
+      return value === 1;
     }
   },
 }

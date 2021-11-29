@@ -34,18 +34,18 @@ export default {
     icon (newValue,oldValue) {
       if (newValue !== oldValue){
         this.gallery = this.icon
-        this.fileList.push({url: this.icon})
+        this.fileList = [
+          {
+            url: this.icon
+          }
+        ]
       }
     }
   },
   computed: {
     // 计算图片数量 若为1 则隐藏上传窗口
     upShow () {
-      if (this.gallery === ''){
-        return false
-      } else {
-        return true
-      }
+      return !this.gallery;
     },
   },
   data () {

@@ -105,9 +105,7 @@
       </el-form-item>
       <el-divider></el-divider>
       <el-form-item style="text-align: center">
-        <el-button type="primary" size="medium" @click="finishCommit(isEdit)"
-          >完成，提交商品</el-button
-        >
+        <el-button type="primary" size="medium" @click="finishCommit(isEdit)">完成，提交商品</el-button>
       </el-form-item>
     </el-form>
   </el-card>

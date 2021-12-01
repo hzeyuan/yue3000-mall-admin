@@ -1,4 +1,7 @@
 import request from '@/utils/request'
+
+// 广告
+
 export function fetchList(params) {
   return request({
     url:'/home/advertise/list',

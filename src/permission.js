@@ -158,6 +158,50 @@ router.beforeEach((to, from, next) => {
             createTime: "2020-02-04T08:19:22.000+00:00",
             hidden: 0,
             icon: "sms-flash",
+            id: 100,
+            level: 1,
+            name: "order-reward",
+            parentId: 12,
+            sort: 0,
+            title: "下单奖励"
+          },
+          {
+            createTime: "2020-02-04T08:19:22.000+00:00",
+            hidden: 0,
+            icon: "sms-flash",
+            id: 101,
+            level: 1,
+            name: "register-reward",
+            parentId: 12,
+            sort: 0,
+            title: "注册奖励"
+          },
+          {
+            createTime: "2020-02-04T08:19:22.000+00:00",
+            hidden: 0,
+            icon: "sms-flash",
+            id: 102,
+            level: 1,
+            name: "invite-reward",
+            parentId: 12,
+            sort: 0,
+            title: "邀请奖励"
+          },
+          {
+            createTime: "2020-02-04T08:19:22.000+00:00",
+            hidden: 0,
+            icon: "sms-flash",
+            id: 103,
+            level: 1,
+            name: "sign-daily",
+            parentId: 12,
+            sort: 0,
+            title: "会员签到"
+          },
+          {
+            createTime: "2020-02-04T08:19:22.000+00:00",
+            hidden: 0,
+            icon: "sms-flash",
             id: 13,
             level: 1,
             name: "flash",
@@ -284,7 +328,28 @@ router.beforeEach((to, from, next) => {
             parentId: 21,
             sort: 0,
             title: "资源列表"
-          }
+          },
+          {
+            createTime: "2020-02-02T06:50:36.000+00:00",
+            hidden: 0,
+            icon: "sms",
+            id: 30,
+            level: 0,
+            name: "decorate",
+            parentId: 31,
+            sort: 1,
+            title: "装修"
+          },
+          {
+            createTime: "2020-02-07T08:31:13.000+00:00",
+            hidden: 0,
+            icon: "sms",
+            id: 31,
+            name: "appMy",
+            parentId: 0,
+            sort: 1,
+            title: "个人中心"
+          },
         ]
         const username = 'admin'
         store.dispatch('GenerateRoutes', { menus,username }).then(() => { // 生成可访问的路由表

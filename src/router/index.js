@@ -26,13 +26,35 @@ export const constantRouterMap = [
     path: '',
     component: Layout,
     redirect: '/home',
-    children: [{
+    children: [
+      {
       path: 'home',
       name: 'home',
       component: () => import('@/views/home/index'),
       meta: {title: '首页', icon: 'home'}
-    }]
-  }
+    },
+    //   {
+    //   path: 'appMy',
+    //   name: 'appMy',
+    //   component: () => import('@/views/decorate/appMy/index'),
+    //   meta: {title: '装修', icon: 'home'},
+    //   hidden: true
+    // }, {
+    //   path: 'addAppMy',
+    //   name: 'addAppMy',
+    //   component: () => import('@/views/decorate/appMy/add'),
+    //   meta: {title: '添加功能项', icon: 'home'},
+    //   hidden: true
+    // }, {
+    //   path: 'updateAppMy:id',
+    //   name: 'updateAppMy',
+    //   component: () => import('@/views/decorate/appMy/update'),
+    //   meta: {title: '修改功能项', icon: 'home'},
+    //   hidden: true
+    // }
+]
+  },
+
 ]
 
 // 异步处理页面列表
@@ -43,7 +65,8 @@ export const asyncRouterMap = [
     redirect: '/pms/product',
     name: 'pms',
     meta: {title: '商品', icon: 'product'},
-    children: [{
+    children: [
+      {
       path: 'product',
       name: 'product',
       component: () => import('@/views/pms/product/index'),
@@ -193,6 +216,30 @@ export const asyncRouterMap = [
     meta: {title: '营销', icon: 'sms'},
     children: [
       {
+        path: 'order-reward',
+        name: 'order-reward',
+        component: () => import('@/views/sms/orderReward/index'),
+        meta: {title: '下单奖励', icon: 'sms-flash'}
+      },
+      {
+        path: 'register-reward',
+        name: 'register-reward',
+        component: () => import('@/views/sms/registerAward/index'),
+        meta: {title: '注册奖励', icon: 'sms-flash'}
+      },
+      {
+        path: 'invite-reward',
+        name: 'invite-reward',
+        component: () => import('@/views/sms/inviteReward/index'),
+        meta: {title: '邀请奖励', icon: 'sms-flash'}
+      },
+      {
+        path: 'sign-daily',
+        name: 'sign-daily',
+        component: () => import('@/views/sms/signDaily/index'),
+        meta: {title: '会员签到', icon: 'sms-flash'}
+      },
+      {
         path: 'flash',
         name: 'flash',
         component: () => import('@/views/sms/flash/index'),
@@ -288,6 +335,35 @@ export const asyncRouterMap = [
         name: 'updateHomeAdvertise',
         component: () => import('@/views/sms/advertise/update'),
         meta: {title: '编辑广告'},
+        hidden:true
+      }
+    ]
+  },
+  {
+    path: '/decorate',
+    component: Layout,
+    redirect: '/decorate/appMy',
+    name: 'decorate',
+    meta: {title: '装修', icon: 'sms'},
+    children: [
+      {
+        path: 'appMy',
+        name: 'appMy',
+        component: () => import('@/views/decorate/appMy/index'),
+        meta: {title: '个人中心', icon: 'sms-ad'},
+      },
+      {
+        path: 'updateAppMy:id',
+        name: 'updateAppMy',
+        component: () => import('@/views/decorate/appMy/update'),
+        meta: {title: '菜单项编辑'},
+        hidden:true
+      },
+      {
+        path: 'addAppMy',
+        name: 'addAppMy',
+        component: () => import('@/views/decorate/appMy/add'),
+        meta: {title: '菜单项添加'},
         hidden:true
       }
     ]

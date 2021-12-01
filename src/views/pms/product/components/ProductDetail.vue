@@ -105,9 +105,7 @@
       </el-form-item>
       <el-divider></el-divider>
       <el-form-item style="text-align: center">
-        <el-button type="primary" size="medium" @click="finishCommit(isEdit)"
-          >完成，提交商品</el-button
-        >
+        <el-button type="primary" size="medium" @click="finishCommit(isEdit)">完成，提交商品</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -254,9 +252,7 @@ export default {
   created() {
     this.reqTreeClass();
     if (this.isEdit) {
-      getGoods(this.$route.query.id).then((response) => {
-        this.productParam = response.data;
-      });
+      this.reqGetGoods()
     }
   },
   methods: {
@@ -264,6 +260,11 @@ export default {
     async reqTreeClass() {
       const res = await fetchTreeList();
       this.options = res;
+    },
+
+    // 修改商品页面的请求商品数据
+    async reqGetGoods(id){
+
     },
     // 商品添加规格项
     addSpecification() {

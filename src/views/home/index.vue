@@ -1,4 +1,3 @@
-<!--首页主要区域-->
 <template>
   <div class="app-container">
     <!--    左侧-->
@@ -32,11 +31,7 @@
         </div>
         <div class="offset">
           <div class="nev">
-            <div class="chart-title">
-              <p class="p-title">以售出: <i class="el-icon-star-off icon"></i></p>
-              <p class="p-subtitle">10</p>
-            </div>
-            <div class="chart-box">
+            <div id="chart-box" class="chart-box">
             </div>
           </div>
           <div class="nev">
@@ -225,39 +220,14 @@
   </div>
 </template>
 
-
 <script>
-  import {str2Date} from '@/utils/date';
-  import img_home_order from '@/assets/images/home_order.png';
-  import img_home_today_amount from '@/assets/images/home_today_amount.png';
-  import img_home_yesterday_amount from '@/assets/images/home_yesterday_amount.png';
-
-
-  const DATA_FROM_BACKEND = {
-    columns: ['date', 'orderCount','orderAmount'],
-    rows: [
-      {date: '2018-11-01', orderCount: 10, orderAmount: 1093},
-      {date: '2018-11-02', orderCount: 20, orderAmount: 2230},
-      {date: '2018-11-03', orderCount: 33, orderAmount: 3623},
-      {date: '2018-11-04', orderCount: 50, orderAmount: 6423},
-      {date: '2018-11-05', orderCount: 80, orderAmount: 8492},
-      {date: '2018-11-06', orderCount: 60, orderAmount: 6293},
-      {date: '2018-11-07', orderCount: 20, orderAmount: 2293},
-      {date: '2018-11-08', orderCount: 60, orderAmount: 6293},
-      {date: '2018-11-09', orderCount: 50, orderAmount: 5293},
-      {date: '2018-11-10', orderCount: 30, orderAmount: 3293},
-      {date: '2018-11-11', orderCount: 20, orderAmount: 2293},
-      {date: '2018-11-12', orderCount: 80, orderAmount: 8293},
-      {date: '2018-11-13', orderCount: 100, orderAmount: 10293},
-      {date: '2018-11-14', orderCount: 10, orderAmount: 1293},
-      {date: '2018-11-15', orderCount: 40, orderAmount: 4293}
-    ]
-  };
+  import {timeLeftZero} from '@/utils/date';
+  import {getDashboard} from '@/api/home.js'
+  import echarts from 'echarts'
 
   export default {
     name: 'home',
     data() {
-      this.chartSettings = {}
       return {
         upcomingMatter: [
           {
@@ -301,86 +271,102 @@
             path: ''
           }
         ],
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              let start = new Date();
-              start.setFullYear(2018);
-              start.setMonth(10);
-              start.setDate(1);
-              end.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一月',
-            onClick(picker) {
-              const end = new Date();
-              let start = new Date();
-              start.setFullYear(2018);
-              start.setMonth(10);
-              start.setDate(1);
-              end.setTime(start.getTime() + 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+        // Echarts参数
+        EchartsData: {
+          date: [
+            [1637898013000, 200],
+            [1637908813000, 100],
+            [1637923213000, 400],
+            [1637930413000, 300],
+            [1637941213000, 300]
+          ], // 图像数据
+          time24: [] //完成24小时制间隔
         },
-        orderCountDate: '',
-        chartSettings: {
-          xAxisType: 'time',
-          area:true,
-          axisSite: {
-            right: ['orderAmount']
-          }
-        },
-        chartData: {
-          columns: [],
-          rows: []
-        },
-        loading: false,
-        dataEmpty: false,
-        // img_home_order,
-        // img_home_today_amount,
-        // img_home_yesterday_amount
       }
-    },
-    created(){
-      this.initOrderCountDate();
-      this.getData();
     },
     methods:{
-      handleDateChange(){
-        this.getData();
+      // 获取图表数据
+      async reqGetDashboard () {
+        const res = await getDashboard()
+        this.funInitDate(res.toadyOrderSales.orderPricePerTime)
       },
-      initOrderCountDate(){
-        let start = new Date();
-        start.setFullYear(2018);
-        start.setMonth(10);
-        start.setDate(1);
-        const end = new Date();
-        end.setTime(start.getTime() + 1000 * 60 * 60 * 24 * 7);
-        this.orderCountDate=[start,end];
+      // 初始化时间轴虚拟数据
+      funInitTime24(){
+        let time24 = []
+        let my_time = new Date()
+        my_time = `${my_time.getFullYear()}/${my_time.getMonth() + 1}/${my_time.getDate()} 00:00:00`
+        my_time = (new Date(my_time)).getTime()
+        for(let i = 0; i < 5 ;i++){
+          time24.push([my_time, ''])
+          my_time = my_time + (6*60*60*1000)
+          if (i == 3) my_time = my_time -1000
+        }
+        console.log('date', time24)
+        this.EchartsData.time24 = time24
       },
-      getData(){
-        setTimeout(() => {
-          this.chartData = {
-            columns: ['date', 'orderCount','orderAmount'],
-            rows: []
-          };
-          for(let i=0;i<DATA_FROM_BACKEND.rows.length;i++){
-            let item=DATA_FROM_BACKEND.rows[i];
-            let currDate=str2Date(item.date);
-            let start=this.orderCountDate[0];
-            let end=this.orderCountDate[1];
-            if(currDate.getTime()>=start.getTime()&&currDate.getTime()<=end.getTime()){
-              this.chartData.rows.push(item);
-            }
-          }
-          this.dataEmpty = false;
-          this.loading = false
-        }, 1000)
-      }
+      // 初始化图表数据
+      funInitDate(orderPricePerTime){
+        let data = []
+        const value = Object.values(orderPricePerTime)
+        const time = Object.keys(orderPricePerTime)
+        for (let i = 0; i < time.length; i++){
+          data.push([parseInt(time[i]),value[i]])
+        }
+        this.EchartsData.date =  data
+        this.initEcharts()
+      },
+      // 初始化图表
+      initEcharts () {
+        const chart = echarts.init(document.getElementById('chart-box'))
+        const option = {
+          grid: {
+            x: 17,
+            y: 20,
+            x2: 15,
+            y2: 20,
+          },
+          xAxis: {
+            type: 'time',
+            // splitNumber: 10,
+            axisLabel:{
+              show:true,
+              showMaxLabel:true,
+              showMinLabel:true,
+              formatter: function (value, index){
+                let date = new Date(value)
+                return `${timeLeftZero(date.getHours())}:${timeLeftZero(date.getMinutes())}`
+              }
+            },
+            splitLine:{show: false},
+          },
+          yAxis: {
+            type: 'value',
+            axisLabel: {
+              show:false,
+            },
+            splitLine:{show: false},
+          },
+          series: [
+            {//真实数据
+              data: this.EchartsData.date,
+              type: 'line',
+              smooth: true,
+              tooltip: {
+                trigger: 'axis'
+              }
+            },
+            {// 假数据用于展开X轴
+              data: this.EchartsData.time24,
+              type: 'line',
+            },
+          ]
+        }
+        chart.setOption(option)
+      },
+    },
+    mounted() {
+      this.reqGetDashboard()
+      this.funInitTime24()
     }
   }
 </script>
@@ -508,7 +494,7 @@
   }
 
   .chart-box{
-    height: 140px;
+    height: 220px;
   }
 
   .list-box{

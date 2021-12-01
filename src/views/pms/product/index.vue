@@ -492,6 +492,7 @@ export default {
       }
     },
     getList() {
+      console.log(1);
       this.listLoading = true;
       fetchList(this.listQuery).then((response) => {
         this.listLoading = false;
@@ -628,32 +629,32 @@ export default {
         }
         switch (this.operateType) {
           case this.operates[0].value:
-            this.updatePublishStatus(1, ids);
+            this.updatePublishStatus(1, ids).then(this.getList.bind(this));
             break;
           case this.operates[1].value:
-            this.updatePublishStatus(0, ids);
+            this.updatePublishStatus(0, ids).then(this.getList.bind(this));
             break;
           case this.operates[2].value:
-            this.updateRecommendStatus(1, ids);
+            this.updateRecommendStatus(1, ids).then(this.getList.bind(this));
             break;
           case this.operates[3].value:
-            this.updateRecommendStatus(0, ids);
+            this.updateRecommendStatus(0, ids).then(this.getList.bind(this));
             break;
           case this.operates[4].value:
-            this.updateNewStatus(1, ids);
+            this.updateNewStatus(1, ids).then(this.getList.bind(this));
             break;
           case this.operates[5].value:
-            this.updateNewStatus(0, ids);
+            this.updateNewStatus(0, ids).then(this.getList.bind(this));
             break;
           case this.operates[6].value:
             break;
           case this.operates[7].value:
-            this.updateDeleteStatus(1, ids);
+            this.updateDeleteStatus(1, ids).then(this.getList.bind(this))
             break;
           default:
             break;
         }
-        this.getList();
+        
       });
     },
     handleSizeChange(val) {
@@ -695,8 +696,8 @@ export default {
       }).then(() => {
         let ids = [];
         ids.push(row.id);
-        this.updateDeleteStatus(1, ids);
-      });
+        return this.updateDeleteStatus(1, ids);
+      })
     },
     handleUpdateProduct(index, row) {
       this.$router.push({ path: "/pms/updateProduct", query: { id: row.id } });
@@ -715,7 +716,7 @@ export default {
       let params = new URLSearchParams();
       params.append("ids", ids);
       params.append("status", publishStatus);
-      updatePublishStatus(params).then((response) => {
+     return updatePublishStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
           type: "success",
@@ -728,7 +729,7 @@ export default {
       let params = new URLSearchParams();
       params.append("ids", ids);
       params.append("status", newStatus);
-      updateNewStatus(params).then((response) => {
+      return updateNewStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
           type: "success",
@@ -742,7 +743,7 @@ export default {
       params.append("ids", ids);
       console.log(ids);
       params.append("status", recommendStatus);
-      updateRecommendStatus(params).then((response) => {
+      return updateRecommendStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
           type: "success",
@@ -756,14 +757,13 @@ export default {
       params.append("ids", ids);
       console.log('ids',params,ids);
       params.append("status", deleteStatus);
-      updateDeleteStatus(params).then((response) => {
+     return updateDeleteStatus(params).then((response) => {
         this.$message({
           message: "删除成功",
           type: "success",
           duration: 1000,
         });
-      });
-      this.getList();
+      }).then(this.getList);
     },
   },
 };

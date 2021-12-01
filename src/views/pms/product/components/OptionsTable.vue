@@ -10,12 +10,14 @@
       </el-table-column>
       <el-table-column label="价格">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.price" size="mini"></el-input>
+          <el-input v-model.number="scope.row.price" size="mini"
+                    oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
         </template>
       </el-table-column>
       <el-table-column label="库存">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.number" size="mini"></el-input>
+          <el-input v-model.number="scope.row.number" size="mini"
+                    oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
         </template>
       </el-table-column>
     </el-table>
@@ -28,7 +30,7 @@ export default {
   name: "OptionsTable",
   props:{
     OptionsTable: Array,
-    OptionsTitle: Array, // [{},{key:'颜色'：value:['红’,'黑']}] 
+    OptionsTitle: Array, // [{},{key:'颜色'：value:['红’,'黑']}]
   },
   methods: {
     //
@@ -73,5 +75,15 @@ export default {
 </script>
 
 <style scoped>
+.el-table tbody tr:hover>td {
+  background-color:transparent!important;
+}
+
+.el-table  .el-input__inner{
+  border: none;
+}
+
+
+
 
 </style>

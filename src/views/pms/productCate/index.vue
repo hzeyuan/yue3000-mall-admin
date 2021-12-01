@@ -90,22 +90,9 @@ export default {
       this.list = res
       this.listLoading = false
     },
+    // 跳转到添加分类
     handleAddProductCate() {
       this.$router.push('/pms/addProductCate');
-    },
-    handleNavStatusChange(index, row) {
-      let data = new URLSearchParams();
-      let ids = [];
-      ids.push(row.id)
-      data.append('ids', ids);
-      data.append('navStatus', row.navStatus);
-      updateNavStatus(data).then(response => {
-        this.$message({
-          message: '修改成功',
-          type: 'success',
-          duration: 1000
-        });
-      });
     },
     // 修改分类
     handleUpdate(index, row) {

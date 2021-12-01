@@ -1,256 +1,238 @@
 <!--首页主要区域-->
 <template>
   <div class="app-container">
-    <div class="address-layout">
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div class="out-border">
-            <div class="layout-title">后台项目</div>
-            <div class="color-main address-content">
-              <a href="https://github.com/macrozheng/mall">mall</a>
+    <!--    左侧-->
+    <div class="main-column">
+      <!--      代办事项-->
+      <el-card class="card">
+        <div class="top">
+          <div class="title">
+            <p>待办事项清单</p>
+            <span>您的待处理事项</span>
+          </div>
+        </div>
+        <div class="status">
+          <div class="to-do-box" v-for="(item, index) in upcomingMatter" :key="index">
+            <div class="item-quantity">{{item.quantity}}</div>
+            <div class="item-title">{{item.title}}</div>
+          </div>
+        </div>
+      </el-card>
+      <!--      数据中心-->
+      <el-card class="card">
+        <div class="top">
+          <div class="title">
+            <p>卖家数据中心 <span>(显示资料至 GMT+8 21:00)</span></p>
+            <span>可出货订单数量数据概述</span>
+          </div>
+          <div class="more">
+            <span>更多</span>
+            <i class="el-icon-arrow-right"></i>
+          </div>
+        </div>
+        <div class="offset">
+          <div class="nev">
+            <div class="chart-title">
+              <p class="p-title">以售出: <i class="el-icon-star-off icon"></i></p>
+              <p class="p-subtitle">10</p>
+            </div>
+            <div class="chart-box">
             </div>
           </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="out-border">
-            <div class="layout-title">前端项目</div>
-            <div class="color-main address-content">
-              <a href="https://github.com/macrozheng/mall-admin-web">mall-admin-web</a>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="out-border">
-            <div class="layout-title">学习教程</div>
-            <div class="color-main address-content">
-              <a href="https://github.com/macrozheng/mall-learning">mall-learning</a>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-    <div class="total-layout">
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div class="total-frame">
-            <img :src="img_home_order" class="total-icon">
-            <div class="total-title">今日订单总数</div>
-            <div class="total-value">200</div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="total-frame">
-            <img :src="img_home_today_amount" class="total-icon">
-            <div class="total-title">今日销售总额</div>
-            <div class="total-value">￥5000.00</div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="total-frame">
-            <img :src="img_home_yesterday_amount" class="total-icon">
-            <div class="total-title">昨日销售总额</div>
-            <div class="total-value">￥5000.00</div>
-          </div>
-        </el-col>
-        <!--<el-col :span="6">-->
-          <!--<div class="total-frame">-->
-            <!--<svg-icon icon-class="total-week" class="total-icon">-->
-            <!--</svg-icon>-->
-            <!--<div class="total-title">近7天销售总额</div>-->
-            <!--<div class="total-value">￥50000.00</div>-->
-          <!--</div>-->
-        <!--</el-col>-->
-      </el-row>
-    </div>
-    <el-card class="mine-layout">
-      <div style="text-align: center">
-        <img width="150px" height="150px" src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/banner/qrcode_for_macrozheng_258.jpg">
-      </div>
-      <div style="text-align: center">mall全套学习教程连载中！</div>
-      <div style="text-align: center;margin-top: 5px"><span class="color-main">关注公号</span>，第一时间获取。</div>
-    </el-card>
-    <div class="un-handle-layout">
-      <div class="layout-title">待处理事务</div>
-      <div class="un-handle-content">
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">待付款订单</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">已完成订单</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">待确认收货订单</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">待发货订单</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">新缺货登记</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">待处理退款申请</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">已发货订单</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">待处理退货订单</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="un-handle-item">
-              <span class="font-medium">广告位即将到期</span>
-              <span style="float: right" class="color-danger">(10)</span>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-    <div class="overview-layout">
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <div class="out-border">
-            <div class="layout-title">商品总览</div>
-            <div style="padding: 40px">
-              <el-row>
-                <el-col :span="6" class="color-danger overview-item-value">100</el-col>
-                <el-col :span="6" class="color-danger overview-item-value">400</el-col>
-                <el-col :span="6" class="color-danger overview-item-value">50</el-col>
-                <el-col :span="6" class="color-danger overview-item-value">500</el-col>
-              </el-row>
-              <el-row class="font-medium">
-                <el-col :span="6" class="overview-item-title">已下架</el-col>
-                <el-col :span="6" class="overview-item-title">已上架</el-col>
-                <el-col :span="6" class="overview-item-title">库存紧张</el-col>
-                <el-col :span="6" class="overview-item-title">全部商品</el-col>
-              </el-row>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div class="out-border">
-            <div class="layout-title">用户总览</div>
-            <div style="padding: 40px">
-              <el-row>
-                <el-col :span="6" class="color-danger overview-item-value">100</el-col>
-                <el-col :span="6" class="color-danger overview-item-value">200</el-col>
-                <el-col :span="6" class="color-danger overview-item-value">1000</el-col>
-                <el-col :span="6" class="color-danger overview-item-value">5000</el-col>
-              </el-row>
-              <el-row class="font-medium">
-                <el-col :span="6" class="overview-item-title">今日新增</el-col>
-                <el-col :span="6" class="overview-item-title">昨日新增</el-col>
-                <el-col :span="6" class="overview-item-title">本月新增</el-col>
-                <el-col :span="6" class="overview-item-title">会员总数</el-col>
-              </el-row>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-    <div class="statistics-layout">
-      <div class="layout-title">订单统计</div>
-      <el-row>
-        <el-col :span="4">
-          <div style="padding: 20px">
-            <div>
-              <div style="color: #909399;font-size: 14px">本月订单总数</div>
-              <div style="color: #606266;font-size: 24px;padding: 10px 0">10000</div>
-              <div>
-                <span class="color-success" style="font-size: 14px">+10%</span>
-                <span style="color: #C0C4CC;font-size: 14px">同比上月</span>
+          <div class="nev">
+            <div class="list-box">
+              <div class="nev-item">
+                <div class="item">
+                  <div class="item-title">
+                    <p>不重复访客数量：<i class="el-icon-star-off icon"></i></p>
+                    <p>4</p>
+                  </div>
+                  <div class="item-compare">
+                    <div class="text-overflow">和昨天比：</div>
+                    <div class="text-number">60.00%</div>
+                    <div class="text-icon"><img src="../../assets/images/xiangshang.png" alt=""></div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="item-title">
+                    <p>页面浏览数量：<i class="el-icon-star-off icon"></i></p>
+                    <p>4</p>
+                  </div>
+                  <div class="item-compare">
+                    <div class="text-overflow">和昨天比：</div>
+                    <div class="text-number">60.00%</div>
+                    <div class="text-icon"><img src="../../assets/images/xiangxia.png" alt=""></div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div style="margin-top: 20px;">
-              <div style="color: #909399;font-size: 14px">本周订单总数</div>
-              <div style="color: #606266;font-size: 24px;padding: 10px 0">1000</div>
-              <div>
-                <span class="color-danger" style="font-size: 14px">-10%</span>
-                <span style="color: #C0C4CC;font-size: 14px">同比上周</span>
-              </div>
-            </div>
-            <div style="margin-top: 20px;">
-              <div style="color: #909399;font-size: 14px">本月销售总额</div>
-              <div style="color: #606266;font-size: 24px;padding: 10px 0">100000</div>
-              <div>
-                <span class="color-success" style="font-size: 14px">+10%</span>
-                <span style="color: #C0C4CC;font-size: 14px">同比上月</span>
-              </div>
-            </div>
-            <div style="margin-top: 20px;">
-              <div style="color: #909399;font-size: 14px">本周销售总额</div>
-              <div style="color: #606266;font-size: 24px;padding: 10px 0">50000</div>
-              <div>
-                <span class="color-danger" style="font-size: 14px">-10%</span>
-                <span style="color: #C0C4CC;font-size: 14px">同比上周</span>
+              <el-divider></el-divider>
+              <div class="nev-item">
+                <div class="item">
+                  <div class="item-title">
+                    <p style="margin-top: 0">订单：<i class="el-icon-star-off icon"></i></p>
+                    <p>4</p>
+                  </div>
+                  <div class="item-compare">
+                    <div class="text-overflow">和昨天比：</div>
+                    <div class="text-number">60.00%</div>
+                    <div class="text-icon"><img src="../../assets/images/xiangxia.png" alt=""></div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="item-title">
+                    <p style="margin-top: 0">下单转换率：<i class="el-icon-star-off icon"></i></p>
+                    <p>4</p>
+                  </div>
+                  <div class="item-compare">
+                    <div class="text-overflow">和昨天比：</div>
+                    <div class="text-number">60.00%</div>
+                    <div class="text-icon"><img src="../../assets/images/xiangxia.png" alt=""></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </el-col>
-        <el-col :span="20">
-          <div style="padding: 10px;border-left:1px solid #DCDFE6">
-            <el-date-picker
-              style="float: right;z-index: 1"
-              size="small"
-              v-model="orderCountDate"
-              type="daterange"
-              align="right"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              @change="handleDateChange"
-              :picker-options="pickerOptions">
-            </el-date-picker>
-            <div>
-              <ve-line
-                :data="chartData"
-                :legend-visible="false"
-                :loading="loading"
-                :data-empty="dataEmpty"
-                :settings="chartSettings">
-              </ve-line>
+        </div>
+      </el-card>
+    </div>
+    <!--    右侧-->
+    <div class="aside-column">
+      <el-card class="card-notify">
+        <div class="top">
+          <div class="title">
+            <p>商城公告</p>
+          </div>
+          <div class="more">
+            <span>更多<i class="el-icon-arrow-right"></i></span>
+          </div>
+        </div>
+        <div class="notify-box">
+          <div class="notify">
+            <div class="image">
+              <img src="../../assets/images/redu.png" alt="">
+            </div>
+            <div class="text">
+              <div class="content">
+                <span>海外仓定价模拟器来啦~~</span>
+                <p>还在手算仓储费操作费？海外仓卖家也可以享受一键定价的快乐啦！点击查看详情。</p>
+              </div>
+              <div class="date">
+                <span style="color: #ee4d2d">新通知</span>
+                <span style="color: #999">·</span>
+                <span style="color: #999">2021年11月19日</span>
+              </div>
             </div>
           </div>
-        </el-col>
-      </el-row>
+          <div class="notify">
+            <div class="image">
+              <img src="../../assets/images/redu.png" alt="">
+            </div>
+            <div class="text">
+              <div class="content">
+                <span>海外仓定价模拟器来啦~~</span>
+                <p>还在手算仓储费操作费？海外仓卖家也可以享受一键定价的快乐啦！点击查看详情。</p>
+              </div>
+              <div class="date">
+                <span style="color: #ee4d2d">新通知</span>
+                <span style="color: #999">·</span>
+                <span style="color: #999">2021年11月19日</span>
+              </div>
+            </div>
+          </div>
+          <div class="notify">
+            <div class="image">
+              <img src="../../assets/images/redu.png" alt="">
+            </div>
+            <div class="text">
+              <div class="content">
+                <span>海外仓定价模拟器来啦~~</span>
+                <p>还在手算仓储费操作费？海外仓卖家也可以享受一键定价的快乐啦！点击查看详情。</p>
+              </div>
+              <div class="date">
+                <span style="color: #ee4d2d">新通知</span>
+                <span style="color: #999">·</span>
+                <span style="color: #999">2021年11月19日</span>
+              </div>
+            </div>
+          </div>
+          <div class="notify">
+            <div class="image">
+              <img src="../../assets/images/redu.png" alt="">
+            </div>
+            <div class="text">
+              <div class="content">
+                <span>海外仓定价模拟器来啦~~</span>
+                <p>还在手算仓储费操作费？海外仓卖家也可以享受一键定价的快乐啦！点击查看详情。</p>
+              </div>
+              <div class="date">
+                <span style="color: #ee4d2d">新通知</span>
+                <span style="color: #999">·</span>
+                <span style="color: #999">2021年11月19日</span>
+              </div>
+            </div>
+          </div>
+          <div class="notify">
+            <div class="image">
+              <img src="../../assets/images/redu.png" alt="">
+            </div>
+            <div class="text">
+              <div class="content">
+                <span>海外仓定价模拟器来啦~~</span>
+                <p>还在手算仓储费操作费？海外仓卖家也可以享受一键定价的快乐啦！点击查看详情。</p>
+              </div>
+              <div class="date">
+                <span style="color: #ee4d2d">新通知</span>
+                <span style="color: #999">·</span>
+                <span style="color: #999">2021年11月19日</span>
+              </div>
+            </div>
+          </div>
+          <div class="notify">
+            <div class="image">
+              <img src="../../assets/images/redu.png" alt="">
+            </div>
+            <div class="text">
+              <div class="content">
+                <span>海外仓定价模拟器来啦~~</span>
+                <p>还在手算仓储费操作费？海外仓卖家也可以享受一键定价的快乐啦！点击查看详情。</p>
+              </div>
+              <div class="date">
+                <span style="color: #ee4d2d">新通知</span>
+                <span style="color: #999">·</span>
+                <span style="color: #999">2021年11月19日</span>
+              </div>
+            </div>
+          </div>
+          <div class="notify">
+            <div class="image">
+              <img src="../../assets/images/redu.png" alt="">
+            </div>
+            <div class="text">
+              <div class="content">
+                <span>海外仓定价模拟器来啦~~</span>
+                <p>还在手算仓储费操作费？海外仓卖家也可以享受一键定价的快乐啦！点击查看详情。</p>
+              </div>
+              <div class="date">
+                <span style="color: #ee4d2d">新通知</span>
+                <span style="color: #999">·</span>
+                <span style="color: #999">2021年11月19日</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-card>
     </div>
   </div>
 </template>
+
 
 <script>
   import {str2Date} from '@/utils/date';
   import img_home_order from '@/assets/images/home_order.png';
   import img_home_today_amount from '@/assets/images/home_today_amount.png';
   import img_home_yesterday_amount from '@/assets/images/home_yesterday_amount.png';
+
+
   const DATA_FROM_BACKEND = {
     columns: ['date', 'orderCount','orderAmount'],
     rows: [
@@ -271,10 +253,54 @@
       {date: '2018-11-15', orderCount: 40, orderAmount: 4293}
     ]
   };
+
   export default {
     name: 'home',
     data() {
+      this.chartSettings = {}
       return {
+        upcomingMatter: [
+          {
+            title: '待付款订单1',
+            quantity: 0,
+            path: ''
+          },
+          {
+            title: '待付款订单2',
+            quantity: 0,
+            path: ''
+          },
+          {
+            title: '待付款订单3',
+            quantity: 0,
+            path: ''
+          },
+          {
+            title: '待付款订单',
+            quantity: 0,
+            path: ''
+          },
+          {
+            title: '待付款订单',
+            quantity: 0,
+            path: ''
+          },
+          {
+            title: '待付款订单',
+            quantity: 0,
+            path: ''
+          },
+          {
+            title: '待付款订单',
+            quantity: 0,
+            path: ''
+          },
+          {
+            title: '待付款订单',
+            quantity: 0,
+            path: ''
+          }
+        ],
         pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -304,17 +330,19 @@
         chartSettings: {
           xAxisType: 'time',
           area:true,
-          axisSite: { right: ['orderAmount']},
-        labelMap: {'orderCount': '订单数量', 'orderAmount': '订单金额'}},
+          axisSite: {
+            right: ['orderAmount']
+          }
+        },
         chartData: {
           columns: [],
           rows: []
         },
         loading: false,
         dataEmpty: false,
-        img_home_order,
-        img_home_today_amount,
-        img_home_yesterday_amount
+        // img_home_order,
+        // img_home_today_amount,
+        // img_home_yesterday_amount
       }
     },
     created(){
@@ -357,100 +385,218 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .app-container {
-    margin-top: 40px;
-    margin-left: 120px;
-    margin-right: 120px;
+    width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    .main-column{
+      width: 800px;
+      .card{
+        margin-bottom: 10px;
+      }
+    }
+    .aside-column{
+      width: 320px;
+    }
   }
 
-  .address-layout {
+  .top{
+    overflow: hidden;
+    .title{
+      width: 60%;
+      float: left;
+      p{
+        margin: 6px 0;
+        font-size: 18px;
+        color: #333;
+        font-weight: bold;
+      }
+      span{
+        margin-top: 6px;
+        font-size: 12px;
+        font-weight: 400;
+        color: #999;
+      }
+    }
+    .more{
+      float: right;
+      color: #2673dd;
+      cursor: pointer;
+      line-height: 18px;
+      font-size: 14px;
+    }
+    .more:hover{
+      opacity: 0.7;
+    }
   }
 
-  .total-layout {
+  .status{
     margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .to-do-box{
+      padding: 8px 0 8px 0;
+      margin-bottom: 16px;
+      width: 189px;
+      cursor: pointer;
+      border-right: #e5e5e5 1px solid;
+      .item-quantity{
+        margin-bottom: 7px;
+        font-size: 16px;
+        min-height: 18px;
+        color: #2673dd;
+        text-align: center;
+      }
+      .item-title{
+        font-size: 12px;
+        color: #333;
+        max-height: 42px;
+        overflow: hidden;
+        padding: 0 12px;
+        text-align: center;
+      }
+    }
+    //.to-do-box:after{
+    //  content: "";
+    //  width: 3px;
+    //  height: 35px;
+    //  background-color: #b84545;
+    //  position: absolute;
+    //  top: 50%;
+    //  right: 0;
+    //  margin-top: -18px;
+    //}
+    .to-do-box:hover{
+      background-color: #f6f6f6;
+    }
+    .to-do-box:nth-child(4n){
+      border-right: none;
+    }
   }
 
-  .total-frame {
-    border: 1px solid #DCDFE6;
-    padding: 20px;
-    height: 100px;
+  .offset{
+    display: flex;
+    .nev{
+      display: block;
+      flex: 1;
+    }
+    .nev-flex{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
   }
 
-  .total-icon {
-    color: #409EFF;
-    width: 60px;
-    height: 60px;
+  .chart-title{
+    margin-top: 5px;
+    .p-title{
+      line-height: 16px;
+      font-size: 12px;
+      color: #666;
+      margin: 15px 0 0 0;
+    }
+    .p-subtitle{
+      line-height: 24px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+      margin: 0 0 15px 0;
+    }
   }
 
-  .total-title {
-    position: relative;
-    font-size: 16px;
-    color: #909399;
-    left: 70px;
-    top: -50px;
+  .chart-box{
+    height: 140px;
   }
 
-  .total-value {
-    position: relative;
-    font-size: 18px;
-    color: #606266;
-    left: 70px;
-    top: -40px;
+  .list-box{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .nev-item{
+      display: flex;
+      justify-content: space-around;
+    }
   }
 
-  .un-handle-layout {
-    margin-top: 20px;
-    border: 1px solid #DCDFE6;
+  .item{
+    padding: 0 15px;
+    margin-top: 5px;
+    .item-title{
+      p{
+        margin: 15px 0 0 0;
+        line-height: 16px;
+        font-size: 12px;
+        color: #666;
+      }
+      p:nth-child(2){
+        line-height: 24px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin: 8px 0;
+      }
+    }
+    .item-compare{
+      display: flex;
+      div{
+        font-size: 12px;
+        color: #999;
+        line-height: 14px;
+      }
+      .text-icon{
+        width: 14px;
+      }
+    }
   }
 
-  .layout-title {
-    color: #606266;
-    padding: 15px 20px;
-    background: #F2F6FC;
-    font-weight: bold;
+  .notify-box{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 15px;
+    .notify{
+      margin-bottom: 15px;
+      display: flex;
+      align-items: stretch;
+      .image{
+        padding-top: 10px;
+        width: 24px;
+        img{
+          width: 14px;
+        }
+      }
+      .text{
+        flex: 1;
+        padding: 10px 20px 5px 0;
+        .content{
+          color: #333;
+          cursor: pointer;
+        }
+        .content:hover{
+          color: #1e6abc;
+        }
+        span{
+          font-size: 14px;
+          font-weight: bold;
+        }
+        p{
+          margin: 8px 0 8px 0;
+          line-height: 18px;
+          font-size: 14px;
+          opacity: 0.6;
+        }
+        .date{
+          margin-top: 6px;
+          span{
+            font-size: 12px;
+          }
+        }
+      }
+    }
   }
 
-  .un-handle-content {
-    padding: 20px 40px;
-  }
-
-  .un-handle-item {
-    border-bottom: 1px solid #EBEEF5;
-    padding: 10px;
-  }
-
-  .overview-layout {
-    margin-top: 20px;
-  }
-
-  .overview-item-value {
-    font-size: 24px;
-    text-align: center;
-  }
-
-  .overview-item-title {
-    margin-top: 10px;
-    text-align: center;
-  }
-
-  .out-border {
-    border: 1px solid #DCDFE6;
-  }
-
-  .statistics-layout {
-    margin-top: 20px;
-    border: 1px solid #DCDFE6;
-  }
-  .mine-layout {
-    position: absolute;
-    right: 140px;
-    top: 107px;
-    width: 250px;
-    height: 235px;
-  }
-  .address-content{
-    padding: 20px;
-    font-size: 18px
-  }
 </style>

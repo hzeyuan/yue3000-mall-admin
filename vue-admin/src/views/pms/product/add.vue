@@ -1,10 +1,10 @@
 <template> 
-  <product-detail :is-edit='true'></product-detail>
+  <product-detail :is-edit='false'></product-detail>
 </template>
 <script>
   import ProductDetail from './components/ProductDetail'
   export default {
-    name: 'updateProduct',
+    name: 'addProduct',
     components: { ProductDetail }
   }
 </script>

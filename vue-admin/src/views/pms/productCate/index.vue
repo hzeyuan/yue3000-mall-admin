@@ -87,7 +87,7 @@ export default {
     // 树形分类数据请求
     async reqGetTreeList () {
       const res = await fetchTreeList()
-      this.list = res.list
+      this.list = res
       this.listLoading = false
     },
     // 跳转到添加分类

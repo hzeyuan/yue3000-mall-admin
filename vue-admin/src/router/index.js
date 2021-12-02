@@ -157,6 +157,27 @@ export const asyncRoutes = [
     ],
   },
   {
+    path: '/config',
+    name: 'Config',
+    component: Layout,
+    redirect: '/config/order',
+    meta: { title: '项目配置', icon: 'sms' },
+    children: [
+      {
+        path: 'order',
+        name: 'Order',
+        component: () => import('@/views/config/order'),
+        meta: {title: '订单配置', icon: 'sms'}
+      },
+      {
+        path: 'other',
+        name: 'Order',
+        component: () => import('@/views/config/otherConfig'),
+        meta: {title: '其他配置', icon: 'sms'}
+      }
+    ]
+  },
+  {
     path: '*',
     redirect: '/404',
     hidden: true,

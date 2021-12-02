@@ -676,7 +676,6 @@ export default {
     handleNewStatusChange(index, row) {
       let ids = [];
       ids.push(row.id);
-      console.log('row',row,ids);
       this.updateNewStatus(row.is_new, ids);
     },
     handleRecommendStatusChange(index, row) {
@@ -713,8 +712,10 @@ export default {
     },
     //批量更新上下架
     updatePublishStatus(publishStatus, ids) {
-
-      updatePublishStatus({status:publishStatus,ids}).then((response) => {
+      let params = new URLSearchParams();
+      params.append("ids", ids);
+      params.append("status", publishStatus);
+      updatePublishStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
           type: "success",
@@ -724,8 +725,10 @@ export default {
     },
     //批量更新新品状态
     updateNewStatus(newStatus, ids) {
-   
-      updateNewStatus({status:newStatus,ids}).then((response) => {
+      let params = new URLSearchParams();
+      params.append("ids", ids);
+      params.append("status", newStatus);
+      updateNewStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
           type: "success",
@@ -735,8 +738,11 @@ export default {
     },
     // 批量更新推荐状态
     updateRecommendStatus(recommendStatus, ids) {
-   
-      updateRecommendStatus({status:recommendStatus,ids}).then((response) => {
+      let params = new URLSearchParams();
+      params.append("ids", ids);
+      console.log(ids);
+      params.append("status", recommendStatus);
+      updateRecommendStatus(params).then((response) => {
         this.$message({
           message: "修改成功",
           type: "success",
@@ -750,7 +756,7 @@ export default {
       params.append("ids", ids);
       console.log('ids',params,ids);
       params.append("status", deleteStatus);
-      updateDeleteStatus({status:deleteStatus,ids}).then((response) => {
+      updateDeleteStatus(params).then((response) => {
         this.$message({
           message: "删除成功",
           type: "success",

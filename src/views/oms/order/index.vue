@@ -114,8 +114,7 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
-        border
-      >
+        border>
         <el-table-column
           type="selection"
           width="60"
@@ -252,6 +251,7 @@
 import { fetchList, closeOrder, deleteOrder } from "@/api/order";
 import { formatDate } from "@/utils/date";
 import LogisticsDialog from "@/views/oms/order/components/logisticsDialog";
+
 const defaultListQuery = {
   page: 1,
   pageSize: 10,
@@ -410,7 +410,7 @@ export default {
       });
     },
     handleViewLogistics(index, row) {
-      if(!row.traces)return 
+      if(!row.traces)return
       const traces =  [...row.traces];
       traces.reverse()
       this.orderTraces =traces;

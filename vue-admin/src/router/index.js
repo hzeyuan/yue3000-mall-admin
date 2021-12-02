@@ -57,6 +57,106 @@ export const asyncRoutes = [
     ],
   },
   {
+    path: '/pms',
+    component: Layout,
+    redirect: '/pms/product',
+    meta: { title: '商品', icon: 'product' },
+    children: [
+      {
+        path: 'product',
+        name: 'List',
+        component: () => import('@/views/pms/product'),
+        meta: {
+          title: '商品列表',
+          icon: 'home',
+          affix: true,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'addProduct',
+        name: 'addProduct',
+        component: () => import('@/views/pms/product/add'),
+        meta: {
+          title: '添加商品',
+          icon: 'product-add',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'updateProduct',
+        name: 'updateProduct',
+        component: () => import('@/views/pms/product/update'),
+        meta: {
+          title: '修改商品',
+          icon: 'product-add',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'productCate',
+        name: 'productCate',
+        component: () => import('@/views/pms/productCate/index'),
+        meta: {
+          title: '商品分类',
+          icon: 'product-cate',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+    ],
+  },
+  {
+    path: '/sms',
+    component: Layout,
+    redirect: '/sms/coupon',
+    name: 'sms',
+    meta: { title: '营销', icon: 'sms' },
+    children: [
+      {
+        path: 'order-reward',
+        name: 'order-reward',
+        component: () => import('@/views/sms/orderReward/index'),
+        meta: { title: '下单奖励', icon: 'sms-flash' },
+      },
+      {
+        path: 'register-reward',
+        name: 'register-reward',
+        component: () => import('@/views/sms/registerAward/index'),
+        meta: {
+          title: '注册奖励',
+          icon: 'sms-flash',
+          affix: true,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'invite-reward',
+        name: 'invite-reward',
+        component: () => import('@/views/sms/inviteReward/index'),
+        meta: {
+          title: '邀请奖励',
+          icon: 'sms-flash',
+          affix: true,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'sign-daily',
+        name: 'sign-daily',
+        component: () => import('@/views/sms/signDaily/index'),
+        meta: {
+          title: '会员签到',
+          icon: 'sms-flash',
+          affix: true,
+          noKeepAlive: true,
+        },
+      },
+    ],
+  },
+  {
     path: '*',
     redirect: '/404',
     hidden: true,

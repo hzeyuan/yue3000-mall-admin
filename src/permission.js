@@ -346,7 +346,7 @@ router.beforeEach((to, from, next) => {
             icon: "sms",
             id: 31,
             name: "appMy",
-            parentId: 0,
+            parentId: 30,
             sort: 1,
             title: "个人中心"
           },

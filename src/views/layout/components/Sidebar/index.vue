@@ -29,6 +29,7 @@ export default {
     ]),
     routes() {
       // return this.$router.options.routes
+      console.log('这是菜单',this.routers)
       return this.routers
     },
     isCollapse() {

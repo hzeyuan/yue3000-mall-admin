@@ -10,7 +10,8 @@ const service = axios.create({
 })
 
 // 请求拦截器
-service.interceptors.request.use(config => {
+service.interceptors.request.use(
+  config => {
   // 让每个请求携带自定义token 请根据实际情况自行修改
   if (store.getters.token) {
     const token = getToken()
@@ -24,7 +25,8 @@ service.interceptors.request.use(config => {
 })
 
 //响应拦截 对相应的状态码进行操作
-service.interceptors.response.use(res => {
+service.interceptors.response.use(
+  res => {
 // 响应成功 返回结果中的数据项data
   console.log('Promise',res.data)
   return res.data

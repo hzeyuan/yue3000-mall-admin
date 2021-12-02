@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchList(params) {
   return request({
-    url:'/coupon/list',
+    url:'/coupons',
     method:'get',
     params:params
   })
@@ -9,7 +9,7 @@ export function fetchList(params) {
 
 export function createCoupon(data) {
   return request({
-    url:'/coupon/create',
+    url:'/coupons',
     method:'post',
     data:data
   })
@@ -32,7 +32,7 @@ export function updateCoupon(id,data) {
 
 export function deleteCoupon(id) {
   return request({
-    url:'/coupon/delete/'+id,
-    method:'post',
+    url:'/coupons/'+id,
+    method:'delete',
   })
 }

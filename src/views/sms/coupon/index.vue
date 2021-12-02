@@ -53,26 +53,32 @@
         <el-table-column label="优惠劵名称" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="优惠券类型" width="100" align="center">
+        <el-table-column label="优惠劵描述" align="center">
+          <template slot-scope="scope">{{scope.row.desc}}</template>
+        </el-table-column>
+        <!-- <el-table-column label="优惠券类型" width="100" align="center">
           <template slot-scope="scope">{{scope.row.type | formatType}}</template>
-        </el-table-column>
-        <el-table-column label="可使用商品" width="100" align="center">
+        </el-table-column> -->
+        <!-- <el-table-column label="可使用商品" width="100" align="center">
           <template slot-scope="scope">{{scope.row.useType | formatUseType}}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="使用门槛" width="140" align="center">
-          <template slot-scope="scope">满{{scope.row.minPoint}}元可用</template>
+          <template slot-scope="scope">满{{scope.row.min}}元可用</template>
         </el-table-column>
         <el-table-column label="面值" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.amount}}元</template>
+          <template slot-scope="scope">{{scope.row.discount}}元</template>
         </el-table-column>
-        <el-table-column label="适用平台" width="100" align="center">
+         <el-table-column label="优惠码" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.code}}</template>
+        </el-table-column>
+        <!-- <el-table-column label="适用平台" width="100" align="center">
           <template slot-scope="scope">{{scope.row.platform | formatPlatform}}</template>
-        </el-table-column>
-        <el-table-column label="有效期" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.startTime|formatDate}}至{{scope.row.endTime|formatDate}}</template>
+        </el-table-column> -->
+        <el-table-column label="有效期" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.begin_time|formatDate}}至{{scope.row.end_time|formatDate}}</template>
         </el-table-column>
         <el-table-column label="状态" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.endTime | formatStatus}}</template>
+          <template slot-scope="scope">{{scope.row.end_time | formatStatus}}</template>
         </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
@@ -108,8 +114,11 @@
   import {fetchList,deleteCoupon} from '@/api/coupon';
   import {formatDate} from '@/utils/date';
   const defaultListQuery = {
-    pageNum: 1,
-    pageSize: 10,
+    // pageNum: 1,
+    // pageSize: 10,
+    shop_id:1,
+    //获取的展示的类型all为全部
+    scence: "shop_all",
     name: null,
     type: null
   };
@@ -140,7 +149,7 @@
         list:null,
         total:null,
         listLoading:false,
-        multipleSelection:[]
+        multipleSelection:[],
       }
     },
     created(){
@@ -183,7 +192,7 @@
       formatStatus(endTime){
         let now = new Date().getTime();
         let endDate = new Date(endTime);
-        if(endDate>now){
+        if(endDate.getTime()>now){
           return '未过期'
         }else{
           return '已过期';
@@ -238,8 +247,8 @@
         this.listLoading=true;
         fetchList(this.listQuery).then(response=>{
           this.listLoading = false;
-          this.list = response.data.list;
-          this.total = response.data.total;
+          this.list = response;
+          this.total = response.length;
         });
       }
     }

@@ -1,29 +1,25 @@
 import Vue from 'vue'
-
-import 'normalize.css/normalize.css'// A modern alternative to CSS resets
-
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
-import VCharts from 'v-charts'
-
-import '@/styles/index.scss' // global css
-
 import App from './App'
-import router from './router'
 import store from './store'
+import router from './router'
+import './plugins'
+import '@/layouts/export'
+import "tailwindcss/tailwind.css"
+/**
+ * @author chuzhixin 1204505056@qq.com （不想保留author可删除）
+ * @description 生产环境默认都使用mock，如果正式用于生产环境时，记得去掉
+ */
 
-import '@/icons' // icon
-import '@/permission' // permission control
+if (process.env.NODE_ENV === 'production') {
+  const { mockXHR } = require('@/utils/static')
+  mockXHR()
+}
 
-Vue.use(ElementUI, { locale })
-Vue.use(VCharts)
 Vue.config.productionTip = false
 
 new Vue({
-  el: '#app',
+  el: '#vue-admin-beautiful',
   router,
   store,
-  template: '<App/>',
-  components: { App }
+  render: (h) => h(App),
 })

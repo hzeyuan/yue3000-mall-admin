@@ -1,100 +1,133 @@
+import Vue from 'vue'
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
-import store from '../store'
-import { getToken } from '@/utils/auth'
+import {
+  baseURL,
+  contentType,
+  debounce,
+  invalidCode,
+  noPermissionCode,
+  requestTimeout,
+  successCode,
+  tokenName,
+  loginInterception,
+} from '@/config'
+import store from '@/store'
+import qs from 'qs'
+import router from '@/router'
+import { isArray } from '@/utils/validate'
 
-// 创建axios实例
-const service = axios.create({
-  baseURL: process.env.BASE_API,
-  timeout: 15000 // 请求超时时间
-})
+let loadingInstance
 
-// 请求拦截器
-service.interceptors.request.use(
-  config => {
-  // 让每个请求携带自定义token 请根据实际情况自行修改
-  if (store.getters.token) {
-    const token = getToken()
-    config.headers['Authorization'] = 'Bearer ' + token
+/**
+ * @author chuzhixin 1204505056@qq.com （不想保留author可删除）
+ * @description 处理code异常
+ * @param {*} code
+ * @param {*} msg
+ */
+const handleCode = (code, msg) => {
+  switch (code) {
+    case invalidCode:
+      Vue.prototype.$baseMessage(msg || `后端接口${code}异常`, 'error')
+      store.dispatch('user/resetAccessToken').catch(() => {})
+      if (loginInterception) {
+        location.reload()
+      }
+      break
+    case noPermissionCode:
+      router.push({ path: '/401' }).catch(() => {})
+      break
+    default:
+      Vue.prototype.$baseMessage(msg || `后端接口${code}异常`, 'error')
+      break
   }
-  return config
-}, error => {
-  // Do something with request error
-  console.log(error) // for debug
-  Promise.reject(error)
+}
+
+// axios基础配置
+const instance = axios.create({
+  baseURL,
+  timeout: requestTimeout,
+  headers: {
+    'Content-Type': contentType,
+  },
 })
 
-//响应拦截 对相应的状态码进行操作
-service.interceptors.response.use(
-  res => {
-// 响应成功 返回结果中的数据项data
-  console.log('Promise',res.data)
-  return res.data
-}, err => {
-//  响应失败 根据返回是否有结果进行判定
-  let {response} = err
-  if (response) {
-    // 有结果根据返回结果的状态码进行判定 做相应的处理 这里只是判断 不做相应的处理
-    switch (response.status) {
-      case 401:
-        //    设定401为没有登录 相应的操作可以向下写
-        break;
-      case 403:
-        //    设定403为没有权限或者Taken过期 相应的操作如下
-        break;
+// 请求拦截
+instance.interceptors.request.use(
+  (config) => {
+    if (store.getters['user/accessToken']) {
+      const token = store.getters['user/accessToken']
+      config.headers['Authorization'] =  'Bearer ' + token
     }
-    return Promise.reject(err)
-  } else {
-    //没有结果 一般是服务器奔溃或者断网
-    if (!window.navigator.onLine) {
-      // 判断是否断网 进行断网处理 此处可以用路由跳转到断网页面
-      return Promise.reject(err)
+    //这里会过滤所有为空、0、false的key，如果不需要请自行注释
+    // if (config.data)
+    //   config.data = Vue.prototype.$baseLodash.pickBy(
+    //     config.data,
+    //     Vue.prototype.$baseLodash.identity
+    //   )
+    if (
+      config.data &&
+      config.headers['Content-Type'] ===
+        'application/x-www-form-urlencoded;charset=UTF-8'
+    )
+      config.data = qs.stringify(config.data)
+    if (debounce.some((item) => config.url.includes(item)))
+      loadingInstance = Vue.prototype.$baseLoading()
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+
+// 响应拦截
+instance.interceptors.response.use(
+  (response) => {
+    if (loadingInstance) loadingInstance.close() //不懂这个
+    console.log('Promise',response.data)
+    return response.data
+    // const { data, config } = response
+    // const { code, status, msg } = data
+    // console.log(response)
+    // // 操作正常Code数组
+    // const codeVerificationArray = isArray(successCode)
+    //   ? [...successCode]
+    //   : [...[successCode]]
+    //
+    // // 是否操作正常
+    // if (codeVerificationArray.includes(status)) {
+    //   return data
+    // } else {
+    //   handleCode(status, msg)
+    //   return Promise.reject(
+    //     'vue-admin-beautiful请求异常拦截:' +
+    //     JSON.stringify({ url: config.url, status, msg }) || 'Error'
+    //   )
+    // }
+  },
+  (error) => {
+    if (loadingInstance) loadingInstance.close()
+    const { response, message } = error
+    if (error.response && error.response.data) {
+      const { status, data } = response
+      handleCode(status, data.msg || message)
+      return Promise.reject(error)
     } else {
-      //  服务器出现问题
-      return Promise.reject(err)
+      let { message } = error
+      if (message === 'Network Error') {
+        message = '后端接口连接异常'
+      }
+      if (message.includes('timeout')) {
+        message = '后端接口请求超时'
+      }
+      if (message.includes('Request failed with status code')) {
+        const code = message.substr(message.length - 3)
+        message = '后端接口' + code + '异常'
+      }
+      Vue.prototype.$baseMessage(message || `后端接口未知异常`, 'error')
+      return Promise.reject(error)
     }
-
   }
-});
-// service.interceptors.response.use(
-//   response => {
-//   /**
-//   * code为非200是抛错 可结合自己业务进行修改
-//   */
-//     const res = response.data
-//     if (res.status !== 200) {
-//       Message({
-//         message: res.message,
-//         type: 'error',
-//         duration: 3 * 1000
-//       })
-//
-//       // 401:未登录;
-//       if (res.status === 401) {
-//         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-//           confirmButtonText: '重新登录',
-//           cancelButtonText: '取消',
-//           type: 'warning'
-//         }).then(() => {
-//           store.dispatch('FedLogOut').then(() => {
-//             location.reload()// 为了重新实例化vue-router对象 避免bug
-//           })
-//         })
-//       }
-//       return Promise.reject('error')
-//     } else {
-//       return response.data
-//     }
-//   },
-//   error => {
-//     console.log('err' + error)// for debug
-//     Message({
-//       message: error.message,
-//       type: 'error',
-//       duration: 3 * 1000
-//     })
-//     return Promise.reject(error)
-//   }
-// )
+)
 
-export default service
+export default instance

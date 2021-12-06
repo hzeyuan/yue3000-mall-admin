@@ -1,95 +1,106 @@
-import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+/**
+ * @author chuzhixin 1204505056@qq.com （不想保留author可删除）
+ * @description 登录、获取用户信息、退出登录、清除accessToken逻辑，不建议修改
+ */
 
-const user = {
-  state: {
-    token: getToken(),
-    name: '',
-    avatar: '',
-    roles: []
-  },
+import Vue from 'vue'
+import { getUserInfo, login, logout } from '@/api/user'
+import {
+  getAccessToken,
+  removeAccessToken,
+  setAccessToken,
+} from '@/utils/accessToken'
+import { resetRouter } from '@/router'
+import { title, tokenName } from '@/config'
 
-  mutations: {
-    SET_TOKEN: (state, token) => {
-      state.token = token
-    },
-    SET_NAME: (state, name) => {
-      state.name = name
-    },
-    SET_AVATAR: (state, avatar) => {
-      state.avatar = avatar
-    },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles
-    }
-  },
-
-  actions: {
-    // 登录
-    async Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
-      const res = await login(username, userInfo.password)
-      // cooke存贮token
-      setToken(res.data.token)
-
-      // 储存token
-      commit('SET_TOKEN', res.token)
-      return
-    },
-
-    // 获取用户信息
-    GetInfo({ commit, state }) {
-      return new Promise((resolve, reject) => {
-
-        const username = 'admin'
-        // 储存用户名
-        commit('SET_NAME', username)
-
-        const icon = 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20180607/timg.jpg'
-        // 储存用户图标
-        commit('SET_AVATAR', icon)
-
-        const roles = ['超级管理员']
-        // 储存角色列表
-        commit('SET_ROLES', roles)
-
-        return
-        // getInfo().then(response => {
-        //   const data = response.data
-        //
-        //   if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-        //     commit('SET_ROLES', data.roles)
-        //   } else {
-        //     reject('getInfo: roles must be a non-null array !')
-        //   }
-        //   commit('SET_NAME', data.username)
-        //   commit('SET_AVATAR', data.icon)
-        //   resolve(response)
-        // }).catch(error => {
-        //   reject(error)
-        // })
-      })
-    },
-
-    // 登出
-    LogOut({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        removeToken()
-        resolve()
-      })
-    },
-
-    // 前端 登出
-    FedLogOut({ commit }) {
-      return new Promise(resolve => {
-        commit('SET_TOKEN', '')
-        removeToken()
-        resolve()
-      })
-    }
-  }
+const state = {
+  accessToken: getAccessToken(),
+  username: '',
+  avatar: '',
+  permissions: [],
 }
+const getters = {
+  accessToken: (state) => state.accessToken,
+  username: (state) => state.username,
+  avatar: (state) => state.avatar,
+  permissions: (state) => state.permissions,
+}
+const mutations = {
+  setAccessToken(state, accessToken) {
+    state.accessToken = accessToken
+    setAccessToken(accessToken)
+  },
+  setUsername(state, username) {
+    state.username = username
+  },
+  setAvatar(state, avatar) {
+    state.avatar = avatar
+  },
+  setPermissions(state, permissions) {
+    state.permissions = permissions
+  },
+}
+const actions = {
+  setPermissions({ commit }, permissions) {
+    commit('setPermissions', permissions)
+  },
+  async login({ commit }, userInfo) {
+    const res = await login(userInfo)
+    const accessToken = res.data.token
+    if (accessToken) {
+      commit('setAccessToken', accessToken)
+      const hour = new Date().getHours()
+      const thisTime =
+        hour < 8
+          ? '早上好'
+          : hour <= 11
+          ? '上午好'
+          : hour <= 13
+          ? '中午好'
+          : hour < 18
+          ? '下午好'
+          : '晚上好'
+      Vue.prototype.$baseNotify(`欢迎登录${title}`, `${thisTime}！`)
+    } else {
+      Vue.prototype.$baseMessage(
+        `登录接口异常，未正确返回${tokenName}...`,
+        'error'
+      )
+    }
+  },
 
-export default user
+
+  async getUserInfo({ commit, state }) {
+    const data = {
+      avatar: "https://i.gtimg.cn/club/item/face/img/2/15922_100.gif",
+      permissions: ["admin"],
+      username: "admin"
+    }
+      // await getUserInfo(state.accessToken)
+    if (!data) {
+      Vue.prototype.$baseMessage('验证失败，请重新登录...', 'error')
+      return false
+    }
+    let { permissions, username, avatar } = data
+    if (permissions && username && Array.isArray(permissions)) {
+      commit('setPermissions', permissions)
+      commit('setUsername', username)
+      commit('setAvatar', avatar)
+      return permissions
+    } else {
+      Vue.prototype.$baseMessage('用户信息接口异常', 'error')
+      return false
+    }
+  },
+  async logout({ dispatch }) {
+    // await logout(state.accessToken)
+    await dispatch('resetAccessToken')
+    await resetRouter()
+  },
+  resetAccessToken({ commit }) {
+    commit('setPermissions', [])
+    commit('setAccessToken', '')
+    removeAccessToken()
+  },
+}
+export default { state, getters, mutations, actions }

@@ -1,447 +1,297 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-
-Vue.use(Router)
-
-/* Layout */
-import Layout from '../views/layout/Layout'
-
 /**
- * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
- *                                if not set alwaysShow, only more than one route under the children
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    title: 'title'               the name show in submenu and breadcrumb (recommend set)
-    icon: 'svg-name'             the icon show in the sidebar,
-  }
- **/
-// 默认页面列表
-export const constantRouterMap = [
-  {path: '/login', component: () => import('@/views/login/index'), hidden: true},
-  {path: '/404', component: () => import('@/views/404'), hidden: true},
-  {
-    path: '',
-    component: Layout,
-    redirect: '/home',
-    children: [
-      {
-      path: 'home',
-      name: 'home',
-      component: () => import('@/views/home/index'),
-      meta: {title: '首页', icon: 'home'}
-    },
-    //   {
-    //   path: 'appMy',
-    //   name: 'appMy',
-    //   component: () => import('@/views/decorate/appMy/index'),
-    //   meta: {title: '装修', icon: 'home'},
-    //   hidden: true
-    // }, {
-    //   path: 'addAppMy',
-    //   name: 'addAppMy',
-    //   component: () => import('@/views/decorate/appMy/add'),
-    //   meta: {title: '添加功能项', icon: 'home'},
-    //   hidden: true
-    // }, {
-    //   path: 'updateAppMy:id',
-    //   name: 'updateAppMy',
-    //   component: () => import('@/views/decorate/appMy/update'),
-    //   meta: {title: '修改功能项', icon: 'home'},
-    //   hidden: true
-    // }
-]
-  },
+ * @copyright chuzhixin 1204505056@qq.com
+ * @description router全局配置，如有必要可分文件抽离
+ */
 
-]
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Layout from '@/layouts'
+import EmptyLayout from '@/layouts/EmptyLayout'
+import { publicPath, routerMode } from '@/config'
 
-// 异步处理页面列表
-export const asyncRouterMap = [
+Vue.use(VueRouter)
+
+export const constantRoutes = [
   {
-    path: '/pms',
-    component: Layout,
-    redirect: '/pms/product',
-    name: 'pms',
-    meta: {title: '商品', icon: 'product'},
-    children: [
-      {
-      path: 'product',
-      name: 'product',
-      component: () => import('@/views/pms/product/index'),
-      meta: {title: '商品列表', icon: 'product-list'}
-    },
-      {
-        path: 'addProduct',
-        name: 'addProduct',
-        component: () => import('@/views/pms/product/add'),
-        meta: {title: '添加商品', icon: 'product-add'}
-      },
-      {
-        path: 'updateProduct',
-        name: 'updateProduct',
-        component: () => import('@/views/pms/product/update'),
-        meta: {title: '修改商品', icon: 'product-add'},
-        hidden: true
-      },
-      {
-        path: 'productCate',
-        name: 'productCate',
-        component: () => import('@/views/pms/productCate/index'),
-        meta: {title: '商品分类', icon: 'product-cate'}
-      },
-      {
-        path: 'addProductCate',
-        name: 'addProductCate',
-        component: () => import('@/views/pms/productCate/add'),
-        meta: {title: '添加商品分类'},
-        hidden: true
-      },
-      {
-        path: 'updateProductCate',
-        name: 'updateProductCate',
-        component: () => import('@/views/pms/productCate/update'),
-        meta: {title: '修改商品分类'},
-        hidden: true
-      },
-      {
-        path: 'productAttr',
-        name: 'productAttr',
-        component: () => import('@/views/pms/productAttr/index'),
-        meta: {title: '商品类型', icon: 'product-attr'}
-      },
-      {
-        path: 'productAttrList',
-        name: 'productAttrList',
-        component: () => import('@/views/pms/productAttr/productAttrList'),
-        meta: {title: '商品属性列表'},
-        hidden: true
-      },
-      {
-        path: 'addProductAttr',
-        name: 'addProductAttr',
-        component: () => import('@/views/pms/productAttr/addProductAttr'),
-        meta: {title: '添加商品属性'},
-        hidden: true
-      },
-      {
-        path: 'updateProductAttr',
-        name: 'updateProductAttr',
-        component: () => import('@/views/pms/productAttr/updateProductAttr'),
-        meta: {title: '修改商品属性'},
-        hidden: true
-      },
-      {
-        path: 'brand',
-        name: 'brand',
-        component: () => import('@/views/pms/brand/index'),
-        meta: {title: '品牌管理', icon: 'product-brand'}
-      },
-      {
-        path: 'addBrand',
-        name: 'addBrand',
-        component: () => import('@/views/pms/brand/add'),
-        meta: {title: '添加品牌'},
-        hidden: true
-      },
-      {
-        path: 'updateBrand',
-        name: 'updateBrand',
-        component: () => import('@/views/pms/brand/update'),
-        meta: {title: '编辑品牌'},
-        hidden: true
-      }
-    ]
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true,
   },
   {
-    path: '/oms',
+    path: '/register',
+    component: () => import('@/views/register/index'),
+    hidden: true,
+  },
+  {
+    path: '/401',
+    name: '401',
+    component: () => import('@/views/401'),
+    hidden: true,
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('@/views/404'),
+    hidden: true,
+  },
+]
+
+/*当settings.js里authentication配置的是intelligence时，views引入交给前端配置*/
+export const asyncRoutes = [
+  {
+    path: '/',
     component: Layout,
-    redirect: '/oms/order',
-    name: 'oms',
-    meta: {title: '订单', icon: 'order'},
+    redirect: '/index',
+    children: [
+      {
+        path: '/index',
+        name: 'Index',
+        component: () => import('@/views/index/index'),
+        meta: {
+          title: '首页',
+          icon: 'home',
+          affix: true,
+          noKeepAlive: true,
+        },
+      },
+    ],
+  },
+  {
+    path: '/goods',
+    component: Layout,
+    redirect: '/goods/list',
+    meta: { title: '商品管理', icon: 'home' },
+    children: [
+      {
+        path: 'list',
+        name: 'List',
+        hidden: false,
+        component: () => import('@/views/goods/list'),
+        meta: {
+          title: '商品列表',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: false,
+        },
+      },
+      {
+        path: 'add',
+        name: 'add',
+        hidden: true,
+        component: () => import('@/views/goods/add'),
+        meta: {
+          title: '添加商品',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'update',
+        name: 'update',
+        hidden: true,
+        component: () => import('@/views/goods/update'),
+        meta: {
+          title: '更新商品',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'category',
+        name: 'Category',
+        hidden: false,
+        component: () => import('@/views/goods/category'),
+        meta: {
+          title: '商城类目',
+          icon: 'home',
+          noKeepAlive: false,
+        },
+      },
+      {
+        path: 'category/add',
+        name: 'categoryAdd',
+        hidden: true,
+        component: () => import('@/views/goods/category/add'),
+        meta: {
+          title: '添加分类',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: false,
+        },
+      },
+      {
+        hidden: true,
+        path: 'category/update',
+        name: 'categoryUpdate',
+        component: () => import('@/views/goods/category/update'),
+        meta: {
+          title: '修改分类',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: false,
+        },
+      },
+    ],
+  },
+  {
+    path: '/config',
+    component: Layout,
+    redirect: '/index/order',
+    meta: { title: '系统配置', icon: 'home' },
     children: [
       {
         path: 'order',
-        name: 'order',
-        component: () => import('@/views/oms/order/index'),
-        meta: {title: '订单列表', icon: 'product-list'}
+        name: 'Order',
+        hidden: false,
+        component: () => import('@/views/config/orderConfig'),
+        meta: {
+          title: '订单配置',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
       {
-        path: 'orderDetail',
-        name: 'orderDetail',
-        component: () => import('@/views/oms/order/orderDetail'),
-        meta: {title: '订单详情'},
-        hidden:true
+        path: 'recharge',
+        name: 'Recharge',
+        hidden: false,
+        component: () => import('@/views/config/rechargeConfig'),
+        meta: {
+          title: '充值配置',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
       {
-        path: 'deliverOrderList',
-        name: 'deliverOrderList',
-        component: () => import('@/views/oms/order/deliverOrderList'),
-        meta: {title: '发货列表'},
-        hidden:true
+        path: 'withdraw',
+        name: 'Withdraw',
+        hidden: false,
+        component: () => import('@/views/config/withdrawConfig'),
+        meta: {
+          title: '提现配置',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
       {
-        path: 'orderSetting',
-        name: 'orderSetting',
-        component: () => import('@/views/oms/order/setting'),
-        meta: {title: '订单设置', icon: 'order-setting'}
+        path: 'sell',
+        name: 'Sell',
+        hidden: false,
+        component: () => import('@/views/config/sellConfig'),
+        meta: {
+          title: '奖励配置',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: false,
+        },
       },
       {
-        path: 'returnApply',
-        name: 'returnApply',
-        component: () => import('@/views/oms/apply/index'),
-        meta: {title: '退货申请处理', icon: 'order-return'}
+        path: 'sign',
+        name: 'Sign',
+        hidden: false,
+        component: () => import('@/views/config/signConfig'),
+        meta: {
+          title: '签到配置',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
       {
-        path: 'returnReason',
-        name: 'returnReason',
-        component: () => import('@/views/oms/apply/reason'),
-        meta: {title: '退货原因设置', icon: 'order-return-reason'}
+        path: '/other',
+        name: 'Other',
+        hidden: false,
+        component: () => import('@/views/config/otherConfig'),
+        meta: {
+          title: '其他配置',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
-      {
-        path: 'returnApplyDetail',
-        name: 'returnApplyDetail',
-        component: () => import('@/views/oms/apply/applyDetail'),
-        meta: {title: '退货原因详情'},
-        hidden:true
-      }
-    ]
+    ],
   },
   {
-    path:'/sms',
+    path: '/furnish',
     component: Layout,
-    redirect: '/sms/coupon',
-    name: 'sms',
-    meta: {title: '营销', icon: 'sms'},
+    alwaysShow: true,
+    redirect: '/furnish/my-menu',
+    meta: { title: '商城装修', icon: 'home' },
     children: [
       {
-        path: 'order-reward',
-        name: 'order-reward',
-        component: () => import('@/views/sms/orderReward/index'),
-        meta: {title: '下单奖励', icon: 'sms-flash'}
+        path: 'my-menu',
+        name: 'MyMenu',
+        hidden: false,
+        component: () => import('@/views/furnish/myMenu'),
+        meta: {
+          title: '个人中心',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
       {
-        path: 'register-reward',
-        name: 'register-reward',
-        component: () => import('@/views/sms/registerAward/index'),
-        meta: {title: '注册奖励', icon: 'sms-flash'}
+        path: 'add-my-menu',
+        name: 'AddMyMenu',
+        hidden: true,
+        component: () => import('@/views/furnish/myMenu/add'),
+        meta: {
+          title: '添加个人中心菜单',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
       {
-        path: 'invite-reward',
-        name: 'invite-reward',
-        component: () => import('@/views/sms/inviteReward/index'),
-        meta: {title: '邀请奖励', icon: 'sms-flash'}
+        path: 'update-my-menu:id',
+        name: 'UpdateMyMenu',
+        hidden: true,
+        component: () => import('@/views/furnish/myMenu/update'),
+        meta: {
+          title: '修改个人中心菜单',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
       },
-      {
-        path: 'sign-daily',
-        name: 'sign-daily',
-        component: () => import('@/views/sms/signDaily/index'),
-        meta: {title: '会员签到', icon: 'sms-flash'}
-      },
-      {
-        path: 'flash',
-        name: 'flash',
-        component: () => import('@/views/sms/flash/index'),
-        meta: {title: '秒杀活动列表', icon: 'sms-flash'}
-      },
-      {
-        path: 'flashSession',
-        name: 'flashSession',
-        component: () => import('@/views/sms/flash/sessionList'),
-        meta: {title: '秒杀时间段列表'},
-        hidden:true
-      },
-      {
-        path: 'selectSession',
-        name: 'selectSession',
-        component: () => import('@/views/sms/flash/selectSessionList'),
-        meta: {title: '秒杀时间段选择'},
-        hidden:true
-      },
-      {
-        path: 'flashProductRelation',
-        name: 'flashProductRelation',
-        component: () => import('@/views/sms/flash/productRelationList'),
-        meta: {title: '秒杀商品列表'},
-        hidden:true
-      },
-      {
-        path: 'coupon',
-        name: 'coupon',
-        component: () => import('@/views/sms/coupon/index'),
-        meta: {title: '优惠券列表', icon: 'sms-coupon'}
-      },
-      {
-        path: 'addCoupon',
-        name: 'addCoupon',
-        component: () => import('@/views/sms/coupon/add'),
-        meta: {title: '添加优惠券'},
-        hidden:true
-      },
-      {
-        path: 'updateCoupon',
-        name: 'updateCoupon',
-        component: () => import('@/views/sms/coupon/update'),
-        meta: {title: '修改优惠券'},
-        hidden:true
-      },
-      {
-        path: 'couponHistory',
-        name: 'couponHistory',
-        component: () => import('@/views/sms/coupon/history'),
-        meta: {title: '优惠券领取详情'},
-        hidden:true
-      },
-      {
-        path: 'brand',
-        name: 'homeBrand',
-        component: () => import('@/views/sms/brand/index'),
-        meta: {title: '品牌推荐', icon: 'product-brand'}
-      },
-      {
-        path: 'new',
-        name: 'homeNew',
-        component: () => import('@/views/sms/new/index'),
-        meta: {title: '新品推荐', icon: 'sms-new'}
-      },
-      {
-        path: 'hot',
-        name: 'homeHot',
-        component: () => import('@/views/sms/hot/index'),
-        meta: {title: '人气推荐', icon: 'sms-hot'}
-      },
-      {
-        path: 'subject',
-        name: 'homeSubject',
-        component: () => import('@/views/sms/subject/index'),
-        meta: {title: '专题推荐', icon: 'sms-subject'}
-      },
-      {
-        path: 'advertise',
-        name: 'homeAdvertise',
-        component: () => import('@/views/sms/advertise/index'),
-        meta: {title: '广告列表', icon: 'sms-ad'}
-      },
-      {
-        path: 'addAdvertise',
-        name: 'addHomeAdvertise',
-        component: () => import('@/views/sms/advertise/add'),
-        meta: {title: '添加广告'},
-        hidden:true
-      },
-      {
-        path: 'updateAdvertise',
-        name: 'updateHomeAdvertise',
-        component: () => import('@/views/sms/advertise/update'),
-        meta: {title: '编辑广告'},
-        hidden:true
-      }
-    ]
+    ],
   },
   {
-    path: '/decorate',
-    component: Layout,
-    redirect: '/decorate/appMy',
-    name: 'decorate',
-    meta: {title: '装修', icon: 'sms'},
-    children: [
-      {
-        path: 'appMy',
-        name: 'appMy',
-        component: () => import('@/views/decorate/appMy/index'),
-        meta: {title: '个人中心', icon: 'sms-ad'},
-      },
-      {
-        path: 'updateAppMy:id',
-        name: 'updateAppMy',
-        component: () => import('@/views/decorate/appMy/update'),
-        meta: {title: '菜单项编辑'},
-        hidden:true
-      },
-      {
-        path: 'addAppMy',
-        name: 'addAppMy',
-        component: () => import('@/views/decorate/appMy/add'),
-        meta: {title: '菜单项添加'},
-        hidden:true
-      }
-    ]
+    path: '*',
+    redirect: '/404',
+    hidden: true,
   },
-  {
-    path:'/ums',
-    component: Layout,
-    redirect: '/ums/admin',
-    name: 'ums',
-    meta: {title: '权限', icon: 'ums'},
-    children: [
-      {
-        path: 'admin',
-        name: 'admin',
-        component: () => import('@/views/ums/admin/index'),
-        meta: {title: '用户列表', icon: 'ums-admin'}
-      },
-      {
-        path: 'role',
-        name: 'role',
-        component: () => import('@/views/ums/role/index'),
-        meta: {title: '角色列表', icon: 'ums-role'}
-      },
-      {
-        path: 'allocMenu',
-        name: 'allocMenu',
-        component: () => import('@/views/ums/role/allocMenu'),
-        meta: {title: '分配菜单'},
-        hidden: true
-      },
-      {
-        path: 'allocResource',
-        name: 'allocResource',
-        component: () => import('@/views/ums/role/allocResource'),
-        meta: {title: '分配资源'},
-        hidden: true
-      },
-      {
-        path: 'menu',
-        name: 'menu',
-        component: () => import('@/views/ums/menu/index'),
-        meta: {title: '菜单列表', icon: 'ums-menu'}
-      },
-      {
-        path: 'addMenu',
-        name: 'addMenu',
-        component: () => import('@/views/ums/menu/add'),
-        meta: {title: '添加菜单'},
-        hidden: true
-      },
-      {
-        path: 'updateMenu',
-        name: 'updateMenu',
-        component: () => import('@/views/ums/menu/update'),
-        meta: {title: '修改菜单'},
-        hidden: true
-      },
-      {
-        path: 'resource',
-        name: 'resource',
-        component: () => import('@/views/ums/resource/index'),
-        meta: {title: '资源列表', icon: 'ums-resource'}
-      },
-      {
-        path: 'resourceCategory',
-        name: 'resourceCategory',
-        component: () => import('@/views/ums/resource/categoryList'),
-        meta: {title: '资源分类'},
-        hidden: true
-      }
-    ]
-  },
-  {path: '*', redirect: '/404', hidden: true}
 ]
 
-export default new Router({
-  // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({y: 0}),
-  routes: constantRouterMap
+const router = new VueRouter({
+  base: routerMode === 'history' ? publicPath : '',
+  mode: routerMode,
+  scrollBehavior: () => ({
+    y: 0,
+  }),
+  routes: constantRoutes,
 })
+//注释的地方是允许路由重复点击，如果你觉得框架路由跳转规范太过严格可选择放开
+/* const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject)
+    return originalPush.call(this, location, onResolve, onReject);
+  return originalPush.call(this, location).catch((err) => err);
+}; */
 
+export function resetRouter() {
+  router.matcher = new VueRouter({
+    base: routerMode === 'history' ? publicPath : '',
+    mode: routerMode,
+    scrollBehavior: () => ({
+      y: 0,
+    }),
+    routes: constantRoutes,
+  }).matcher
+}
+
+export default router

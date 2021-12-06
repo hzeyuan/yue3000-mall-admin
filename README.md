@@ -1,84 +1,214 @@
-# mall-admin-web
-<p>
-  <a href="#公众号"><img src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/badge/%E5%85%AC%E4%BC%97%E5%8F%B7-macrozheng-blue.svg" alt="公众号"></a>
-  <a href="#公众号"><img src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/badge/%E4%BA%A4%E6%B5%81-%E5%BE%AE%E4%BF%A1%E7%BE%A4-2BA245.svg" alt="交流"></a>
-  <a href="https://github.com/macrozheng/mall"><img src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/badge/%E5%90%8E%E5%8F%B0%E9%A1%B9%E7%9B%AE-mall-blue.svg" alt="后台项目"></a>
-  <a href="https://github.com/macrozheng/mall-swarm"><img src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/badge/Cloud%E7%89%88%E6%9C%AC-mall--swarm-brightgreen.svg" alt="SpringCloud版本"></a>
-  <a href="https://gitee.com/macrozheng/mall-admin-web"><img src="http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/badge/%E7%A0%81%E4%BA%91-%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80-orange.svg" alt="码云"></a>
+简体中文 | [English](./README.en.md)
+
+<div align="center"><img width="200" src="https://gitee.com/chu1204505056/image/raw/master/logo/vab.svg"/>
+<h1> vue-admin-beautiful-pro（element-ui） </h1>
+<p>漫天的飞雪，是飞舞的音符，用祝福奏出期盼，愿疫情早日消散，愿明年的你不再有遗憾，愿你三冬暖，愿你春不寒，愿你天黑有灯，下雨有伞。
 </p>
+</div>
 
-## 前言
+[![Website](<https://img.shields.io/badge/ good luck - vue admin beautiful -blue?style=flat-square>)](https://vue-admin-beautiful.com)
+[![stars](https://img.shields.io/github/stars/chuzhixin/vue-admin-beautiful?style=flat-square&logo=GitHub)](https://github.com/chuzhixin/vue-admin-beautiful)
+[![star](https://gitee.com/chu1204505056/vue-admin-beautiful/badge/star.svg?theme=gray)](https://gitee.com/chu1204505056/vue-admin-beautiful)
+[![license](https://img.shields.io/github/license/chuzhixin/vue-admin-beautiful?style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
 
-该项目为前后端分离项目的前端部分，后端项目`mall`地址：[传送门](https://github.com/macrozheng/mall)。
+# 🎉 特性
 
-## 项目介绍
+- 💪 40+高质量单页
+- 💅 RBAC 模型 + JWT 权限控制
+- 🌍 10 万+ 项目实际应用
+- 👏 良好的类型定义
+- 🥳 开源版本支持免费商用
+- 🚀 跨平台 PC、手机端、平板
+- 📦️ 后端路由动态渲染
 
-`mall-admin-web`是一个电商后台管理系统的前端项目，基于Vue+Element实现。主要包括商品管理、订单管理、会员管理、促销管理、运营管理、内容管理、统计报表、财务管理、权限管理、设置等功能。
+## 🌐 地址
 
-### 项目演示
+- [🎉 vue2.x + element-ui（免费商用，支持 PC、平板、手机）](http://vue-admin-beautiful.com/vue-admin-beautiful-element/?hmsr=github&hmpl=&hmcu=&hmkw=&hmci=)
 
-项目在线演示地址：[http://www.macrozheng.com/admin/](http://www.macrozheng.com/admin/)  
+- [⚡️ vue3.x + element-plus（alpha 版本，免费商用，支持 PC、平板、手机）](http://vue-admin-beautiful.com/vue-admin-beautiful-element-plus/?hmsr=github&hmpl=&hmcu=&hmkw=&hmci=)
 
-![后台管理系统功能演示](http://img.macrozheng.com/mall/project/mall_admin_show.png)
+- [⚡️ vue3.x + ant-design-vue（beta 版本，免费商用，支持 PC、平板、手机）](http://vue-admin-beautiful.com/vue-admin-beautiful-antdv/?hmsr=github&hmpl=&hmcu=&hmkw=&hmci=)
 
-### 技术选型
+- [🚀 admin pro 演示地址（付费版本，支持 PC、平板、手机）](http://vue-admin-beautiful.com/admin-pro/?hmsr=github&hmpl=&hmcu=&hmkw=&hmci=)
 
-技术 | 说明 | 官网
-----|----|----
-Vue | 前端框架 | [https://vuejs.org/](https://vuejs.org/)
-Vue-router | 路由框架 | [https://router.vuejs.org/](https://router.vuejs.org/)
-Vuex | 全局状态管理框架 | [https://vuex.vuejs.org/](https://vuex.vuejs.org/)
-Element | 前端UI框架 | [https://element.eleme.io/](https://element.eleme.io/)
-Axios | 前端HTTP框架 | [https://github.com/axios/axios](https://github.com/axios/axios)
-v-charts | 基于Echarts的图表框架 | [https://v-charts.js.org/](https://v-charts.js.org/)
-Js-cookie | cookie管理工具 | [https://github.com/js-cookie/js-cookie](https://github.com/js-cookie/js-cookie)
-nprogress | 进度条控件 | [https://github.com/rstacruz/nprogress](https://github.com/rstacruz/nprogress)
-vue-element-admin | 项目脚手架参考 | [https://github.com/PanJiaChen/vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+- [🚀 admin plus 演示地址（vue3.x 付费版本，支持 PC、平板、手机）](http://vue-admin-beautiful.com/admin-plus/?hmsr=github&hmpl=&hmcu=&hmkw=&hmci=)
 
-### 项目布局
+- [📌 pro 及 plus 购买地址 authorization](http://vue-admin-beautiful.com/authorization/)
 
-``` lua
-src -- 源码目录
-├── api -- axios网络请求定义
-├── assets -- 静态图片资源文件
-├── components -- 通用组件封装
-├── icons -- svg矢量图片文件
-├── router -- vue-router路由配置
-├── store -- vuex的状态管理
-├── styles -- 全局css样式
-├── utils -- 工具类
-└── views -- 前端页面
-    ├── home -- 首页
-    ├── layout -- 通用页面加载框架
-    ├── login -- 登录页
-    ├── oms -- 订单模块页面
-    ├── pms -- 商品模块页面
-    └── sms -- 营销模块页面
+- [🌐 github 仓库地址](https://github.com/chuzhixin/vue-admin-beautiful?utm_source=gold_browser_extension)
+
+- [🌐 码云仓库地址](https://gitee.com/chu1204505056/vue-admin-beautiful?_from=gitee_search)
+
+- 近期 vab 官网频繁遭到 ddos 攻击，我们已采取相关防范措施，如网站无法访问请访问备份地址
+
+## 🌐 备份地址（支持 https 网站自动更新）
+
+- [🚀 admin pro 演示地址（付费版本，支持 PC、平板、手机）](https://chu1204505056.gitee.io/admin-pro/?hmsr=github&hmpl=&hmcu=&hmkw=&hmci=)
+
+- [🚀 admin plus 演示地址（vue3.x 付费版本，支持 PC、平板、手机）](https://chu1204505056.gitee.io/admin-plus/?hmsr=github&hmpl=&hmcu=&hmkw=&hmci=)
+
+## 🌱 vue3.x vue3.0-antdv 分支（ant-design-vue）[点击切换分支](https://github.com/chuzhixin/vue-admin-beautiful-pro/tree/vue3.0-antdv)
+
+```bash
+# 克隆项目
+git clone -b vue3.0-antdv https://github.com/chuzhixin/vue-admin-beautiful.git
+# 安装依赖
+npm i
+# 本地开发 启动项目
+npm run serve
 ```
 
-## 搭建步骤
-- 下载node并安装：[https://nodejs.org/dist/v12.14.0/node-v12.14.0-x64.msi](https://nodejs.org/dist/v12.14.0/node-v12.14.0-x64.msi);
-- 该项目为前后端分离项目，访问本地访问接口需搭建后台环境，搭建请参考后端项目[传送门](https://github.com/macrozheng/mall);
-- 访问在线接口无需搭建后台环境，只需将`config/dev.env.js`文件中的`BASE_API`改为[http://admin-api.macrozheng.com](http://admin-api.macrozheng.com)即可;
-- 如果你对接的是[mall-swarm](https://github.com/macrozheng/mall-swarm)微服务后台的话，所有接口都需要通过网关访问，需要将`config/dev.env.js`文件中的`BASE_API`改为[http://localhost:8201/mall-admin](http://localhost:8201/mall-admin)；
-- 克隆源代码到本地，使用IDEA打开，并完成编译;
-- 在IDEA命令行中运行命令：npm install,下载相关依赖;
-- 在IDEA命令行中运行命令：npm run dev,运行项目;
-- 访问地址：[http://localhost:8090](http://localhost:8090) 即可打开后台管理系统页面;
-- 具体部署过程请参考：[mall前端项目的安装与部署](http://www.macrozheng.com/#/deploy/mall_deploy_web)
-- `注意`：如果遇到无法运行npm命令，需要配置npm的环境变量，如在path变量中添加：C:\Users\zhenghong\AppData\Roaming\npm;
-- `注意`：如果遇到npm install无法成功下载依赖，请参考[使用Jenkins一键打包部署前端应用，就是这么6！](http://www.macrozheng.com/#/reference/jenkins_vue) 中`遇到的坑`部分。
+## 🌱vue2.x master 分支（element-ui）[点击切换分支](https://github.com/chuzhixin/vue-admin-beautiful-pro/tree/master)
 
-## 公众号
+```bash
+# 克隆项目
+git clone -b master https://github.com/chuzhixin/vue-admin-beautiful.git
+# 安装依赖
+npm i
+# 本地开发 启动项目
+npm run serve
+```
 
-学习不走弯路，关注公众号「**macrozheng**」，回复「**学习路线**」，获取mall项目专属学习路线！
+## 🍻 前端讨论 QQ 群
 
-加微信群交流，公众号后台回复「**加群**」即可。
+- 请我们喝杯咖啡，支付后联系 QQ 783963206 邀请您进入讨论群（由于用户数较多，如果您打赏后未通过好友请求，请在支付宝支付页面选择联系商家），不管您请还是不请，您都可以享受到开源的代码，感谢您的支持和信任，群内提供 vue-admin-beautifu 基础版本、开发工具自动配置教程及项目开发文档。
 
-![公众号图片](http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/banner/qrcode_for_macrozheng_258.jpg)
+<table>
+<tr>
+<!-- <td>
+<img width="200px" src="https://gitee.com/chu1204505056/image/raw/master/qq_group/hbm.jpg">
+</td> -->
+<td>
+<img width="200px" src="https://gitee.com/chu1204505056/image/raw/master/zfb_kf.jpg">
+</td>
+<td>
+<img width="200px" src="https://gitee.com/chu1204505056/image/raw/master/qq_group/vab-2.jpg">
+</td>
+<td>
+<img width="200px" src="https://gitee.com/chu1204505056/image/raw/master/qq_group/vab-3.jpg">
+</td>
+</tr>
+</table>
 
-## 许可证
+## 🔊 友情链接
 
-[Apache License 2.0](https://github.com/macrozheng/mall-admin-web/blob/master/LICENSE)
+- [uView 文档（超棒的移动跨端框架，文档详细，上手容易）](https://uviewui.com/)
 
-Copyright (c) 2018-2021 macrozheng
+- [uView 开源地址（uni-app 生态优秀的 UI 框架，全面的组件和便捷的工具会让您信手拈来，如鱼得水）](https://github.com/YanxinNet/uView/)
+
+- [Element UI 表单设计及代码生成器（可视化表单设计器，一键生成 element 表单）](https://github.com/JakHuang/form-generator/)
+
+- [luch-request（基于 Promise 开发的 uni-app 跨平台、项目级别的请求库）](https://www.quanzhan.co/luch-request/)
+
+## 🙈 我们承诺将定期赞助的开源项目（感谢巨人）
+
+<a title="vue" href="https://cn.vuejs.org/" target="_blank">
+<img width="64px" src="https://gitee.com/chu1204505056/image/raw/master/vue.png"/>
+</a>
+
+<a title="ant-design-vue" href="https://github.com/vueComponent/ant-design-vue#backers" target="_blank">
+<img width="64px" src="https://gitee.com/chu1204505056/image/raw/master/antdv.svg"/>
+</a>
+
+<a title="element-plus" href="https://opencollective.com/element-plus" target="_blank">
+<img width="64px" src="https://gitee.com/chu1204505056/image/raw/master/element-plus.png"/>
+</a>
+
+## 🎨 鸣谢
+
+| Project                                                          |
+| ---------------------------------------------------------------- |
+| [vue](https://github.com/vuejs/vue)                              |
+| [element-ui](https://github.com/ElemeFE/element)                 |
+| [element-plus](https://github.com/element-plus/element-plus)     |
+| [ant-design-vue](https://github.com/vueComponent/ant-design-vue) |
+| [mock](https://github.com/nuysoft/Mock)                          |
+| [axios](https://github.com/axios/axios)                          |
+
+## 👷 框架杰出贡献者（排名不分先后）
+
+<a href="https://github.com/buuing" target="_blank">
+<img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/36689704?s=50"/>
+</a>
+<a href="https://github.com/hipi" target="_blank">
+<img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/22478003?s=50"/>
+</a>
+<a href="https://github.com/fwfmiao" target="_blank">
+<img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/29328241?s=50"/>
+</a>
+<a href="https://github.com/hdtopku" target="_blank">
+<img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/14859466?s=50"/>
+</a>
+<a href="https://github.com/shaonialife" target="_blank">
+<img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/16135960?s=50"/>
+</a>
+
+## 📌 优势及注意事项
+
+```
+对比其他开源 admin 框架有如下优势:
+1. 支持前端控制路由权限 intelligence、后端控制路由权限 all 模式
+2. 已知开源 vue admin 框架中首家支持 mock 自动生成自动导出功能
+3. 提供 50 余项全局精细化配置
+4. 支持 scss 自动排序，eslint 自动修复
+5. axios 精细化封装，支持多数据源、多成功 code 数组，支持 application/json;charset=UTF-8、application/x-www-form-urlencoded;charset=UTF-8 多种传参方式
+6. 支持登录RSA加密
+7. 支持打包自动生成7Z压缩包
+8. 支持errorlog错误拦截
+9. 支持多主题、多布局切换
+
+使用注意事项:
+1. 项目默认使用lf换行符而非crlf换行符，新建文件时请注意选择文件换行符
+2. 项目默认使用的最严格的eslint校验规范（plugin:vue/recommended），使用之前建议配置开发工具实现自动修复（建议使用vscode开发）
+3. 项目使用的是要求最宽泛的MIT开源协议，保留MIT开源协议即可免费商用
+
+```
+
+## 💚 适合人群
+
+- 正在以及想使用 element-ui/element-plus 开发，前端开发经验 1 年+。
+- 熟悉 Vue.js 技术栈，使用它开发过几个实际项目。
+- 对原理技术感兴趣，想进阶和提升的同学。
+
+## 🎉 功能地图
+
+![img](https://gitee.com/chu1204505056/image/raw/master/vip/flow.drawio.png)
+
+## 🗃️ 效果图
+
+以下是截取的是 pro 版的效果图展示：
+
+<table>
+<tr>
+<td>
+<img src="https://gitee.com/chu1204505056/image/raw/master/2.png">
+</td>
+<td>
+<img src="https://gitee.com/chu1204505056/image/raw/master/6.png">
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://gitee.com/chu1204505056/image/raw/master/8.png">
+</td>
+<td>
+<img src="https://gitee.com/chu1204505056/image/raw/master/9.png">
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://gitee.com/chu1204505056/image/raw/master/3.png">
+</td>
+<td>
+<img src="https://gitee.com/chu1204505056/image/raw/master/5.png">
+</td>
+</tr>
+</table>
+
+## 📄 商用注意事项
+
+此项目可免费用于商业用途，请遵守 MIT 协议并保留作者技术支持声明，如需自定义源码版权信息请联系客服 QQ 783963206。
+
+<!-- ## 严正声明
+
+近期发现不少游手好闲之人有组织有预谋的利用码云、知乎、掘金等网站可用国外非法网站提供的匿名手机号注册的账号 bug 冒充 vab 去攻击 vue-element-admin，iview-admin，若依，d2-admin，ant-design-vue 的行为，恶意制造对立，试图让其他开源作者卷入其中，对各位开源作者造成的影响我们深表歉意，我们欢迎 vab 的用户去体验其他更优秀的框架，vue-admin-beautiful 走到今天实属不易，被人冒充，被人发帖诋毁，被人故意发布错误言论假装发帖表扬实则为我们招骂，无意动任何人的奶酪，从 2020 年至今坚持全职维护已过一年时间，说实在的我们靠技术生存并不丢人吧，一年来感谢 vab 的用户对我们不离不弃，也希望大家越来越好，加油！ -->

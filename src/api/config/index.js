@@ -1,5 +1,4 @@
-import request from "@/utils/request";
-
+import request from '@/utils/request'
 
 /**
  * 请求实例： http://192.168.1.114:1337/mall-admin/config/MarketingConfig?name=orderAwardConfig
@@ -11,7 +10,7 @@ import request from "@/utils/request";
  **/
 
 // 获取基础参数
-export async function getConfigData (type,name) {
+export async function getConfigData(type, name) {
   return await request({
     url: `/mall-admin/config/${type}?name=${name}`,
     method: 'get',
@@ -19,18 +18,18 @@ export async function getConfigData (type,name) {
 }
 
 // 修改基础参数
-export function updateConfigData (type, name, value) {
+export function updateConfigData(type, name, value) {
   return request({
     url: `/mall-admin/config/${type}?name=${name}`,
     method: 'post',
     data: {
-      value
-    }
+      value,
+    },
   })
 }
 
 // 获取连续签到配置参数 表格
-export async function getSignsData () {
+export async function getSignsData() {
   return await request({
     url: '/mall-admin/sign_daily',
     method: 'get',
@@ -38,34 +37,33 @@ export async function getSignsData () {
 }
 
 // 添加连续签到规则
-export function addSignsData (data) {
-  return  request({
+export function addSignsData(data) {
+  return request({
     url: '/mall-admin/sign_daily',
     method: 'post',
-    data
+    data,
   })
 }
 
 // 修改连续签到规则
-export function updateSignsData (id,data) {
-  return  request({
+export function updateSignsData(id, data) {
+  return request({
     url: `/mall-admin/sign_daily/${id}`,
     method: 'post',
-    data
+    data,
   })
 }
 
 // 删除连续签到规则
-export function deleteSignsData (id) {
-  return  request({
+export function deleteSignsData(id) {
+  return request({
     url: `/mall-admin/sign_daily/${id}`,
     method: 'delete',
   })
 }
 
-
 // 获取签到配置参数
-export async function getSignData () {
+export async function getSignData() {
   return await request({
     url: 'mall-admin/sign_daily/signrule',
     method: 'get',
@@ -73,17 +71,16 @@ export async function getSignData () {
 }
 
 // 修改签到配置参数
-export function updateSignData (data) {
+export function updateSignData(data) {
   return request({
     url: 'mall-admin/sign_daily/signrule',
     method: 'post',
-    data
+    data,
   })
 }
 
-
 // 获取用户签到数据
-export async function getSignRecordData (type, value, page) {
+export async function getSignRecordData(type, value, page) {
   return await request({
     url: `mall-admin/sign_daily/record?type=${type}&keyword=${value}&page=${page}`,
     method: 'get',
@@ -99,27 +96,27 @@ export async function getRechargeList() {
 }
 
 // 添加充值列表数据
-export  function addRechargeList(data) {
+export function addRechargeList(data) {
   return request({
     url: '/mall-admin/recharge',
-    method: 'put',
-    data
+    method: 'post',
+    data,
   })
 }
 
 // 修改充值列表数据
-export function updateRechargeList(id, data){
+export function updateRechargeList(id, data) {
   return request({
-    url: '/mall-admin/recharge' + id,
+    url: '/mall-admin/recharge/' + id,
     method: 'post',
-    data
+    data,
   })
 }
 
 // 删除充值列表数据
 export function deleteRechargeList(id) {
   return request({
-    url: '/mall-admin/recharge' + id,
+    url: '/mall-admin/recharge/' + id,
     method: 'delete',
   })
 }

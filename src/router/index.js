@@ -213,6 +213,18 @@ export const asyncRoutes = [
           noKeepAlive: true,
         },
       },
+      {
+        path: '/lottery',
+        name: 'Lottery',
+        hidden: false,
+        component: () => import('@/views/config/lotteryConfig'),
+        meta: {
+          title: '抽奖配置',
+          icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
     ],
   },
   {

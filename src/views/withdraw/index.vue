@@ -23,23 +23,18 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          label="编号"
+          label="提现单号"
           width="50"
           align="center"
           type="index"
           :index="indexMethod"
         ></el-table-column>
-        <el-table-column label="级别" width="100" align="left">
-          <template slot-scope="scope">
-            {{ scope.row.level | levelFilter }}
-          </template>
-        </el-table-column>
         <el-table-column
-          label="分类名称"
+          label="用户信息"
           prop="name"
           align="center"
         ></el-table-column>
-        <el-table-column label="类目图标" width="100" align="center">
+        <el-table-column label="提现金额" width="100" align="center">
           <template slot-scope="scope">
             <el-image
               style="width: 50px; height: 50px"
@@ -49,7 +44,7 @@
             ></el-image>
           </template>
         </el-table-column>
-        <el-table-column label="类目图片" width="150" align="center">
+        <el-table-column label="手续费" width="150" align="center">
           <template slot-scope="scope">
             <el-image
               style="width: 50px; height: 50px"
@@ -60,18 +55,29 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="类别描述"
+          label="到账金额"
           prop="desc"
           width="200"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="排序"
+          label="提现方式"
           prop="sort_order"
           width="100"
           align="center"
         ></el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column
+          label="提现状态"
+          width="200"
+          align="center"
+        ></el-table-column>
+        <el-table-column label="提现备注" width="100" align="center">
+          <template slot-scope="scope"></template>
+        </el-table-column>
+        <el-table-column label="申请时间" width="100" align="center">
+          <template slot-scope="scope"></template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"

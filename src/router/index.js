@@ -136,6 +136,26 @@ export const asyncRoutes = [
     ],
   },
   {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/level',
+    meta: { title: '用户管理', icon: 'user' },
+    children: [
+      {
+        path: 'level',
+        name: 'level',
+        hidden: false,
+        component: () => import('@/views/user/level'),
+        meta: {
+          title: '会员中心',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+    ],
+  },
+  {
     path: '/config',
     component: Layout,
     redirect: '/index/order',

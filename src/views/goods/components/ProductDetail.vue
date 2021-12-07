@@ -150,7 +150,7 @@
   // 商品增删查改相关API
   import { postGoods, updateGoods, getGoods } from '@/api/product'
   // 商品分类列表相关API
-  import { fetchTreeList } from '@/api/productCate'
+  import { fetchTreeList } from '@/api/category'
 
   // 商品数据参数
   const defaultProductParam = {

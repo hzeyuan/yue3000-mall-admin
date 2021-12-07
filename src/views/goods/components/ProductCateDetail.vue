@@ -84,7 +84,7 @@
 </template>
 
 <script>
-  import { fetchList, addProductCate, updateProductCate } from '@/api/goods'
+  import { fetchList, addProductCate, updateProductCate } from '@/api/category'
   import IconUpload from '@/components/Upload/IconUpload'
   const defaultProductCate = {
     // 分类名称
@@ -150,13 +150,14 @@
         deep: true,
         handler: function () {
           this.productCate.pid = ''
+          console.log('')
+          if (!this.productCate.level) return
           this.getSelectProductCateList()
         },
       },
     },
     created() {
       if (this.isEdit) {
-        this.getSelectProductCateList()
         const id = this.$route.query.id
         this.getCategoriesById(id)
       }

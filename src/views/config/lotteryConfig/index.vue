@@ -31,22 +31,21 @@
             </el-table-column>
             <el-table-column type="expand" width="20">
               <template slot-scope="props">
-                <div class="flex">
-                  <el-card class="w-1/5 m-1"
+                <div class="pl-4 flex overflow-x-auto">
+                  <el-card class="ml-4"
                            v-for="(item, index) in props.row.prize"
                            :key="index" shadow="hover">
-                    <img class="object-top w-12 h-12 float-left" :src="item.image">
-                    <div class="w-12 h-12">item.name</div>
+                    <div class="" v-if="item.prize_type === 1">
+                      <span class="text-lg">{{ item.value }} 积分</span>
+                    </div>
+                    <div class="" v-if="item.prize_type === 2">
+                      <span class="text-lg">优惠卷样式待定</span>
+                    </div>
+                    <div class="" v-if="item.prize_type === 3">
+                       <span class="text-lg">谢 谢 惠 顾</span>
+                    </div>
                   </el-card>
                 </div>
-<!--                <el-form label-position="left" inline class="demo-table-expand">-->
-<!--                  <el-form-item label="奖品名称：" class="">-->
-<!--                    <span>{{ props.row.prize[0].name }}</span>-->
-<!--                  </el-form-item>-->
-<!--                  <el-form-item label="奖品类型：">-->
-<!--                    <span>{{ props.row.prize[1].name }}</span>-->
-<!--                  </el-form-item>-->
-<!--                </el-form>-->
               </template>
             </el-table-column>
             <el-table-column label="序号" align="center" width="100">
@@ -54,7 +53,7 @@
                 {{ scope.row.id }}
               </template>
             </el-table-column>
-            <el-table-column label="活动名称" align="center" width="150">
+            <el-table-column label="活动名称" align="center" width="200">
               <template slot-scope="scope">
                 {{ scope.row.name }}
               </template>
@@ -72,7 +71,17 @@
             </el-table-column>
             <el-table-column label="活动状态" align="center" width="200">
               <template slot-scope="scope">
-                <el-switch v-model="scope.row.status"></el-switch>
+                <el-switch v-model="scope.row.status" @change="handleStatus(scope.row)"></el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column label="活动开始时间" align="center" width="250">
+              <template slot-scope="scope">
+                2021-10-12 12:00
+              </template>
+            </el-table-column>
+            <el-table-column label="活动结束时间" align="center" width="250">
+              <template slot-scope="scope">
+                2021-12-12 12:00
               </template>
             </el-table-column>
             <el-table-column label="操作" align="center">
@@ -95,7 +104,7 @@
 
 <script>
 import LotteryDialog from "./components/LotteryDialog";
-import {getLotteryRecordList, getLotteryActivityList} from "@/api/config/lottery";
+import {getLotteryRecordList, getLotteryActivityList, updateLotteryActivityStatus, deleteLotteryActivityList} from "@/api/config/lottery";
 import _ from 'lodash'
 
 export default {
@@ -106,43 +115,86 @@ export default {
       topOpen:true,
       menuShow: 1,
       LotteryActivityList: [],
+      LotteryRecordList: [],
       isEdge: false, //对话框状态 false为修改
     }
   },
+  filters: {
+
+  },
   mounted() {
     this.getLotteryActivityList()
+    this.getLotteryRecordList()
   },
   methods: {
-    getLotteryActivityList() {
-      const res = getLotteryActivityList()
-      this.LotteryActivityList = res
+    // 获取抽奖活动列表数据
+    async getLotteryActivityList() {
+      const res = await getLotteryActivityList()
+      this.LotteryActivityList = res.list
     },
-    // 活动规则分割成数组
-    funStringRuleTOArrayRule(rule){
-      return _.split(rule, '\n')
+    // 获取抽奖记录数据
+    async getLotteryRecordList () {
+      const res = await getLotteryRecordList()
+      this.LotteryRecordList = res.list
     },
-
-    onDeleteDialog(){
+    // 删除活动按钮  模态框校验
+    onDeleteDialog(id){
       this.$confirm("是否要删除该活动", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        // 删除
-        // this.reqDeleteSignsData(id)
+        deleteLotteryActivityList(id).then(()=>{
+          this.$message({
+            type: "success",
+            message: "删除成功",
+            duration: 1000,
+          });
+          this.getLotteryActivityList()
+        })
       });
     },
-
     // 打开添加对话框
     onAddDialog(){
       this.isEdge = true
+      this.$refs.dialog.activityData = {
+        name: '',
+        status: '0',  //活动状态 1表示进行中 0表示关闭
+        message: '', //活动描述
+        rule: '',
+        prize: []
+      }
       this.$refs.dialog.dialogShow = true
     },
     // 打开修改对话框
-    onUpdateDialog(){
+    onUpdateDialog(activityData){
       this.isEdge = false
+      this.$refs.dialog.activityData = _.cloneDeep(activityData)
       this.$refs.dialog.dialogShow = true
-    }
+    },
+    // 修改活动状态
+    handleStatus(activity){
+      let {id, status} = activity
+      updateLotteryActivityStatus(id,status)
+        .then( () => {
+          this.$message({
+          type: "success",
+          message: "修改成功",
+          duration: 1000,
+        });
+      }).catch(() => {
+        this.$message({
+          type: "error",
+          message: "修改失败",
+          duration: 1000,
+        });
+        status = !status
+      })
+    },
+    // 活动规则字符串根据'\n'分割成数组
+    funStringRuleTOArrayRule(rule){
+      return _.split(rule, '\n')
+    },
   }
 }
 </script>

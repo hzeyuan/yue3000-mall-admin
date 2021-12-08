@@ -2,14 +2,14 @@
   <div id="LotteryDialog">
     <el-dialog title="抽奖活动详情" :visible.sync="dialogShow" width="60%">
       <div class="pt-5">
-        <el-form ref="ref-form" label-width="100px">
-          <el-form-item label="活动名称：">
+        <el-form ref="ref-activity-from" :model="activityData" :rules="rules" label-width="100px">
+          <el-form-item label="活动名称：" prop="name">
             <el-input v-model="activityData.name"></el-input>
           </el-form-item>
           <el-form-item label="活动状态：">
-            <el-switch v-model="activityData.status"></el-switch>
+            <el-switch v-model="activityData.status" :active-value="1" :inactive-value="0"></el-switch>
           </el-form-item>
-          <el-form-item label="活动描述：">
+          <el-form-item label="活动描述：" prop="message">
             <el-input v-model="activityData.message"></el-input>
           </el-form-item>
           <el-form-item label="活动规则：">
@@ -23,14 +23,15 @@
                 <div class="absolute p-2" @click="onDeletePrize(index)">
                   <i class="el-icon-close"></i>
                 </div>
-                <el-form-item label="奖品名称：">
+                <el-form-item label="奖品名称：" :prop="'prize[' + index + '].name'"
+                              :rules="rules.notNull">
                   <el-input v-model="item.name"></el-input>
                 </el-form-item>
                 <el-form-item label="获奖概率：">
-                  <el-input v-model.number="item.probability"
-                            oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
+                  <el-input v-model.number="item.probability"></el-input>
                 </el-form-item>
-                <el-form-item label="奖品类型：">
+                <el-form-item label="奖品类型：" :prop="'prize[' + index + '].prize_type'"
+                              :rules="rules.notNull">
                   <el-select v-model="item.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary(index)">
                     <el-option
                       v-for="item in prizeTypeList"
@@ -40,11 +41,13 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="积分数量：" v-if="item.prize_type === 1">
+                <el-form-item label="积分数量：" v-if="item.prize_type === 1" :prop="'prize[' + index + '].value'"
+                              :rules="rules.notNull">
                   <el-input v-model.number="item.value"
                             oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
                 </el-form-item>
-                <el-form-item label="优惠卷：" v-if="item.prize_type === 2">
+                <el-form-item label="优惠卷：" v-if="item.prize_type === 2" :prop="'prize[' + index + '].value'"
+                              :rules="rules.notNull">
                   <el-select v-model="item.value" placeholder="请选择优惠卷">
                     <el-option
                       v-for="item in couponList"
@@ -54,7 +57,8 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="奖品数量：" v-if="item.prize_type === 1 || item.prize_type === 2">
+                <el-form-item label="奖品数量：" v-if="item.prize_type === 1 || item.prize_type === 2" :prop="'prize[' + index + '].number'"
+                              :rules="rules.notNull">
                   <el-input v-model="item.number"></el-input>
                 </el-form-item>
               </div>
@@ -133,6 +137,20 @@ export default {
       ],
       // 活动详情数据
       activityData: {
+      },
+      // 表单验证
+      rules: {
+        name: [
+          { required: true, message: '该项不能为空', trigger: 'blur' }
+        ],
+        message: [
+          { required: true, message: '该项不能为空', trigger: 'blur' }
+        ],
+        notNull: {
+          required: true,
+          message: '该项不能为空',
+          trigger: 'blur'
+        }
       }
     }
   },
@@ -158,34 +176,47 @@ export default {
         value: '',        //奖品值
       })
     },
-    // 某一奖品类型发生变化时
+    // 某一奖品类型发生变化时 初始化value 和 number
     handlePrizeTypeVary(index){
       this.activityData.prize[index].value = ''
       this.activityData.prize[index].number = ''
     },
     // 点击修改活动发送请求
     onUpdateDate(){
-      updateLotteryActivityList(this.activityData.id, this.activityData).then( ()=>{
-        this.$message({
-          type: "success",
-          message: "修改成功",
-          duration: 1000,
-        })
-        this.$parent.getLotteryActivityList()
-        this.dialogShow = false
+      this.$refs['ref-activity-from'].validate((valid) => {
+        if (valid) {
+          updateLotteryActivityList(this.activityData.id, this.activityData).then( ()=>{
+            this.$message({
+              type: "success",
+              message: "修改成功",
+              duration: 1000,
+            })
+            this.$parent.getLotteryActivityList()
+            this.dialogShow = false
+          })
+        } else {
+          return false;
+        }
       })
     },
     // 点击添加活动发送请求
     onAddDate(){
-      addLotteryActivityList(this.activityData).then(()=>{
-        this.$message({
-          type: "success",
-          message: "修改成功",
-          duration: 1000,
-        })
-        this.$parent.getLotteryActivityList()
-        this.dialogShow = false
+      this.$refs['ref-activity-from'].validate((valid) => {
+        if (valid) {
+          addLotteryActivityList(this.activityData).then(()=>{
+            this.$message({
+              type: "success",
+              message: "修改成功",
+              duration: 1000,
+            })
+            this.$parent.getLotteryActivityList()
+            this.dialogShow = false
+          })
+        } else {
+          return false;
+        }
       })
+
     }
   }
 }

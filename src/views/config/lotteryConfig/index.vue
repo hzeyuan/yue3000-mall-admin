@@ -71,7 +71,8 @@
             </el-table-column>
             <el-table-column label="活动状态" align="center" width="200">
               <template slot-scope="scope">
-                <el-switch v-model="scope.row.status" @change="handleStatus(scope.row)"></el-switch>
+                <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
+                           @change="handleStatus(scope.row)"></el-switch>
               </template>
             </el-table-column>
             <el-table-column label="活动开始时间" align="center" width="250">
@@ -92,9 +93,71 @@
             </el-table-column>
           </el-table>
           </div>
+          <div class="page">
+            <el-pagination background layout="prev, pager, next" :current-page="pageData1.page"
+                           :total="pageData1.total" :page-size="10" @prev-click="getLotteryActivityList"
+                           hide-on-single-page @next-click="getLotteryActivityList" @current-change="getLotteryActivityList">
+            </el-pagination>
+          </div>
         </div>
-        <div class="" v-show="menuShow === 2">
-          记录
+        <div class="" v-show="menuShow === 2" style="width: 100%">
+          <div class="table-box">
+            <el-table :data="LotteryRecordList">
+              <el-table-column label="序号" align="center" width="100">
+                <template slot-scope="scope">
+                  {{ scope.row.id }}
+                </template>
+              </el-table-column>
+              <el-table-column label="会员信息" align="center" width="300">
+                <template slot-scope="scope">
+                  <div class="info-box">
+                    <div class="left">
+                      <img :src="scope.row.user_id.avatar" alt="">
+                    </div>
+                    <div class="right">
+                      <p>会员编号：{{scope.row.user_id.id}}</p>
+                      <p>昵称：{{scope.row.user_id.username}}</p>
+                      <p>手机号：{{scope.row.user_id.phone}}</p>
+                    </div>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="奖品信息" align="center" width="300">
+                <template slot-scope="scope">
+                  <div class="info-box">
+                    <div class="right">
+                      <p>奖品名称：{{scope.row.prize.name}}</p>
+                      <p>奖品类型：{{scope.row.prize.prize_type | prizeType }}</p>
+                      <p v-if="scope.row.prize.prize_type == 1">积分数量：{{scope.row.prize.value}}</p>
+                      <p v-if="scope.row.prize.prize_type == 2">优惠卷名称：{{scope.row.prize.value}}</p>
+                    </div>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="活动信息" align="center" width="300">
+                <template slot-scope="scope">
+                  <el-popover trigger="hover" placement="top">
+                    <h5>活动描述：</h5>
+                    <p>抽奖送积分</p>
+                    <div slot="reference" class="name-wrapper">
+                      <el-tag size="medium">积分活动</el-tag>
+                    </div>
+                  </el-popover>
+                </template>
+              </el-table-column>
+              <el-table-column label="抽奖时间" align="center">
+                <template slot-scope="scope">
+                  {{ scope.row.created_at  | created_at}}
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div class="page">
+            <el-pagination background layout="prev, pager, next" :current-page="pageData2.page"
+                           :total="pageData2.total" :page-size="10" @prev-click="getLotteryRecordList"
+                           hide-on-single-page @next-click="getLotteryRecordList" @current-change="getLotteryRecordList">
+            </el-pagination>
+          </div>
         </div>
       </div>
     </el-card>
@@ -114,28 +177,55 @@ export default {
     return {
       topOpen:true,
       menuShow: 1,
+      // 活动列表
       LotteryActivityList: [],
+      // 活动列表分页
+      pageData1:{
+        page: 1,
+        total: 0,
+      },
+      // 活动记录数据
       LotteryRecordList: [],
-      isEdge: false, //对话框状态 false为修改
+      // 活动记录分页
+      pageData2:{
+        page: 1,
+        total: 0,
+      },
+      //对话框状态 false为修改 ture为增加
+      isEdge: false,
     }
   },
   filters: {
-
+    created_at (value) {
+      let date = new Date(value)
+      return date.toLocaleString()
+    },
+    prizeType (value) {
+      if (value === 1){
+        return '积分奖励'
+      } else if (value === 2){
+        return  '奖励优惠卷'
+      } else if (value === 3){
+        return '谢谢惠顾'
+      }
+    }
   },
   mounted() {
-    this.getLotteryActivityList()
-    this.getLotteryRecordList()
+    this.getLotteryActivityList(1)
+    this.getLotteryRecordList(1)
   },
   methods: {
     // 获取抽奖活动列表数据
-    async getLotteryActivityList() {
-      const res = await getLotteryActivityList()
+    async getLotteryActivityList(page) {
+      const res = await getLotteryActivityList(page)
       this.LotteryActivityList = res.list
+      this.pageData1.total = res.pagination.total
     },
     // 获取抽奖记录数据
-    async getLotteryRecordList () {
-      const res = await getLotteryRecordList()
+    async getLotteryRecordList (page) {
+      const res = await getLotteryRecordList(page)
       this.LotteryRecordList = res.list
+      this.pageData2.total = res.pagination.total
     },
     // 删除活动按钮  模态框校验
     onDeleteDialog(id){
@@ -159,7 +249,7 @@ export default {
       this.isEdge = true
       this.$refs.dialog.activityData = {
         name: '',
-        status: '0',  //活动状态 1表示进行中 0表示关闭
+        status: 0,  //活动状态 1表示进行中 0表示关闭
         message: '', //活动描述
         rule: '',
         prize: []
@@ -175,6 +265,7 @@ export default {
     // 修改活动状态
     handleStatus(activity){
       let {id, status} = activity
+      console.log(status)
       updateLotteryActivityStatus(id,status)
         .then( () => {
           this.$message({
@@ -266,6 +357,31 @@ export default {
         width: 50%;
       }
     }
+  }
+  .info-box{
+    display: flex;
+    justify-content: center;
+    height: 100px;
+    .left{
+      width: 60px;
+      margin: auto 0;
+      img{
+        width: 60px;
+      }
+    }
+    .right{
+      margin: auto 0;
+      text-align: left;
+      p{
+        line-height: 15px;
+        font-size: 10px;
+        margin: 0;
+        padding: 0 0 0 15px;
+      }
+    }
+  }
+  .page{
+    margin-top: 10px;
   }
 }
 </style>

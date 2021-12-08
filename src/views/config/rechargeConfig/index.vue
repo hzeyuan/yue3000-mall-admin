@@ -104,34 +104,17 @@
         </div>
       </div>
     </el-card>
-
-    <!--修改配置项对话框-->
-    <el-dialog title="修改配置项" :visible.sync="dialogShow" width="30%">
-      <div class="dialog">
-        <div class="title">{{ dialogTitle }}：</div>
-        <div class="value">
-          <el-input
-            v-model.number="dialogValue"
-            oninput="value=Number(value.replace(/[^0-9.]/g,''))"
-          ></el-input>
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogShow = false">取 消</el-button>
-        <el-button type="primary" @click="handleRevise">修 改</el-button>
-      </span>
-    </el-dialog>
     <!--  充值规则对话框-->
     <el-dialog title="充值方案" :visible.sync="dialogShow1" width="40%">
       <div style="width: 450px; margin: 0 auto">
-        <el-form ref="ref-form" :model="form" label-width="150px">
-          <el-form-item label="充值金额：">
+        <el-form ref="ref-form" :rules="rules" :model="form" label-width="150px">
+          <el-form-item label="充值金额：" prop="notNull">
             <el-input
               v-model="form.money"
               oninput="value=Number(value.replace(/[^0-9.]/g,''))"
             ></el-input>
           </el-form-item>
-          <el-form-item label="赠送金额：">
+          <el-form-item label="赠送金额：" prop="notNull">
             <el-input
               v-model="form.give_money"
               oninput="value=Number(value.replace(/[^0-9.]/g,''))"
@@ -178,6 +161,11 @@
       return {
         // 头部提示框的展开可和合并
         topOpen: false,
+        rules: {
+          notNull: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+          ]
+        },
         // 对话框的显示与隐藏
         dialogShow: false,
         dialogShow1: false,
@@ -226,12 +214,10 @@
         let give_integral = getConfigData('recharge', 'give_integral') //充值赠送积分
         let give_growth = getConfigData('recharge', 'give_growth') //充值赠送成长值
         let min_money = getConfigData('recharge', 'min_money') //充值最小金额
-        let tableData = getRechargeList()
         const res = await Promise.all([
           give_integral,
           give_growth,
           min_money,
-          tableData,
         ])
         this.data.forEach((item, index) => {
           item.value = res[index].value
@@ -260,26 +246,38 @@
       },
       // 添加表格项参数
       reqAddTableData() {
-        addRechargeList(this.form).then((response) => {
-          this.$message({
-            type: 'success',
-            message: '添加成功',
-            duration: 1000,
-          })
+        this.$refs['ref-form'].validate((valid) => {
+          if(valid){
+            addRechargeList(this.form).then((response) => {
+              this.$message({
+                type: 'success',
+                message: '添加成功',
+                duration: 1000,
+              })
+              this.reqGetTableData()
+              this.dialogShow1 = false
+            })
+          } else {
+            return false;
+          }
         })
-        this.reqGetTableData()
-        this.dialogShow1 = false
       },
       // 修改表格项参数
       reqUpdateTableData() {
-        updateRechargeList(this.form.id, this.form).then((response) => {
-          this.$message({
-            type: 'success',
-            message: '修改成功',
-            duration: 1000,
-          })
-          this.reqGetTableData()
-          this.dialogShow1 = false
+        this.$refs['ref-form'].validate((valid) => {
+          if (valid) {
+            updateRechargeList(this.form.id, this.form).then((response) => {
+              this.$message({
+                type: 'success',
+                message: '修改成功',
+                duration: 1000,
+              })
+              this.reqGetTableData()
+              this.dialogShow1 = false
+            })
+          } else {
+            return false;
+          }
         })
       },
       // 删除表格充值规则
@@ -296,10 +294,10 @@
       // 点击添加充值规则 打开对话框
       onAddDialog() {
         this.form = {
-          give_money: '',
+          give_money: 0,
           is_recommend: false,
-          money: '',
-          sort: '',
+          money: 0,
+          sort: 0,
           tips: '',
         }
         this.dialogShow1 = true

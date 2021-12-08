@@ -2,17 +2,17 @@ import request from '@/utils/request'
 
 
 //  获取抽奖记录列表
-export function getLotteryRecordList() {
+export function getLotteryRecordList(page) {
   return request({
-    url: '',
+    url: '/mall-admin/luckdraw/record?page=' + page,
     method: 'get',
   })
 }
 
 //  获取抽奖活动列表
-export function getLotteryActivityList() {
+export function getLotteryActivityList(page) {
   return request({
-    url: '/mall-admin/luckdraw/activityList',
+    url: '/mall-admin/luckdraw/activityList?page=' + page,
     method: 'get',
   })
 }

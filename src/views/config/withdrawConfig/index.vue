@@ -94,16 +94,10 @@
       // 修改积分参数
       reqUpdateData(name, value) {
         updateConfigData('withdraw', name, value).then((response) => {
-          this.dialogShow = false
           this.$message({
             type: 'success',
             message: '修改成功',
             duration: 1000,
-          })
-          this.data.forEach((item) => {
-            if (item.name === name) {
-              item.value = value
-            }
           })
         })
       },

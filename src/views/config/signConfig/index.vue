@@ -463,7 +463,6 @@ export default {
       background-color: #fff;
       color: #000;
     }
-
     .award-config{
       display: flex;
       .text{

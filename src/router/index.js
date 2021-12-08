@@ -138,17 +138,85 @@ export const asyncRoutes = [
   {
     path: '/user',
     component: Layout,
-    redirect: '/user/level',
-    meta: { title: '用户管理', icon: 'user' },
+    redirect: '/user/dashboard',
+    meta: { title: '用户', icon: 'user' },
     children: [
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        hidden: false,
+        component: () => import('@/views/user/dashboard'),
+        meta: {
+          title: '用户概况',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'list',
+        name: 'list',
+        hidden: false,
+        component: () => import('@/views/user/list'),
+        meta: {
+          title: '用户列表',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
       {
         path: 'level',
         name: 'level',
         hidden: false,
         component: () => import('@/views/user/level'),
         meta: {
-          title: '会员中心',
+          title: '用户等级',
           icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'level/add',
+        name: 'levelAdd',
+        hidden: true,
+        component: () => import('@/views/user/level/detail'),
+        meta: {
+          title: '新增会员等级',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'level/edit',
+        name: 'levelEdit',
+        hidden: true,
+        component: () => import('@/views/user/level/detail'),
+        meta: {
+          title: '修改会员等级',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+    ],
+  },
+  {
+    path: '/oms',
+    component: Layout,
+    redirect: '/oms/order',
+    meta: { title: '订单管理', icon: 'order' },
+    children: [
+      {
+        path: 'order',
+        name: 'Order',
+        hidden: false,
+        component: () => import('@/views/oms/order'),
+        meta: {
+          title: '订单列表',
+          icon: 'order',
           affix: false,
           noKeepAlive: true,
         },
@@ -274,6 +342,38 @@ export const asyncRoutes = [
         meta: {
           title: '修改个人中心菜单',
           icon: 'home',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+    ],
+  },
+  {
+    path: '/finance',
+    component: Layout,
+    redirect: '/finance/dashboard',
+    meta: { title: '财务', icon: 'money' },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        hidden: false,
+        component: () => import('@/views/finance/dashboard'),
+        meta: {
+          title: '财务概况',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'withdraw',
+        name: 'withdraw',
+        hidden: false,
+        component: () => import('@/views/finance/withdraw'),
+        meta: {
+          title: '佣金提现',
+          icon: 'money',
           affix: false,
           noKeepAlive: true,
         },

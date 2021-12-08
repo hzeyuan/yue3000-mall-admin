@@ -205,7 +205,12 @@ export default {
   data () {
     return {
       // 表单属性
-      signRule: {},
+      signRule: {
+        dailySign:{
+          integral:0,
+          growth: 0,
+        }
+      },
       // 连续签到规格数据
       tableData: [],
       // 签到记录数据

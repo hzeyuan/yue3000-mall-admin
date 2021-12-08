@@ -19,6 +19,7 @@
         <div class="menu-title">
           <div class="menu-item" :class='{show: menuShow === 1}' @click="menuShow = 1">抽奖设置</div>
           <div class="menu-item" :class='{show: menuShow === 2}' @click="menuShow = 2">抽奖记录</div>
+          <div class="menu-item" :class='{show: menuShow === 3}' @click="menuShow = 3">奖品列表</div>
         </div>
         <el-divider></el-divider>
         <div class="" v-show="menuShow === 1" style="width: 100%">
@@ -35,14 +36,14 @@
                   <el-card class="ml-4"
                            v-for="(item, index) in props.row.prize"
                            :key="index" shadow="hover">
-                    <div class="" v-if="item.prize_type === 1">
-                      <span class="text-lg">{{ item.value }} 积分</span>
-                    </div>
-                    <div class="" v-if="item.prize_type === 2">
-                      <span class="text-lg">优惠卷样式待定</span>
-                    </div>
-                    <div class="" v-if="item.prize_type === 3">
-                       <span class="text-lg">谢 谢 惠 顾</span>
+<!--                    <div class="" v-if="item.prize_type === 1">-->
+<!--                      <span class="text-lg">{{ item.value }} 积分</span>-->
+<!--                    </div>-->
+<!--                    <div class="" v-if="item.prize_type === 2">-->
+<!--                      <span class="text-lg">优惠卷</span>-->
+<!--                    </div>-->
+                    <div class="">
+                       <span class="text-lg">{{item.name}}</span>
                     </div>
                   </el-card>
                 </div>
@@ -97,6 +98,65 @@
             <el-pagination background layout="prev, pager, next" :current-page="pageData1.page"
                            :total="pageData1.total" :page-size="10" @prev-click="getLotteryActivityList"
                            hide-on-single-page @next-click="getLotteryActivityList" @current-change="getLotteryActivityList">
+            </el-pagination>
+          </div>
+        </div>
+        <div class="" v-show="menuShow === 2" style="width: 100%">
+          <div class="table-box">
+            <el-table :data="LotteryRecordList">
+              <el-table-column label="序号" align="center" width="100">
+                <template slot-scope="scope">
+                  {{ scope.row.id }}
+                </template>
+              </el-table-column>
+              <el-table-column label="会员信息" align="center" width="300">
+                <template slot-scope="scope">
+                  <div class="info-box">
+                    <div class="left">
+                      <img :src="scope.row.user_id.avatar" alt="">
+                    </div>
+                    <div class="right">
+                      <p>会员编号：{{scope.row.user_id.id}}</p>
+                      <p>昵称：{{scope.row.user_id.username}}</p>
+                      <p>手机号：{{scope.row.user_id.phone}}</p>
+                    </div>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="奖品信息" align="center" width="300">
+                <template slot-scope="scope">
+                  <div class="info-box">
+                    <div class="right">
+                      <p>奖品名称：{{scope.row.prize.name}}</p>
+                      <p>奖品类型：{{scope.row.prize.prize_type | prizeType }}</p>
+                      <p v-if="scope.row.prize.prize_type == 1">积分数量：{{scope.row.prize.value}}</p>
+                      <p v-if="scope.row.prize.prize_type == 2">优惠卷名称：{{scope.row.prize.value}}</p>
+                    </div>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="活动信息" align="center" width="300">
+                <template slot-scope="scope">
+                  <el-popover trigger="hover" placement="top">
+                    <h5>活动描述：</h5>
+                    <p>抽奖送积分</p>
+                    <div slot="reference" class="name-wrapper">
+                      <el-tag size="medium">积分活动</el-tag>
+                    </div>
+                  </el-popover>
+                </template>
+              </el-table-column>
+              <el-table-column label="抽奖时间" align="center">
+                <template slot-scope="scope">
+                  {{ scope.row.created_at  | created_at}}
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div class="page">
+            <el-pagination background layout="prev, pager, next" :current-page="pageData2.page"
+                           :total="pageData2.total" :page-size="10" @prev-click="getLotteryRecordList"
+                           hide-on-single-page @next-click="getLotteryRecordList" @current-change="getLotteryRecordList">
             </el-pagination>
           </div>
         </div>
@@ -240,7 +300,7 @@ export default {
             message: "删除成功",
             duration: 1000,
           });
-          this.getLotteryActivityList()
+          this.getLotteryActivityList(1)
         })
       });
     },
@@ -265,7 +325,6 @@ export default {
     // 修改活动状态
     handleStatus(activity){
       let {id, status} = activity
-      console.log(status)
       updateLotteryActivityStatus(id,status)
         .then( () => {
           this.$message({
@@ -274,12 +333,12 @@ export default {
           duration: 1000,
         });
       }).catch(() => {
+        activity.status = (status+1)%2
         this.$message({
           type: "error",
           message: "修改失败",
           duration: 1000,
         });
-        status = !status
       })
     },
     // 活动规则字符串根据'\n'分割成数组

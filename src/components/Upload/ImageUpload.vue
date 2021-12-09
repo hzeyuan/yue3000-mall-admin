@@ -1,28 +1,27 @@
-<!--单张图片的上传 上传后隐藏上传框-->
 <template>
-  <div class="PictureUpload">
-    <el-upload
-      :class="{disabled:upShow}"
-      action="''"
-      list-type="picture-card"
-      :file-list="fileList"
-      :http-request="reqUpload"
-      :before-remove="beforeRemove"
-      :on-preview="handlePictureCardPreview"
-      :on-remove="handleRemove">
-      <i class="el-icon-plus"></i>
-    </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
-  </div>
+<div id="ImageUpload">
+  <el-upload
+    :class="{disabled:upShow}"
+    action="''"
+    list-type="picture-card"
+    :file-list="fileList"
+    :http-request="reqUpload"
+    :before-remove="beforeRemove"
+    :on-preview="handlePictureCardPreview"
+    :on-remove="handleRemove">
+    <i class="el-icon-plus"></i>
+  </el-upload>
+  <el-dialog :visible.sync="dialogVisible">
+    <img width="100%" :src="dialogImageUrl" alt="">
+  </el-dialog>
+</div>
 </template>
 
 <script>
-import {policy} from '@/api/oss'
+import {policy} from "@/api/oss";
 
 export default {
-  name: "iconUpload",
+  name: "ImageUpload",
   props: {
     icon: String,
   },
@@ -81,8 +80,10 @@ export default {
 }
 </script>
 
-<style>
-.disabled .el-upload--picture-card {
-  display: none;
+<style lang="scss">
+#ImageUpload{
+  .disabled .el-upload--picture-card {
+    display: none;
+  }
 }
 </style>

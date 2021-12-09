@@ -59,20 +59,21 @@
     <el-dialog width="30%" title="奖品详情" :visible.sync="innerDialogShow" append-to-body>
       <div>
         <el-form ref="ref-prize-from" :model="prizeData" :rules="rules" label-width="100px">
-          <el-form-item label="奖品名称">
+          <el-form-item label="奖品名称" prop="name">
             <el-input v-model="prizeData.name"></el-input>
           </el-form-item>
-          <el-form-item label="奖品概率">
+          <el-form-item label="奖品概率" prop="probability">
             <el-input v-model="prizeData.probability"></el-input>
           </el-form-item>
           <el-form-item label="奖品数量">
-            <el-input v-model="prizeData.number"></el-input>
+            <el-input v-model.number="prizeData.number"
+                      oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
           </el-form-item>
           <el-form-item label="奖品图片">
-            <IconUpload :icon="prizeData.image_url"></IconUpload>
+            <IconUpload v-if="innerDialogShow" :icon="prizeData.image_url" ref="IconUpload"></IconUpload>
           </el-form-item>
           <el-form-item label="奖品类型">
-            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary(1)">
+            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary(value)">
               <el-option
                 v-for="item in prizeTypeList"
                 :key="item.id"
@@ -82,9 +83,10 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="prizeData.prize_type === 1" label="积分值">
-            <el-input v-model="prizeData.value"></el-input>
+            <el-input v-model.number="prizeData.value"
+                      oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
           </el-form-item>
-          <el-form-item v-if="prizeData.prize_type === 2" label="优惠卷">
+          <el-form-item v-if="prizeData.prize_type === 2" label="优惠卷" prop="value">
             <el-select v-model="prizeData.value" placeholder="请选择优惠卷">
               <el-option
                 v-for="item in couponList"
@@ -173,11 +175,8 @@ export default {
         message: [
           { required: true, message: '该项不能为空', trigger: 'blur' }
         ],
-        notNull: {
-          required: true,
-          message: '该项不能为空',
-          trigger: 'blur'
-        }
+        probability: { required: true, message: '该项不能为空', trigger: 'blur' },
+        value:{required: true, message: '请选择优惠卷', trigger: 'blur'},
       }
     }
   },
@@ -221,21 +220,27 @@ export default {
         name: '',
         prize_type: '',   //奖品类型 1表示积分 2表示优惠卷 3表示谢谢惠顾
         number: '',     //奖品数量
-        probability: 0, //抽奖概率
+        probability: '', //抽奖概率
         value: '',        //奖品值
+        image_url: '',  //奖品图片
       }
       this.innerDialogShow = true
     },
     // 点击增加奖品
     onAddPrize() {
-      addLotteryActivityPrize(this.prizeData).then((res) =>{
-        this.$message({
-          type: "success",
-          message: "奖品添加成功",
-          duration: 1000,
+      this.$refs['ref-prize-from'].validate((valid) => {
+        if (!valid) return false
+        let data = _.cloneDeep(this.prizeData)
+        data.image_url = this.$refs.IconUpload.gallery
+        addLotteryActivityPrize(data).then((res) => {
+          this.$message({
+            type: "success",
+            message: "奖品添加成功",
+            duration: 1000,
+          })
+          this.prizeList.push(res)
+          this.innerDialogShow = false
         })
-        this.prizeList.push(res)
-        this.innerDialogShow = false
       })
     },
     // 点击打开修改奖品对话框
@@ -245,25 +250,36 @@ export default {
     },
     // 点击修改奖品
     onUpdatePrize(){
-      updateLotteryActivityPrize(this.prizeData.id,this.prizeData).then((res)=>{
-        this.$message({
-          type: "success",
-          message: "修改成功",
-          duration: 1000,
+      this.$refs['ref-prize-from'].validate((valid) => {
+        if (!valid) return false
+        let data = _.cloneDeep(this.prizeData)
+        data.image_url = this.$refs.IconUpload.gallery
+        updateLotteryActivityPrize(this.prizeData.id, data).then((res) => {
+          this.$message({
+            type: "success",
+            message: "修改成功",
+            duration: 1000,
+          })
+          this.prizeList.forEach((item, index) => {
+            if (item.id === res.id) {
+              this.prizeList[index] = res
+            }
+          })
+          this.innerDialogShow = false
         })
-        this.prizeList.forEach((item, index) => {
-          if (item.id === res.id){
-            this.prizeList[index] = res
-          }
-        })
-        this.innerDialogShow = false
       })
     },
     // 奖品类型发生变化时 初始化该奖品的value 和 number
-    handlePrizeTypeVary(){
+    handlePrizeTypeVary(value){
+      if (value == 1) {
+        this.prizeData.number = ''
+        this.prizeData.value = 0
+        return
+      }
       this.prizeData.value = ''
       this.prizeData.number = ''
     },
+
     // 点击修改活动发送请求
     onUpdateDate(){
       this.$refs['ref-activity-from'].validate((valid) => {

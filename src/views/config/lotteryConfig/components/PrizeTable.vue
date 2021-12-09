@@ -1,10 +1,33 @@
 <template>
-  <div class="PrizeTable">
+  <div id="PrizeTable">
+    <div class="add">
+      <el-button size="small" type="primary" @click="onAddDialog">新增奖品</el-button>
+    </div>
     <div class="table-box">
       <el-table :data="LotteryPrizeList" v-loading="tableLoading">
         <el-table-column label="序号" align="center" width="100">
           <template slot-scope="scope">
             {{ scope.row.id }}
+          </template>
+        </el-table-column>
+        <el-table-column label="奖品名称" align="center" width="200">
+          <template slot-scope="scope">
+            {{ scope.row.name }}
+          </template>
+        </el-table-column>
+        <el-table-column label="奖品类型" align="center" width="200">
+          <template slot-scope="scope">
+            {{ scope.row.prize_type | prizeType }}
+          </template>
+        </el-table-column>
+        <el-table-column label="剩余数量" align="center" width="200">
+          <template slot-scope="scope">
+            {{ scope.row.number }}
+          </template>
+        </el-table-column>
+        <el-table-column label="奖品概率" align="center" width="200">
+          <template slot-scope="scope">
+            {{ scope.row.probability }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -22,24 +45,24 @@
       </el-pagination>
     </div>
 
-
     <el-dialog width="30%" title="奖品详情" :visible.sync="DialogShow">
       <div>
         <el-form ref="ref-prize-from" :model="prizeData" :rules="rules" label-width="100px">
-          <el-form-item label="奖品名称">
+          <el-form-item label="奖品名称" prop="name">
             <el-input v-model="prizeData.name"></el-input>
           </el-form-item>
-          <el-form-item label="奖品概率">
+          <el-form-item label="奖品概率" prop="probability">
             <el-input v-model="prizeData.probability"></el-input>
           </el-form-item>
           <el-form-item label="奖品数量">
-            <el-input v-model="prizeData.number"></el-input>
+            <el-input v-model.number="prizeData.number"
+                      oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
           </el-form-item>
           <el-form-item label="奖品图片">
-            <IconUpload :icon="prizeData.image_url"></IconUpload>
+            <IconUpload v-if="DialogShow" :icon="prizeData.image_url" ref="IconUpload"></IconUpload>
           </el-form-item>
           <el-form-item label="奖品类型">
-            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary(1)">
+            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary(value)">
               <el-option
                 v-for="item in prizeTypeList"
                 :key="item.id"
@@ -49,9 +72,10 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="prizeData.prize_type === 1" label="积分值">
-            <el-input v-model="prizeData.value"></el-input>
+            <el-input v-model.number="prizeData.value"
+                      oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
           </el-form-item>
-          <el-form-item v-if="prizeData.prize_type === 2" label="优惠卷">
+          <el-form-item v-if="prizeData.prize_type === 2" label="优惠卷" prop="value">
             <el-select v-model="prizeData.value" placeholder="请选择优惠卷">
               <el-option
                 v-for="item in couponList"
@@ -64,19 +88,26 @@
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="innerDialogShow = DialogShow">取 消</el-button>
+          <el-button @click="DialogShow = !DialogShow">取 消</el-button>
           <el-button type="primary" v-if="prizeData.id" @click="onUpdatePrize()" >修 改</el-button>
           <el-button type="primary" v-else @click="onAddPrize" >添 加</el-button>
         </span>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
+import IconUpload from "@/components/Upload/IconUpload";
+
 import {deleteLotteryActivityPrize, getLotteryPrizeList, updateLotteryActivityPrize} from "@/api/config/lottery";
+import _ from "lodash";
 
 export default {
   name: "PrizeTable",
+  components: {
+    IconUpload
+  },
   data () {
     return {
       LotteryPrizeList: [],//奖品列表
@@ -86,8 +117,12 @@ export default {
         total: 0
       },//表格分页数据
       prizeData: {},//单个奖品信息
-      rules: {},//表单验证
-      DialogShow: true,//对会框状态
+      rules: {
+        name: { required: true, message: '该项不能为空', trigger: 'blur' },
+        probability: { required: true, message: '该项不能为空', trigger: 'blur' },
+        value:{required: true, message: '请选择优惠卷', trigger: 'blur'}
+      },//表单验证
+      DialogShow: false,//对话框状态
       couponList: [
         {
           id: 3,
@@ -95,7 +130,35 @@ export default {
           value: '3',
         },
       ],// 优惠卷列表 后期使用网络请求刷新
+      prizeTypeList: [
+        {
+          id: 1,
+          label: '积分',
+          value: 1
+        },
+        {
+          id: 2,
+          label: '优惠卷',
+          value: 2
+        },
+        {
+          id: 3,
+          label: '谢谢惠顾',
+          value: 3
+        }
+      ],//奖品类型列表
     }
+  },
+  filters: {
+    prizeType (value) {
+      if (value === 1){
+        return '积分奖励'
+      } else if (value === 2){
+        return  '奖励优惠卷'
+      } else if (value === 3){
+        return '谢谢惠顾'
+      }
+    },
   },
   mounted() {
     this.getLotteryPrizeList(1)
@@ -111,9 +174,21 @@ export default {
     },
     // 点击打开修改对话框
     onUpdateDialog(Prize){
+      console.log('Prize', Prize)
+      this.prizeData = _.cloneDeep(Prize)
+      this.DialogShow = true
     },
     // 点击打开添加对话框
     onAddDialog(){
+      this.prizeData = {
+        name: '',
+        prize_type: '',   //奖品类型 1表示积分 2表示优惠卷 3表示谢谢惠顾
+        number: '',     //奖品数量
+        probability: '', //抽奖概率
+        value: '',        //奖品值
+        image_url: '',  //奖品图片
+      }
+      this.DialogShow = true
     },
     // 点击删除奖品
     onDeletePrize(id) {
@@ -131,26 +206,84 @@ export default {
         })
       });
     },
+    // 点击添加奖品
+    onAddPrize() {
+      this.$refs['ref-prize-from'].validate((valid) => {
+        if (!valid) return false
+        let data = _.cloneDeep(this.prizeData)
+        data.image_url = this.$refs.IconUpload.gallery
+        addLotteryActivityPrize(this.prizeData.id, data).then((res) => {
+          this.prizeList.forEach((item, index) => {
+            if (item.id === res.id) {
+              this.prizeList[index] = res
+            }
+          })
+          this.$message({
+            type: "success",
+            message: "添加成功",
+            duration: 1000,
+          })
+          this.innerDialogShow = false
+        })
+      })
+    },
     // 点击修改奖品
     onUpdatePrize(){
-      updateLotteryActivityPrize(this.prizeData.id,this.prizeData).then((res)=>{
-        this.prizeList.forEach((item, index) => {
-          if (item.id === res.id){
-            this.prizeList[index] = res
-          }
+      this.$refs['ref-prize-from'].validate((valid) => {
+        if (!valid) return false
+        let data = _.cloneDeep(this.prizeData)
+        data.image_url = this.$refs.IconUpload.gallery
+        updateLotteryActivityPrize(this.prizeData.id, data).then((res) => {
+          this.prizeList.forEach((item, index) => {
+            if (item.id === res.id) {
+              this.prizeList[index] = res
+            }
+          })
+          this.$message({
+            type: "success",
+            message: "修改成功",
+            duration: 1000,
+          })
+          this.innerDialogShow = false
         })
-        this.$message({
-          type: "success",
-          message: "修改成功",
-          duration: 1000,
-        })
-        this.innerDialogShow = false
       })
+    },
+    // 奖品类型发生变化时 初始化该奖品的value 和 number
+    handlePrizeTypeVary(value){
+      if (value == 1) {
+        this.prizeData.number = ''
+        this.prizeData.value = 0
+        return
+      }
+      this.prizeData.value = ''
+      this.prizeData.number = ''
     },
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+#PrizeTable{
+  .add{
+    margin-bottom: 10px;
+  }
+  .table-box{
+    border: 1px solid #ebeef5;
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+  }
+  .page{
+    margin-top: 10px;
+  }
+}
 </style>

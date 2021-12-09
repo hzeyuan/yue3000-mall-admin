@@ -23,8 +23,8 @@
         </div>
         <el-divider></el-divider>
         <ActivityTable v-if="menuShow === 1"></ActivityTable>
-        <RecordTable v-if="menuShow === 2"></RecordTable>
-        <PrizeTable v-if="menuShow === 3"></PrizeTable>
+        <RecordTable v-else-if="menuShow === 2"></RecordTable>
+        <PrizeTable v-else-if="menuShow === 3"></PrizeTable>
       </div>
     </el-card>
   </div>

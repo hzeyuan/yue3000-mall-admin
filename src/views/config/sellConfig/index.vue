@@ -19,8 +19,18 @@
           <div class="from-label">
             <span>{{ item.title }}：</span>
           </div>
-          <div class="from-input">
-            {{ item.value }}
+          <div class="from-input" v-if="index!==3">
+            <el-input v-model="item.value" placeholder="请输入内容" style="width: 180px"></el-input>
+          </div>
+          <div class="from-input" v-else>
+            <el-select v-model="item.value" placeholder="请选择优惠卷">
+              <el-option
+                v-for="coupon in couponList"
+                :key="coupon.id"
+                :label="coupon.label"
+                :value="coupon.value">
+              </el-option>
+            </el-select>
           </div>
           <div class="from-button">
             <el-button type="primary" @click="onButtonRevise(item)">修 改</el-button>
@@ -28,20 +38,6 @@
         </div>
       </div>
     </el-card>
-    <el-dialog title="修改配置项" :visible.sync="dialogShow" width="30%">
-      <div class="dialog">
-        <div class="title">{{ dialogTitle }}：</div>
-        <div class="value">
-          <el-input v-model.number="dialogValue"
-                    oninput="value=Number(value.replace(/[^0-9.]/g,''))">
-          </el-input>
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogShow = false">取 消</el-button>
-        <el-button type="primary" @click="handleRevise">修  改</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -84,6 +80,14 @@ export default {
           value: 0,
         },
       ],
+      couponList: [
+        {
+          id: 3,
+          label: '店铺满减',
+          value: '3',
+        },
+      ],// 优惠卷列表 后期使用网络请求刷新
+
     }
   },
   mounted() {
@@ -119,30 +123,25 @@ export default {
     },
     // 点击修改按钮
     onButtonRevise (item) {
-      const {title, name, value } = item
-      this.dialogTitle = title
-      this.dialogName = name
-      this.dialogValue = value
-      this.dialogShow = true
-    },
-      // this.$confirm("是否要修改该参数", "提示", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning",
-      // }).then(() => {
-      //   this.reqUpdateData(this.form.order_award_integral)
-      // });
-
-    //
-    handleRevise() {
       this.$confirm("是否要修改该参数", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        this.reqUpdateData(this.dialogName, this.dialogValue)
+        this.reqUpdateData(item.name, item.value).then( ()=>{
+          this.$message({
+            type: "success",
+            message: "修改成功",
+            duration: 1000,
+          });
+        })
       });
-    }
+      // const {title, name, value } = item
+      // this.dialogTitle = title
+      // this.dialogName = name
+      // this.dialogValue = value
+      // this.dialogShow = true
+    },
   },
 };
 </script>
@@ -188,10 +187,8 @@ export default {
         font-size: 16px;
       }
       .from-input{
-        width: 160px;
         padding: 0 20px;
         line-height: 32px;
-        border: #dcdfe6 1px solid;
       }
     }
   }

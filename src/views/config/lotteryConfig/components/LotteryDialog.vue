@@ -73,7 +73,7 @@
             <IconUpload v-if="innerDialogShow" :icon="prizeData.image_url" ref="IconUpload"></IconUpload>
           </el-form-item>
           <el-form-item label="奖品类型">
-            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary(value)">
+            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary">
               <el-option
                 v-for="item in prizeTypeList"
                 :key="item.id"

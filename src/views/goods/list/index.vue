@@ -48,21 +48,6 @@
               :options="productCateOptions"
             ></el-cascader>
           </el-form-item>
-          <!-- <el-form-item label="商品品牌：">
-            <el-select
-              v-model="listQuery.brandId"
-              placeholder="请选择品牌"
-              clearable
-            >
-              <el-option
-                v-for="item in brandOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item> -->
           <el-form-item label="上架状态：">
             <el-select
               v-model="listQuery.is_on_sale"

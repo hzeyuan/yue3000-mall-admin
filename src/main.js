@@ -4,7 +4,7 @@ import store from './store'
 import router from './router'
 import './plugins'
 import '@/layouts/export'
-import "tailwindcss/tailwind.css"
+import 'tailwindcss/tailwind.css'
 /**
  * @author chuzhixin 1204505056@qq.com （不想保留author可删除）
  * @description 生产环境默认都使用mock，如果正式用于生产环境时，记得去掉
@@ -16,6 +16,16 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 Vue.config.productionTip = false
+import EleEditable from 'vue-ele-editable'
+Vue.use(EleEditable, {
+  image: {
+    lazy: true,
+    alt: '加载失败',
+  },
+  number: {
+    step: 1,
+  },
+})
 
 new Vue({
   el: '#vue-admin-beautiful',

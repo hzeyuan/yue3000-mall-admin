@@ -171,7 +171,7 @@
       key: 'remark',
       label: '提现备注',
       editableComponent: 'el-input',
-      editable: false,
+      editable: true,
       type: String,
     },
     {

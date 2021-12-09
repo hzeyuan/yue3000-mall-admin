@@ -1,5 +1,6 @@
 <template>
-  <div @click="onFieldClick" class="edit-cell">
+  <!-- @click="onFieldClick" -->
+  <div class="edit-cell">
     <el-tooltip
       v-if="!editMode && !showInput"
       :placement="toolTipPlacement"
@@ -26,9 +27,11 @@
   </div>
 </template>
 <script>
+  import iconUpload from '@/components/Upload/IconUpload'
   export default {
     name: 'editable-cell',
     inheritAttrs: false,
+    components: { iconUpload },
     props: {
       value: {
         type: [String, Number],

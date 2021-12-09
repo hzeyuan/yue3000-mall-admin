@@ -1,7 +1,6 @@
 <template>
   <div id="LotteryDialog">
     <el-dialog title="抽奖活动详情" :visible.sync="dialogShow" width="40%">
-
 <!--      活动信息表单数据-->
       <div class="pt-5">
         <el-form ref="ref-activity-from" :model="activityData" :rules="rules" label-width="100px">
@@ -48,13 +47,13 @@
           </el-form-item>
         </el-form>
       </div>
-
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogShow = false">取 消</el-button>
         <el-button type="primary" @click="onAddDate()" v-if="isEdge">添 加</el-button>
         <el-button type="primary" @click="onUpdateDate()" v-else>修 改</el-button>
       </span>
     </el-dialog>
+
 
     <!--      添加奖品修改奖品对话框  内层对话框-->
     <el-dialog width="30%" title="奖品详情" :visible.sync="innerDialogShow" append-to-body>
@@ -206,8 +205,13 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        deleteLotteryActivityPrize(id).then( (res)=>{
+        deleteLotteryActivityPrize(id).then( ()=>{
           this.prizeList.splice(index, 1)  //本地删除活动奖品
+          this.$message({
+            type: "success",
+            message: "删除成功",
+            duration: 1000,
+          })
         })
       });
     },
@@ -225,6 +229,11 @@ export default {
     // 点击增加奖品
     onAddPrize() {
       addLotteryActivityPrize(this.prizeData).then((res) =>{
+        this.$message({
+          type: "success",
+          message: "奖品添加成功",
+          duration: 1000,
+        })
         this.prizeList.push(res)
         this.innerDialogShow = false
       })
@@ -237,6 +246,11 @@ export default {
     // 点击修改奖品
     onUpdatePrize(){
       updateLotteryActivityPrize(this.prizeData.id,this.prizeData).then((res)=>{
+        this.$message({
+          type: "success",
+          message: "修改成功",
+          duration: 1000,
+        })
         this.prizeList.forEach((item, index) => {
           if (item.id === res.id){
             this.prizeList[index] = res
@@ -276,7 +290,7 @@ export default {
         addLotteryActivityList(this.activityData).then(()=>{
             this.$message({
               type: "success",
-              message: "修改成功",
+              message: "添加成功",
               duration: 1000,
             })
             this.$parent.getLotteryActivityList(1)

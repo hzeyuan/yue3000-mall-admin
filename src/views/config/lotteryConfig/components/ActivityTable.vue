@@ -11,19 +11,8 @@
       <el-table-column type="expand" width="20">
         <template slot-scope="props">
           <div class="pl-4 flex overflow-x-auto">
-            <el-card class="ml-4"
-                     v-for="(item, index) in props.row.prize"
-                     :key="index" shadow="hover">
-              <!--                    <div class="" v-if="item.prize_type === 1">-->
-              <!--                      <span class="text-lg">{{ item.value }} 积分</span>-->
-              <!--                    </div>-->
-              <!--                    <div class="" v-if="item.prize_type === 2">-->
-              <!--                      <span class="text-lg">优惠卷</span>-->
-              <!--                    </div>-->
-              <div class="p-10">
-                <span class="text-lg">{{item.name}}</span>
-              </div>
-            </el-card>
+            <el-tag size="medium" v-for="(item, index) in props.row.prize"
+                    :key="index">{{item.name}}</el-tag>
           </div>
           <div class="text-center" v-if="props.row.prize.length === 0">
             <span>奖品暂无</span>
@@ -42,13 +31,16 @@
       </el-table-column>
       <el-table-column label="活动描述" align="center" width="300">
         <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
+          <el-popover trigger="hover" placement="top" v-show="scope.row.rule">
             <h5>活动规则：</h5>
             <p v-for="(item , index) in funStringRuleTOArrayRule(scope.row.rule)" :key="index">{{ item }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.message }}</el-tag>
+              {{ scope.row.message? scope.row.message:'暂无描述' }}
             </div>
           </el-popover>
+          <div slot="reference" class="name-wrapper" v-show="!scope.row.rule">
+            {{ scope.row.message? scope.row.message:'暂无描述' }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="活动状态" align="center" width="200">

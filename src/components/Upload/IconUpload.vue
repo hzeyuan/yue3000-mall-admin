@@ -29,7 +29,7 @@ export default {
   computed: {
     // 计算图片数量 若为1 则隐藏上传窗口
     upShow () {
-      if (this.fileList.length === 0) {
+      if (this.gallery === '') {
         return false
       }
       return true
@@ -71,12 +71,13 @@ export default {
     },
   },
   mounted() {
-    if (this.icon === '') return
-    this.fileList = [{
-      url: this.icon,
-      id: 1
-    }]
-    this.gallery = this.icon
+    if (this.icon !== null && this.icon !== '' && this.icon !== undefined) {
+      this.fileList = [{
+        url: this.icon,
+        id: 1
+      }]
+      this.gallery = this.icon
+    }
   }
 }
 </script>

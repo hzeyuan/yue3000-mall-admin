@@ -1,6 +1,6 @@
 <template>
   <div id="RecordTable">
-    <div class="table-box">
+    <div class="table-container">
       <el-table :data="LotteryRecordList" v-loading="tableLoading">
         <el-table-column label="序号" align="center" width="100">
           <template slot-scope="scope">
@@ -111,7 +111,7 @@ export default {
 
 <style lang="scss" scoped>
 #RecordTable{
-  .table-box{
+  .table-container{
       border: 1px solid #ebeef5;
       .demo-table-expand {
         font-size: 0;

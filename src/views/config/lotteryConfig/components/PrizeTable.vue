@@ -3,7 +3,7 @@
     <div class="add">
       <el-button size="small" type="primary" @click="onAddDialog">新增奖品</el-button>
     </div>
-    <div class="table-box">
+    <div class="table-container">
       <el-table :data="LotteryPrizeList" v-loading="tableLoading">
         <el-table-column label="序号" align="center" width="100">
           <template slot-scope="scope">
@@ -44,7 +44,6 @@
                      hide-on-single-page @next-click="getLotteryPrizeList" @current-change="getLotteryPrizeList">
       </el-pagination>
     </div>
-
     <el-dialog width="30%" title="奖品详情" :visible.sync="DialogShow">
       <div>
         <el-form ref="ref-prize-from" :model="prizeData" :rules="rules" label-width="100px">
@@ -62,7 +61,7 @@
             <IconUpload v-if="DialogShow" :icon="prizeData.image_url" ref="IconUpload"></IconUpload>
           </el-form-item>
           <el-form-item label="奖品类型">
-            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary(value)">
+            <el-select v-model="prizeData.prize_type" placeholder="请选择奖品类型" @change="handlePrizeTypeVary">
               <el-option
                 v-for="item in prizeTypeList"
                 :key="item.id"
@@ -93,12 +92,12 @@
           <el-button type="primary" v-else @click="onAddPrize" >添 加</el-button>
         </span>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
 import IconUpload from "@/components/Upload/IconUpload";
+import { Loading } from 'element-ui';
 
 import {deleteLotteryActivityPrize, getLotteryPrizeList, updateLotteryActivityPrize} from "@/api/config/lottery";
 import _ from "lodash";
@@ -169,7 +168,7 @@ export default {
       this.tableLoading = true
       const res = await getLotteryPrizeList(page)
       this.LotteryPrizeList = res.list
-      this.pageData.total = res.pagination.total
+      this.pageData.total = res.pagination.rowCount
       this.tableLoading = false
     },
     // 点击打开修改对话框
@@ -203,6 +202,7 @@ export default {
             message: "删除成功",
             duration: 1000,
           })
+          this.getLotteryPrizeList(this.pageData.page)
         })
       });
     },
@@ -213,17 +213,13 @@ export default {
         let data = _.cloneDeep(this.prizeData)
         data.image_url = this.$refs.IconUpload.gallery
         addLotteryActivityPrize(this.prizeData.id, data).then((res) => {
-          this.prizeList.forEach((item, index) => {
-            if (item.id === res.id) {
-              this.prizeList[index] = res
-            }
-          })
           this.$message({
             type: "success",
             message: "添加成功",
             duration: 1000,
           })
-          this.innerDialogShow = false
+          this.DialogShow = false
+          this.getLotteryPrizeList(this.pageData.page)
         })
       })
     },
@@ -234,17 +230,13 @@ export default {
         let data = _.cloneDeep(this.prizeData)
         data.image_url = this.$refs.IconUpload.gallery
         updateLotteryActivityPrize(this.prizeData.id, data).then((res) => {
-          this.prizeList.forEach((item, index) => {
-            if (item.id === res.id) {
-              this.prizeList[index] = res
-            }
-          })
           this.$message({
             type: "success",
             message: "修改成功",
             duration: 1000,
           })
-          this.innerDialogShow = false
+          this.DialogShow = false
+          this.getLotteryPrizeList(this.pageData.page)
         })
       })
     },
@@ -267,7 +259,7 @@ export default {
   .add{
     margin-bottom: 10px;
   }
-  .table-box{
+  .table-container{
     border: 1px solid #ebeef5;
   .demo-table-expand {
     font-size: 0;

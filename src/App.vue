@@ -10,3 +10,13 @@
     mounted() {},
   }
 </script>
+
+<style lang="scss">
+.table-container {
+.el-loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+}
+</style>

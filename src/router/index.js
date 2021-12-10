@@ -201,6 +201,18 @@ export const asyncRoutes = [
           noKeepAlive: true,
         },
       },
+      {
+        path: 'privilege',
+        name: 'privilege',
+        hidden: false,
+        component: () => import('@/views/user/privilege'),
+        meta: {
+          title: '等级权益',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
     ],
   },
   {

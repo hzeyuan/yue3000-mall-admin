@@ -167,9 +167,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="modal.visible = false">取 消</el-button>
-        <el-button type="primary" @click="modal.visible = false">
-          确 定
-        </el-button>
+        <el-button type="primary" @click="submitNewForm">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 描述详情模态 -->
@@ -271,7 +269,13 @@
       },
       router: {
         type: Object,
-        default: () => ({}),
+        default: () => ({
+          find: {},
+          update: {},
+          update: {},
+          del: {},
+          create: {},
+        }),
       },
       showSearch: {
         //是否显示搜索框
@@ -329,7 +333,8 @@
             action: 'http://192.168.1.116:1337/upload',
             name: 'files',
             responseFn: (response, file, fileList) => {
-              return file.url
+              console.log('response', response, file, fileList)
+              return response[0].url
             },
           }
         }
@@ -338,7 +343,7 @@
         }
         this.$set(this.payload, key, col.type())
       })
-      const { find, findOne, update, del } = this.router
+      const { find, findOne, update, del, create } = this.router
       this.apis = {
         find: ({ page, pageSize, ...fields }) => {
           console.log('fields', fields)
@@ -360,6 +365,7 @@
           if (!_.isEmpty(filters)) {
             url += `?${qs.stringify(filters)}`
           }
+          console.log('url', url)
           return request({
             url,
             method,
@@ -399,6 +405,14 @@
             method,
           })
         },
+        create: (data) => {
+          let { url = `${this.prefix}/${model}`, method = 'post' } = create
+          return request({
+            url,
+            method,
+            data,
+          })
+        },
       }
     },
     computed: {
@@ -433,10 +447,27 @@
       }
     },
     methods: {
-      // 提交修改
+      // 提交 部分修改
       async submit(key, data) {
         console.log(key, data)
         return this.apis.update(key, data)
+      },
+      // 提交表单，新增
+      async submitNewForm() {
+        try {
+          await this.apis.create(this.payload)
+          this.$message({
+            message: '创建成功',
+            type: 'success',
+          })
+          this.getList()
+        } catch (error) {
+          this.$message({
+            message: '创建失败，稍后再试',
+            type: 'error',
+          })
+        }
+        this.modal['visible'] = false
       },
       // 装饰 操作符方法
       decorateOpeator(row, $index, callback) {
@@ -484,14 +515,13 @@
           cancelButtonText: '取消',
           type: 'error',
         })
-          .then(() => {
-            this.apis.delete(id).then((res) => {
-              this.$message({
-                type: 'success',
-                message: '删除成功!',
-              })
-              this.getList()
+          .then(async () => {
+            await this.apis.delete(id)
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
             })
+            this.getList()
           })
           .catch(() => {
             this.$message({

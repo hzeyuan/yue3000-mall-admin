@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <!-- 查询 -->
     <el-card v-show="showSearch" class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search"></i>
@@ -43,12 +44,14 @@
         </el-form>
       </div>
     </el-card>
+    <!-- 操作栏 -->
     <el-card shadow="never">
       <div class="flex items-center justify-between">
         <span class="pr-1">数据列表</span>
         <el-button type="primary" @click="addRow">新增</el-button>
       </div>
     </el-card>
+    <!-- 表格 -->
     <div class="table-container">
       <el-table
         ref="table"
@@ -66,7 +69,7 @@
         >
           <template slot-scope="scope">
             <ele-editable
-              :request-fn="handleChange"
+              :request-fn="(data) => submit(scope.row.id, data)"
               :custom-attrs="column.customAttrs"
               :default-value="column.defaultValue"
               :display-formatter="column.displayFormatter"
@@ -78,25 +81,6 @@
               v-model="scope.row[column.key]"
             />
           </template>
-          <!-- <editable-cell
-            :editable="column.editable"
-            :show-input="column.editable === false ? false : row.editMode"
-            :editable-component="column.editableComponent"
-            slot-scope="{ row }"
-            v-model="row[column.key]"
-          >
-            <span slot="content">
-              <slot :name="column.key" :row="row">
-                <span>
-                  {{
-                    column.filter
-                      ? column.filter(row[column.key])
-                      : row[column.key]
-                  }}
-                </span>
-              </slot>
-            </span>
-          </editable-cell> -->
         </el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="{ row, $index }">
@@ -114,12 +98,21 @@
             </el-link>
             <el-link
               :underline="false"
+              v-if="rowbarsMaps.detail"
+              type="primary"
+              @click="rowDetail(row, $index)"
+            >
+              <el-divider direction="vertical"></el-divider>
+              详情
+            </el-link>
+            <el-link
+              :underline="false"
               v-if="rowbarsMaps.delete"
               type="danger"
               @click="delRow(row, $index)"
             >
               <el-divider direction="vertical"></el-divider>
-              {{ row.rowMode === 'new' ? '取消' : '删除' }}
+              删除
             </el-link>
           </template>
         </el-table-column>
@@ -137,29 +130,40 @@
         :total="total"
       ></el-pagination>
     </div>
-    <!-- 模态 -->
-    <el-dialog :title="modal.title" :visible.sync="modal.visible" width="30%">
-      <div class="ml-10">
-        <div
-          v-for="column in showColumns"
-          :key="column.key"
-          class="flex items-start pb-1"
-        >
-          <span class="w-20">{{ column.label }}:</span>
-          <div>
+    <!-- 添加模态 -->
+    <el-dialog
+      destroy-on-close
+      :title="modal.title"
+      :visible.sync="modal.visible"
+      width="30%"
+    >
+      <div v-if="modal.visible" class="ml-4">
+        <el-form size="mini" label-position="right" label-width="80px">
+          <el-form-item
+            v-for="column in showColumns"
+            :key="column.key"
+            :label="`${column.label}:`"
+          >
             <component
               :is="`${componentName(column.componentType)}`"
               :customAttrs="column.customAttrs"
               :displayValue="column.displayValue"
               :field="column.key"
-              :noWrapper="true"
+              :value="payload[column.key]"
+              :noWrapper="false"
               :options="column.options"
               :title="column.label"
               :type="column.componentType"
-              ref="com"
+              :computedValue="column.type()"
+              @change="handleChangePayload"
+              @update="
+                (value) => {
+                  handleUpdatePayload(column.key, value)
+                }
+              "
             ></component>
-          </div>
-        </div>
+          </el-form-item>
+        </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="modal.visible = false">取 消</el-button>
@@ -168,11 +172,50 @@
         </el-button>
       </span>
     </el-dialog>
+    <!-- 描述详情模态 -->
+    <el-dialog
+      destroy-on-close
+      title="详情"
+      :visible.sync="detailModal"
+      width="30%"
+    >
+      <div v-if="detailModal" class="ml-4">
+        <el-descriptions
+          size="mini"
+          label-position="left"
+          direction="vertical"
+          colon
+          :column="2"
+          abel-width="80px"
+        >
+          <el-descriptions-item
+            v-for="column in showColumns"
+            :key="column.key"
+            :label="`${column.label}`"
+          >
+            <ele-editable
+              :custom-attrs="column.customAttrs"
+              :default-value="column.defaultValue"
+              :display-formatter="column.displayFormatter"
+              :empty-text="column.emptyText"
+              :title="column.label"
+              :type="componentName(column.componentType, 'desc')"
+              v-model="list[currentRow][column.key]"
+            />
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="detailModal = false">取 消</el-button>
+        <el-button type="primary" @click="detailModal = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
   import request from '@/utils/request'
   import qs from 'qs'
+  import EleEditableWrapperForm from 'vue-ele-editable/src/wrapper/EleEditableWrapperForm'
   import EleEditableUrl from 'vue-ele-editable/src/components/EleEditableUrl'
   import EleEditableText from 'vue-ele-editable/src/components/EleEditableText'
   import EleEditableTime from 'vue-ele-editable/src/components/EleEditableTime'
@@ -196,6 +239,7 @@
     page: 1,
     pageSize: 10,
   }
+
   export default {
     name: 'strapi-table',
     components: {
@@ -218,6 +262,7 @@
       EleEditableCheckbox,
       EleEditableUploadImage,
       EleEditableDatetimeText,
+      EleEditableWrapperForm,
     },
     props: {
       //model,绑定strapi模型
@@ -246,7 +291,7 @@
       rowBars: {
         //每一行的操作栏
         type: Array,
-        default: () => ['edit', 'delete'],
+        default: () => ['detail', 'delete'],
       },
       diyBars: {
         type: Array,
@@ -259,6 +304,7 @@
       },
     },
     watch: {
+      // 查询字段，更新
       querys: {
         deep: true,
         handler(querys) {
@@ -275,8 +321,22 @@
       //找到所有search:true
       const searchQueryList = _.filter(this.columns, { search: true })
       this.searchQueryList = searchQueryList
-      _.map(searchQueryList, 'key').map((key) => {
-        this.$set(this.listQuery, key, '')
+      //加工colmns
+      this.columns.map((col) => {
+        const { search, key, type } = col
+        if (type === 'image' || 'upload-image') {
+          col.customAttrs = {
+            action: 'http://192.168.1.116:1337/upload',
+            name: 'files',
+            responseFn: (response, file, fileList) => {
+              return file.url
+            },
+          }
+        }
+        if (search) {
+          this.$set(this.listQuery, key, '')
+        }
+        this.$set(this.payload, key, col.type())
       })
       const { find, findOne, update, del } = this.router
       this.apis = {
@@ -316,8 +376,14 @@
           })
         },
         update: (id, data) => {
-          const { url = `${this.prefix}/${model}/${id}`, method = 'put' } =
-            update
+          console.log('update')
+          let { url = '', method = 'put' } = update
+          if (!url) {
+            url = `${this.prefix}/${model}/${id}`
+          } else {
+            url = _.replace(url, ':id', id)
+          }
+          console.log('url', url)
           return request({
             url,
             method,
@@ -336,8 +402,9 @@
       }
     },
     computed: {
+      // 过滤所有hidden属性的列
       showColumns() {
-        return this.columns.filter((col) => col.hidden !== true) // 过滤所有hidden属性的字段
+        return this.columns.filter((col) => col.hidden !== true)
       },
       rowbarsMaps() {
         const rowbars = {}
@@ -354,32 +421,30 @@
     },
     data() {
       return {
-        apis: {},
-        listQuery: Object.assign({}, defaultListQuery),
-        listLoading: true,
-        list: null,
-        total: null,
-        searchQueryList: [],
-        modal: { visible: false, title: '' },
-        payload: {},
+        currentRow: 0, //当前选中行，
+        apis: {}, // curd api
+        listQuery: Object.assign({}, defaultListQuery), // 查询条件
+        listLoading: true, // table loading
+        list: null, // table data
+        total: 10, // 数据总数
+        modal: { visible: false, title: '' }, //模态开关，标题
+        detailModal: false,
+        payload: { username: '', avatar: '' }, // 添加数据payload
       }
     },
     methods: {
-      handleChange(data) {
-        console.log(data)
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve()
-          }, 100)
-        })
+      // 提交修改
+      async submit(key, data) {
+        console.log(key, data)
+        return this.apis.update(key, data)
       },
+      // 装饰 操作符方法
       decorateOpeator(row, $index, callback) {
         callback(row, $index)
       },
       // 重置查询条件
       handleResetSearch() {
         this.listQuery = Object.assign({}, defaultListQuery)
-        // this.queryReset()
         this.$emit('queryReset')
       },
       // 修改分页pageSzie
@@ -393,17 +458,11 @@
         this.listQuery.page = val
         this.getList()
       },
-      covertQuery() {
-        const { keyword, ...query } = this.listQuery
-        return {
-          ...query,
-        }
-      },
       // 获取model列表
       async getList() {
         this.listLoading = true
         try {
-          const resp = await this.apis.find(this.covertQuery())
+          const resp = await this.apis.find(this.listQuery)
           const { list, pagination } = resp
           this.list = list
           this.total = pagination.rowCount
@@ -411,59 +470,13 @@
         } catch (error) {}
         this.listLoading = false
       },
-      setEditMode(row, index) {
-        row.editMode = true
-      },
-      async saveRow(row, index) {
-        this.listLoading = true
-        row.editMode = false
-        const data = {}
-        this.columns.map((col) => {
-          const { key } = col
-          if (key === 'id') return
-          if (col.type === Array) {
-            data[key] = _.castArray(row[key])
-          } else {
-            data[key] = col.type(row[key])
-          }
-        })
-        await this.apis.update(row.id, data)
-        this.listLoading = false
-        this.$message({
-          type: 'success',
-          message: '修改成功!',
-        })
-      },
       // 新增
       addRow() {
-        this.columns.map((col) => {
-          const { key } = col
-          let value = col.defaultValue || col.type()
-          // if (col.displayFormatter) {
-          //   value = col.displayFormatter(col.defaultValue)
-          // }
-          this.$set(this.payload, key, value)
-        })
-        // this.newdata = newdata
-        console.log('newData', this.payload)
-        // this.list.push({
-        //   editMode: true,
-        //   ...data,
-        //   inline: true,
-        //   rowMode: 'new',
-        // })
         this.modal['title'] = '新增'
         this.modal['visible'] = true
       },
       //删除
       async delRow(row, index) {
-        console.log('row', row, index)
-        // 是新增的行
-        if (row.rowMode === 'new') {
-          console.log('index', index)
-          this.list.splice(index, 1)
-          return
-        }
         this.listLoading = true
         const id = row.id
         this.$confirm('此操作将删除此记录, 是否继续?', '提示', {
@@ -490,22 +503,30 @@
       },
       //详情
       rowDetail(row, index) {
-        // this.dialogVisible = true
+        this.currentRow = index
+        this.detailModal = true
       },
       // 添加模态，组件名称转换
-      componentName(type) {
-        let name = 'ele-editable-' + type
-        switch (type) {
-          case 'text':
-            name = 'ele-editable-input'
-            break
-          case 'image':
-            name = 'ele-editable-upload-image'
-            break
-          default:
+      componentName(type, action = 'form') {
+        let toggleForm = {
+          text: 'input',
+          image: 'upload-image',
+          'datetime-text': 'datetime',
         }
-        return name
+        if (action === 'desc') {
+          toggleForm = _.invert(toggleForm)
+          if (type === 'number') return 'text'
+          return toggleForm[type] ? toggleForm[type] : type
+        }
+        return toggleForm[type]
+          ? 'ele-editable-' + toggleForm[type]
+          : 'ele-editable-' + type
       },
+      // 更新payloadStatus
+      handleUpdatePayload(key, value) {
+        this.payload[key] = value
+      },
+      handleChangePayload() {},
     },
   }
 </script>

@@ -29,7 +29,7 @@
 
 <script>
   import { formatDate } from '@/utils/date'
-  import strapiTable from '@/components/strapi-table' //上传文件组件
+  import strapiTable from '@/components/strapi-table'
 
   export default {
     components: { strapiTable },
@@ -44,6 +44,9 @@
           findOne: {
             url: 'users/me',
             method: 'get',
+          },
+          update: {
+            url: '/users/:id',
           },
         },
         columns: [
@@ -63,9 +66,9 @@
           {
             key: 'avatar',
             label: '头像',
-            editableComponent: 'icon-upload',
-            componentType: 'image',
+            componentType: 'upload-image',
             type: String,
+            customAttrs: {},
           },
           {
             key: 'email',
@@ -108,7 +111,7 @@
               }
               return formatDate(new Date(value), 'yyyy-MM-dd hh:mm:ss')
             },
-            type: String,
+            type: Date,
           },
           {
             key: 'earnings',
@@ -131,7 +134,6 @@
           {
             key: 'user_integral',
             label: '积分',
-            editableComponent: 'el-input',
             componentType: 'number',
             type: Number,
           },
@@ -139,7 +141,6 @@
             key: 'level',
             label: '当前等级',
             componentType: 'select',
-
             options: [
               { text: '等级1', value: 1 },
               { text: '等级2', value: 2 },
@@ -158,19 +159,18 @@
             },
           },
         ],
-        diyBars: [
-          {
-            name: '详情',
-            callback: (row, index) => {
-              console.log('点击', row, index)
-            },
-          },
-        ],
-        rowBars: ['delete'],
+        // diyBars: [
+        //   {
+        //     name: '详情',
+        //     callback: (row, index) => {
+        //       console.log('点击', row, index)
+        //     },
+        //   },
+        // ],
+        rowBars: ['detail', 'delete'],
         querys: {
           level: '',
         },
-
         levelOptions: [
           { label: '等级1', value: 1 },
           { label: '等级2', value: 2 },
@@ -181,7 +181,6 @@
     methods: {
       queryReset() {
         this.querys = { level: '' }
-        console.log('重置')
       },
     },
   }

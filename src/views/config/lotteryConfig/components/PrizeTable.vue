@@ -33,7 +33,7 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click="onUpdateDialog(scope.row)">编辑</el-button>
-            <el-button size="small" type="danger"  @click="onDeletePrize(scope.row.id)">删除</el-button>
+            <el-button size="small" type="danger" @click="onDeletePrize(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -44,6 +44,7 @@
                      hide-on-single-page @next-click="getLotteryPrizeList" @current-change="getLotteryPrizeList">
       </el-pagination>
     </div>
+
     <el-dialog width="30%" title="奖品详情" :visible.sync="DialogShow">
       <div>
         <el-form ref="ref-prize-from" :model="prizeData" :rules="rules" label-width="100px">
@@ -75,12 +76,12 @@
                       oninput="value=Number(value.replace(/[^0-9.]/g,''))"></el-input>
           </el-form-item>
           <el-form-item v-if="prizeData.prize_type === 2" label="优惠卷" prop="value">
-            <el-select v-model="prizeData.value" placeholder="请选择优惠卷">
+            <el-select v-model="prizeData.value" placeholder="请选择优惠卷" @focus="handlePrizeCoupons">
               <el-option
                 v-for="item in couponList"
                 :key="item.id"
-                :label="item.label"
-                :value="item.value">
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -88,8 +89,8 @@
       </div>
       <span slot="footer" class="dialog-footer">
           <el-button @click="DialogShow = !DialogShow">取 消</el-button>
-          <el-button type="primary" v-if="prizeData.id" @click="onUpdatePrize()" >修 改</el-button>
-          <el-button type="primary" v-else @click="onAddPrize" >添 加</el-button>
+          <el-button type="primary" v-if="prizeData.id" @click="onUpdatePrize()">修 改</el-button>
+          <el-button type="primary" v-else @click="onAddPrize">添 加</el-button>
         </span>
     </el-dialog>
   </div>
@@ -97,7 +98,7 @@
 
 <script>
 import IconUpload from "@/components/Upload/IconUpload";
-import { Loading } from 'element-ui';
+import {getLotteryCoupons} from "@/api/coupons";
 
 import {deleteLotteryActivityPrize, getLotteryPrizeList, updateLotteryActivityPrize} from "@/api/config/lottery";
 import _ from "lodash";
@@ -107,7 +108,7 @@ export default {
   components: {
     IconUpload
   },
-  data () {
+  data() {
     return {
       LotteryPrizeList: [],//奖品列表
       tableLoading: false,//表格加载框
@@ -117,18 +118,12 @@ export default {
       },//表格分页数据
       prizeData: {},//单个奖品信息
       rules: {
-        name: { required: true, message: '该项不能为空', trigger: 'blur' },
-        probability: { required: true, message: '该项不能为空', trigger: 'blur' },
-        value:{required: true, message: '请选择优惠卷', trigger: 'blur'}
+        name: {required: true, message: '该项不能为空', trigger: 'blur'},
+        probability: {required: true, message: '该项不能为空', trigger: 'blur'},
+        value: {required: true, message: '请选择优惠卷', trigger: 'blur'}
       },//表单验证
       DialogShow: false,//对话框状态
-      couponList: [
-        {
-          id: 3,
-          label: '店铺满减',
-          value: '3',
-        },
-      ],// 优惠卷列表 后期使用网络请求刷新
+      couponList: [],// 优惠卷列表 后期使用网络请求刷新
       prizeTypeList: [
         {
           id: 1,
@@ -149,12 +144,12 @@ export default {
     }
   },
   filters: {
-    prizeType (value) {
-      if (value === 1){
+    prizeType(value) {
+      if (value === 1) {
         return '积分奖励'
-      } else if (value === 2){
-        return  '奖励优惠卷'
-      } else if (value === 3){
+      } else if (value === 2) {
+        return '奖励优惠卷'
+      } else if (value === 3) {
         return '谢谢惠顾'
       }
     },
@@ -164,21 +159,20 @@ export default {
   },
   methods: {
     // 获取奖品列表
-    async getLotteryPrizeList(page){
+    async getLotteryPrizeList(page) {
       this.tableLoading = true
       const res = await getLotteryPrizeList(page)
       this.LotteryPrizeList = res.list
-      this.pageData.total = res.pagination.rowCount
+      // this.pageData.total = res.pagination.rowCount
       this.tableLoading = false
     },
     // 点击打开修改对话框
-    onUpdateDialog(Prize){
-      console.log('Prize', Prize)
+    onUpdateDialog(Prize) {
       this.prizeData = _.cloneDeep(Prize)
       this.DialogShow = true
     },
     // 点击打开添加对话框
-    onAddDialog(){
+    onAddDialog() {
       this.prizeData = {
         name: '',
         prize_type: '',   //奖品类型 1表示积分 2表示优惠卷 3表示谢谢惠顾
@@ -196,7 +190,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        deleteLotteryActivityPrize(id).then( (res)=>{
+        deleteLotteryActivityPrize(id).then((res) => {
           this.$message({
             type: "success",
             message: "删除成功",
@@ -224,7 +218,7 @@ export default {
       })
     },
     // 点击修改奖品
-    onUpdatePrize(){
+    onUpdatePrize() {
       this.$refs['ref-prize-from'].validate((valid) => {
         if (!valid) return false
         let data = _.cloneDeep(this.prizeData)
@@ -241,7 +235,7 @@ export default {
       })
     },
     // 奖品类型发生变化时 初始化该奖品的value 和 number
-    handlePrizeTypeVary(value){
+    handlePrizeTypeVary(value) {
       if (value == 1) {
         this.prizeData.number = ''
         this.prizeData.value = 0
@@ -250,31 +244,46 @@ export default {
       this.prizeData.value = ''
       this.prizeData.number = ''
     },
+
+    // 获取优惠卷列表
+    handlePrizeCoupons() {
+      console.log('123');
+      if (this.couponList.length === 0) {
+        const res = getLotteryCoupons()
+        console.log(res)
+        this.couponList = res.list
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-#PrizeTable{
-  .add{
+#PrizeTable {
+  .add {
     margin-bottom: 10px;
   }
-  .table-container{
+
+  .table-container {
     border: 1px solid #ebeef5;
-  .demo-table-expand {
-    font-size: 0;
+
+    .demo-table-expand {
+      font-size: 0;
+    }
+
+    .demo-table-expand label {
+      width: 90px;
+      color: #99a9bf;
+    }
+
+    .demo-table-expand .el-form-item {
+      margin-right: 0;
+      margin-bottom: 0;
+      width: 50%;
+    }
   }
-  .demo-table-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
-  }
-  .page{
+
+  .page {
     margin-top: 10px;
   }
 }

@@ -38,9 +38,9 @@ import PrizeTable from "./components/PrizeTable";
 export default {
   name: "lottery",
   components: {ActivityTable, RecordTable, PrizeTable},
-  data () {
+  data() {
     return {
-      topOpen:true,
+      topOpen: true,
       menuShow: 1,
     }
   },
@@ -48,25 +48,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#lottery{
-  .top-box{
+#lottery {
+  .top-box {
     border: #e6e6e6 1px dashed;
     margin-bottom: 30px;
-    .text-title{
+
+    .text-title {
       padding-left: 20px;
       line-height: 36px;
       font-size: 16px;
       cursor: pointer;
     }
-    .text-title:hover{
+
+    .text-title:hover {
       color: #1e6abc;
     }
-    .text-span{
+
+    .text-span {
       padding: 10px;
       border-top: #e6e6e6 1px solid;
       font-size: 14px;
       line-height: 22px;
       color: #666;
+
       p {
         padding: 0;
         margin: 0;
@@ -90,6 +94,7 @@ export default {
       font-size: 14px;
     }
   }
+
   .show {
     font-weight: bold;
     background-color: #fff;

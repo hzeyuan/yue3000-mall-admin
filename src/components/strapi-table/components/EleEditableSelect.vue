@@ -17,10 +17,25 @@
 </template>
 
 <script>
-import EleEditableMixin from '../EleEditableMixin'
+  import EleEditableMixin from '../EleEditableMixin'
 
-export default {
-  name: 'EleEditableSelect',
-  mixins: [EleEditableMixin]
-}
+  export default {
+    name: 'EleEditableSelect',
+    mixins: [EleEditableMixin],
+    // data() {
+    //   return {
+    //     newValue: Boolean(this.computedValue),
+    //   }
+    // },
+
+    methods: {
+      // setNewValue() {
+      //   if (this.attrs.multiple) {
+      //     this.newValue.push()
+      //   } else {
+      //     this.newValue = this.value
+      //   }
+      // },
+    },
+  }
 </script>

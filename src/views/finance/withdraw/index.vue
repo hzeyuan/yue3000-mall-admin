@@ -5,7 +5,7 @@
       :router="router"
       showSearch
       :columns="columns"
-      :rowBars="[]"
+      :rowBars="{}"
       :diyBars="diyBars"
     >
       <template slot="userInfo" slot-scope="{ row }">
@@ -95,11 +95,38 @@
         </div>
       </div>
     </el-drawer>
+    <el-dialog
+      label-width="80px"
+      title="提现审核"
+      :visible.sync="checkDialogVisible"
+      width="30%"
+    >
+      <el-form :model="form">
+        <el-form-item label="提现审核">
+          <el-radio-group v-model="form.pass">
+            <el-radio label="审核通过"></el-radio>
+            <el-radio label="审核拒绝"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-alert
+          title="审核拒绝后，提现金额会全部退回佣金账户"
+          type="info"
+        ></el-alert>
+        <el-form-item label="审核备注">
+          <el-input type="textarea" v-model="form.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="checkDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="formSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import { formatDate } from '@/utils/date'
+  import { refuse, confirm } from '@/api/withdraw'
   import strapiTable from '@/components/strapi-table' //上传文件组件
   const columns = [
     {
@@ -196,6 +223,12 @@
     components: { strapiTable },
     data() {
       return {
+        checkDialogVisible: false, // 审核对话框
+        form: {
+          id: -1,
+          pass: '',
+          remark: '',
+        },
         model: 'withdraw',
         drawer: false,
         router: router,
@@ -249,7 +282,19 @@
         ;(this.drawer = true), (this.withdrawDetails = row)
       },
       // 提现审核
-      withdrawReview(row, index) {},
+      withdrawReview(row, index) {
+        this.checkDialogVisible = true
+        this.form.id = row.id
+      },
+      async formSubmit() {
+        //通过
+        if (form.pass === 1) {
+          const { id, remark } = form
+          await confirm({ id, remark })
+        } else {
+          await refuse({ id, remark })
+        }
+      },
     },
   }
 </script>

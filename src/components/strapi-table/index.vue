@@ -60,6 +60,14 @@
         v-loading="listLoading"
       >
         <el-table-column
+          align="center"
+          width="60px"
+          label="序号"
+          v-if="showIndex"
+        >
+          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        </el-table-column>
+        <el-table-column
           v-for="column in showColumns"
           :width="column.width"
           :key="column.key"
@@ -68,21 +76,21 @@
           align="center"
         >
           <template slot-scope="scope">
-            <ele-editable
-              :request-fn="(data) => submit(scope.row.id, data)"
-              :custom-attrs="column.customAttrs"
-              :default-value="column.defaultValue"
-              :display-formatter="column.displayFormatter"
-              :isNoWrapper="column.isNoWrapper"
-              :empty-text="column.emptyText"
-              :field="column.key"
-              :title="column.label"
-              :options="column.options"
-              :type="column.componentType"
-              v-model="scope.row[column.key]"
-            >
-              <!-- <slot :name="column.key" :row="scope.row"></slot> -->
-            </ele-editable>
+            <slot :name="column.key" :row="scope.row">
+              <ele-editable
+                :request-fn="(data) => submit(scope.row.id, data)"
+                :custom-attrs="column.customAttrs"
+                :default-value="column.defaultValue"
+                :display-formatter="column.displayFormatter"
+                :isNoWrapper="column.isNoWrapper"
+                :empty-text="column.emptyText"
+                :field="column.key"
+                :title="column.label"
+                :options="column.options"
+                :type="column.componentType"
+                v-model="scope.row[column.key]"
+              ></ele-editable>
+            </slot>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="120">
@@ -101,21 +109,21 @@
             </el-link>
             <el-link
               :underline="false"
-              v-if="rowbarsMaps.detail"
+              v-if="showRowBars.detail"
               type="primary"
               @click="rowDetail(row, $index)"
             >
               <el-divider direction="vertical"></el-divider>
-              详情
+              {{ showRowBars.detail.name || '详情' }}
             </el-link>
             <el-link
               :underline="false"
-              v-if="rowbarsMaps.delete"
+              v-if="showRowBars.delete"
               type="danger"
               @click="delRow(row, $index)"
             >
               <el-divider direction="vertical"></el-divider>
-              删除
+              {{ showRowBars.delete.name || '删除' }}
             </el-link>
           </template>
         </el-table-column>
@@ -284,6 +292,10 @@
           create: {},
         }),
       },
+      showIndex: {
+        type: Boolean,
+        default: false,
+      }, // 是否显示index列
       showSearch: {
         //是否显示搜索框
         type: Boolean,
@@ -301,8 +313,8 @@
       actionBars: [], //操作栏
       rowBars: {
         //每一行的操作栏
-        type: Array,
-        default: () => ['detail', 'delete'],
+        type: Object,
+        default: () => ({ detail: { name: '详情' }, delete: { name: '删除' } }),
       },
       diyBars: {
         type: Array,
@@ -428,13 +440,11 @@
       showColumns() {
         return this.columns.filter((col) => col.hidden !== true)
       },
-      rowbarsMaps() {
-        const rowbars = {}
-        console.log('this.rowbars', this.rowbars)
-        this.rowBars.map((opeator) => {
-          rowbars[opeator] = true
-        })
-        return rowbars
+      showRowBars() {
+        return {
+          // ...{ detail: { name: '详情' }, delete: { name: '删除' } },
+          ...this.rowBars,
+        }
       },
     },
 

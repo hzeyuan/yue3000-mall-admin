@@ -16,15 +16,27 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 Vue.config.productionTip = false
-import EleEditable from 'vue-ele-editable'
-Vue.use(EleEditable, {
-  image: {
-    lazy: true,
-    alt: '加载失败',
-  },
-  number: {
-    step: 1,
-  },
+// import EleEditable from 'vue-ele-editable'
+// import DatetimeRange from '@/components/DatetimeRange'
+// Vue.component(DatetimeRange.name, DatetimeRange)
+// Vue.use(EleEditable, {
+//   image: {
+//     lazy: true,
+//     alt: '加载失败',
+//   },
+//   number: {
+//     step: 1,
+//   },
+// })
+import { formatDate } from '@/utils/date'
+Vue.filter('formatDatetime', function (value) {
+  console.log(
+    'formatDatetime',
+    value,
+    new Date(value),
+    formatDate(new Date(value), 'yyyy-MM-dd hh:mm:ss')
+  )
+  return formatDate(new Date(value), 'yyyy-MM-dd hh:mm:ss')
 })
 
 new Vue({

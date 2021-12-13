@@ -1,116 +1,124 @@
 <template>
   <div>
     <strapi-table
-      model="users"
-      :router="router"
+      :model="model"
       :columns="columns"
-      :rowBars="rowBars"
-      :diyBars="diyBars"
     />
   </div>
 </template>
-
 <script>
-  import { userLevelList as fetchList, deleteUserLevel } from '@/api/user'
-  import { formatDate } from '@/utils/date'
-  import strapiTable from '@/components/strapi-table'
+import strapiTable from '@/components/strapi-table'
+import {getUserPrivilegeList} from "@/api/user";
 
-  const defaultListQuery = {
-    page: 1,
-    pageSize: 10,
-    orderSn: null,
-    receiverKeyword: null,
-    status: null,
-    orderType: null,
-    sourceType: null,
-    createTime: null,
-  }
-  export default {
-    name: 'userLevel',
-    components: { strapiTable },
-    data() {
-      return {
-        router: {
-          find: {
-            url: '/mall-admin/user_levels',
-            method: 'get',
-          },
-          add: {
-            url: '/mall-admin/user_levels',
-            method: 'post',
-          },
-          update: {
-            url: '/mall-admin/user_level/:id',
-            method: 'put',
-          },
-          delete: {
-            url: '/mall-admin/user_level/:id',
-            method: 'delete',
-          },
+export default {
+  name: 'userLevel',
+  components: {strapiTable},
+  data() {
+    return {
+      model: 'user_level',
+      // 字段配置信息
+      columns: [
+        {
+          key: 'id',
+          label: '序号',
+          type: Number,
+          componentType: 'text',
+          hidden: true,
         },
-        // 字段配置信息
-        columns: [
-          {
-            key: 'id',
-            label: '序号',
-            type: Number,
-            componentType: 'text',
-            hidden: false,
+        {
+          key: 'name',
+          label: '等级名称',
+          type: String,
+          componentType: 'input',
+        },
+        {
+          key: 'image',
+          label: '图标',
+          componentType: 'upload-image',
+          type: String,
+          customAttrs: {},
+        },
+        {
+          key: 'background_image',
+          label: '等级背景图',
+          type: String,
+          componentType: 'upload-image',
+          customAttrs: {},
+        },
+        {
+          key: 'growth_value',
+          label: '成长值',
+          type: Number,
+          componentType: 'input',
+          hidden: false,
+        },
+        {
+          key: 'privileges',
+          label: '权益列表',
+          type: Array,
+          componentType: 'select',
+          customAttrs: {
+            multiple: true,
           },
-          {
-            key: 'name',
-            label: '等级名称',
-            type: String,
-            componentType: 'input',
-            hidden: false,
-          },
-          {
-            key: 'image',
-            label: '等级图标',
-            componentType: 'upload-image',
-            type: String,
-            customAttrs: {},
-            hidden: false,
-          },
-          {
-            key: 'background_image',
-            label: '等级背景图',
-            type: Number,
-            componentType: 'image',
-            hidden: false,
-          },
-          {
-            key: 'growth_value',
-            label: '成长值',
-            type: Number,
-            componentType: 'text',
-            hidden: false,
-          },
-          {
-            key: 'userCount',
-            label: '用户数',
-            type: Number,
-            componentType: 'text',
-            hidden: false,
-          },
-        ],
-        // 每行操作栏
-        rowBars: ['detail', 'delete'],
+          options: [''],
+          hidden: false,
+        },
+        {
+          key: 'userCount',
+          label: '用户数',
+          type: Number,
+          componentType: 'input',
+          hidden: false,
+        },
+      ],
 
-        querys: {},
+      arr: [],
 
-        diyBars: [],
-      }
+      privilegeList: [
+        {
+          text: '购物折扣',
+          value: 1
+        },
+        {
+          text: '全场免邮',
+          value: 2
+        },
+        {
+          text: '会员优惠卷',
+          value: 3
+        },
+        {
+          text: '专属客服',
+          value: 4
+        },
+      ],
+    }
+  },
+  methods: {
+    async getPrivilegeList() {
+      const res = await getUserPrivilegeList()
+      let options = []
+      console.log('用户权益', res)
+      res.list.forEach(item => {
+        options.push({
+          text: item.name,
+          value: item.id
+        })
+      })
+      this.columns[5].options = options
     },
-    methods: {},
+  },
+  mounted() {
+    this.getPrivilegeList()
   }
+}
 </script>
 <style scoped>
-  .input-width {
-    width: 203px;
-  }
+.input-width {
+  width: 203px;
+}
 
-  body {
-    margin: 0;
-  }
+body {
+  margin: 0;
+}
 </style>

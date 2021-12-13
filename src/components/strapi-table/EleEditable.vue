@@ -59,6 +59,7 @@
   import EleEditableUploadImage from './components/EleEditableUploadImage'
   import EleEditableDatetimeText from './components/EleEditableDatetimeText'
   import EleEditableDatetimeRange from './components/EleEditableDatetimeRange'
+  import EleEditableMultipleSelect from './components/EleEditableMultipleSelect'
   import Schema from 'async-validator'
 
   export default {
@@ -85,6 +86,7 @@
       EleEditableUploadImage,
       EleEditableDatetimeText,
       EleEditableDatetimeRange,
+      EleEditableMultipleSelect,
     },
     props: {
       // 类型
@@ -261,6 +263,7 @@
           'datetime-text',
           'upload-image',
           'datetime-range',
+          'multiple-select',
         ],
       }
     },

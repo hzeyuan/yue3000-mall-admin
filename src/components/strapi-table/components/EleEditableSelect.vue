@@ -1,11 +1,12 @@
 <template>
   <el-select
     :clearable="true"
+    value-key="value"
     @input="handleChange"
     placeholder="请选择"
     size="small"
     v-bind="attrs"
-    v-model="newValue"
+    v-model="arrValue"
   >
     <el-option
       :key="item.value"
@@ -22,20 +23,15 @@
   export default {
     name: 'EleEditableSelect',
     mixins: [EleEditableMixin],
-    // data() {
-    //   return {
-    //     newValue: Boolean(this.computedValue),
-    //   }
-    // },
-
+    data() {
+      return {
+        arrValue: '',
+      }
+    },
     methods: {
-      // setNewValue() {
-      //   if (this.attrs.multiple) {
-      //     this.newValue.push()
-      //   } else {
-      //     this.newValue = this.value
-      //   }
-      // },
+      setNewValue() {
+        this.arrValue = this.value
+      },
     },
   }
 </script>

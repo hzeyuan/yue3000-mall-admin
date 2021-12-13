@@ -225,27 +225,28 @@
   import request from '@/utils/request'
   import qs from 'qs'
   import EleEditable from './EleEditable.vue'
-  import EleEditableWrapperForm from 'vue-ele-editable/src/wrapper/EleEditableWrapperForm'
-  import EleEditableUrl from 'vue-ele-editable/src/components/EleEditableUrl'
-  import EleEditableText from 'vue-ele-editable/src/components/EleEditableText'
-  import EleEditableTime from 'vue-ele-editable/src/components/EleEditableTime'
-  import EleEditableDate from 'vue-ele-editable/src/components/EleEditableDate'
-  import EleEditableInput from 'vue-ele-editable/src/components/EleEditableInput'
-  import EleEditableImage from 'vue-ele-editable/src/components/EleEditableImage'
-  import EleEditableColor from 'vue-ele-editable/src/components/EleEditableColor'
-  import EleEditableRadio from 'vue-ele-editable/src/components/EleEditableRadio'
-  import EleEditableStatus from 'vue-ele-editable/src/components/EleEditableStatus'
-  import EleEditableSelect from 'vue-ele-editable/src/components/EleEditableSelect'
-  import EleEditableNumber from 'vue-ele-editable/src/components/EleEditableNumber'
-  import EleEditableSwitch from 'vue-ele-editable/src/components/EleEditableSwitch'
-  import EleEditableTimeText from 'vue-ele-editable/src/components/EleEditableTimeText'
-  import EleEditableDateText from 'vue-ele-editable/src/components/EleEditableDateText'
-  import EleEditableTextarea from 'vue-ele-editable/src/components/EleEditableTextarea'
-  import EleEditableDatetime from 'vue-ele-editable/src/components/EleEditableDatetime'
-  import EleEditableCheckbox from 'vue-ele-editable/src/components/EleEditableCheckbox'
-  import EleEditableUploadImage from 'vue-ele-editable/src/components/EleEditableUploadImage'
-  import EleEditableDatetimeText from 'vue-ele-editable/src/components/EleEditableDatetimeText'
+  import EleEditableWrapperForm from './wrapper/EleEditableWrapperForm'
+  import EleEditableUrl from './components/EleEditableUrl'
+  import EleEditableText from './components/EleEditableText'
+  import EleEditableTime from './components/EleEditableTime'
+  import EleEditableDate from './components/EleEditableDate'
+  import EleEditableInput from './components/EleEditableInput'
+  import EleEditableImage from './components/EleEditableImage'
+  import EleEditableColor from './components/EleEditableColor'
+  import EleEditableRadio from './components/EleEditableRadio'
+  import EleEditableStatus from './components/EleEditableStatus'
+  import EleEditableSelect from './components/EleEditableSelect'
+  import EleEditableNumber from './components/EleEditableNumber'
+  import EleEditableSwitch from './components/EleEditableSwitch'
+  import EleEditableTimeText from './components/EleEditableTimeText'
+  import EleEditableDateText from './components/EleEditableDateText'
+  import EleEditableTextarea from './components/EleEditableTextarea'
+  import EleEditableDatetime from './components/EleEditableDatetime'
+  import EleEditableCheckbox from './components/EleEditableCheckbox'
+  import EleEditableUploadImage from './components/EleEditableUploadImage'
+  import EleEditableDatetimeText from './components/EleEditableDatetimeText'
   import EleEditableDatetimeRange from './components/EleEditableDatetimeRange'
+  import EleEditableMultipleSelect from './components/EleEditableMultipleSelect'
   const defaultListQuery = {
     page: 1,
     pageSize: 10,
@@ -276,6 +277,7 @@
       EleEditableDatetimeText,
       EleEditableWrapperForm,
       EleEditableDatetimeRange,
+      EleEditableMultipleSelect,
     },
     props: {
       //model,绑定strapi模型
@@ -577,6 +579,8 @@
         this.payload[key] = value
       },
       handleChangePayload() {
+        console.log('key2', key, value)
+        this.payload[key] = value
         //   console.log('key',key,value);
         // this.payload[key] = value
       },

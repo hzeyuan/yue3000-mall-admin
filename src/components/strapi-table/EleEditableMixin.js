@@ -7,7 +7,7 @@ export default {
     // 类型
     type: {
       type: String,
-      required: true
+      required: true,
     },
     // 用于还原失败后newValue的值
     isError: Boolean,
@@ -26,16 +26,16 @@ export default {
     // 是否不需要包裹
     noWrapper: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     // 全局参数
-    globalEditableParams () {
+    globalEditableParams() {
       return this.$EleEditableParams || {}
     },
     // 组件属性: 默认属性和自定义属性的融合
-    attrs () {
+    attrs() {
       return Object.assign(
         {},
         this.globalEditableParams[this.type] || {},
@@ -43,46 +43,47 @@ export default {
         this.customAttrs
       )
     },
-    format () {
+    format() {
       let format =
         this.attrs && this.attrs.format ? this.attrs.format : 'yyyy-MM-dd'
       format = format.replace(/Y/g, 'y')
       format = format.replace(/D/g, 'd')
       return format
     },
-    showFormat () {
+    showFormat() {
       let format =
         this.attrs && this.attrs.format ? this.attrs.format : 'yyyy-MM-dd'
       format = format.replace(/y/g, 'Y')
       format = format.replace(/d/g, 'D')
       return format
-    }
+    },
   },
-  data () {
+  data() {
     return {
       // 用于组件 v-model 绑定值
-      newValue: this.computedValue
+      newValue: this.computedValue,
     }
   },
   watch: {
     // 检测是否出错, 出错后进行还原值
-    isError (value) {
+    isError(value) {
       if (value) {
         this.setNewValue()
       }
     },
     // 当检测到值变化时, 进行设置新值
-    computedValue () {
+    computedValue() {
       this.setNewValue()
-    }
+    },
   },
   methods: {
     // 设置新值
-    setNewValue () {
+    setNewValue() {
+      console.log(' this.computedValue', this.computedValue, this.value)
       this.newValue = this.computedValue
     },
     // 提交
-    handleChange (value) {
+    handleChange(value) {
       if (this.noWrapper) {
         this.$emit('change', value)
       } else {
@@ -90,11 +91,11 @@ export default {
       }
     },
     // 取消(还原值)
-    handleCancel () {
+    handleCancel() {
       this.setNewValue()
     },
     // 日期和时间特殊处理
-    setTimeNewValue () {
+    setTimeNewValue() {
       const value =
         typeof this.computedValue === 'number'
           ? this.computedValue * 1000
@@ -106,7 +107,7 @@ export default {
       }
     },
     // 日期和时间特殊处理
-    handleTimeChange (value) {
+    handleTimeChange(value) {
       if (value) {
         if (typeof this.value === 'number') {
           value = dayjs(value).unix()
@@ -117,10 +118,10 @@ export default {
         }
       }
       this.handleChange(value)
-    }
+    },
   },
-  mounted () {
+  mounted() {
     // 初始化
     this.setNewValue()
-  }
+  },
 }

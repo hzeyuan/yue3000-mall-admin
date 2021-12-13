@@ -73,13 +73,16 @@
               :custom-attrs="column.customAttrs"
               :default-value="column.defaultValue"
               :display-formatter="column.displayFormatter"
+              :isNoWrapper="column.isNoWrapper"
               :empty-text="column.emptyText"
               :field="column.key"
               :title="column.label"
               :options="column.options"
               :type="column.componentType"
               v-model="scope.row[column.key]"
-            />
+            >
+              <!-- <slot :name="column.key" :row="scope.row"></slot> -->
+            </ele-editable>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="120">
@@ -213,6 +216,7 @@
 <script>
   import request from '@/utils/request'
   import qs from 'qs'
+  import EleEditable from './EleEditable.vue'
   import EleEditableWrapperForm from 'vue-ele-editable/src/wrapper/EleEditableWrapperForm'
   import EleEditableUrl from 'vue-ele-editable/src/components/EleEditableUrl'
   import EleEditableText from 'vue-ele-editable/src/components/EleEditableText'
@@ -233,6 +237,7 @@
   import EleEditableCheckbox from 'vue-ele-editable/src/components/EleEditableCheckbox'
   import EleEditableUploadImage from 'vue-ele-editable/src/components/EleEditableUploadImage'
   import EleEditableDatetimeText from 'vue-ele-editable/src/components/EleEditableDatetimeText'
+  import EleEditableDatetimeRange from './components/EleEditableDatetimeRange'
   const defaultListQuery = {
     page: 1,
     pageSize: 10,
@@ -241,6 +246,7 @@
   export default {
     name: 'strapi-table',
     components: {
+      EleEditable,
       EleEditableUrl,
       EleEditableText,
       EleEditableDate,
@@ -261,6 +267,7 @@
       EleEditableUploadImage,
       EleEditableDatetimeText,
       EleEditableWrapperForm,
+      EleEditableDatetimeRange,
     },
     props: {
       //model,绑定strapi模型
@@ -327,8 +334,9 @@
       this.searchQueryList = searchQueryList
       //加工colmns
       this.columns.map((col) => {
-        const { search, key, type } = col
-        if (type === 'image' || 'upload-image') {
+        const { search, key, componentType, customAttrs } = col
+        console.log('type', componentType, customAttrs)
+        if (componentType === 'image' || componentType === 'upload-image') {
           col.customAttrs = {
             action: 'http://192.168.1.116:1337/upload',
             name: 'files',
@@ -548,15 +556,20 @@
           if (type === 'number') return 'text'
           return toggleForm[type] ? toggleForm[type] : type
         }
+
         return toggleForm[type]
           ? 'ele-editable-' + toggleForm[type]
           : 'ele-editable-' + type
       },
       // 更新payloadStatus
       handleUpdatePayload(key, value) {
+        console.log('key', key, value)
         this.payload[key] = value
       },
-      handleChangePayload() {},
+      handleChangePayload() {
+        //   console.log('key',key,value);
+        // this.payload[key] = value
+      },
     },
   }
 </script>

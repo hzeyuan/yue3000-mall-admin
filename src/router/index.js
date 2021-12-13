@@ -405,6 +405,38 @@ export const asyncRoutes = [
     ],
   },
   {
+    path: '/marketing',
+    component: Layout,
+    redirect: '/marketing/dashboard',
+    meta: { title: '营销', icon: 'money' },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        hidden: false,
+        component: () => import('@/views/marketing/dashboard'),
+        meta: {
+          title: '营销概况',
+          icon: 'user',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'coupon',
+        name: 'coupon',
+        hidden: false,
+        component: () => import('@/views/marketing/coupon'),
+        meta: {
+          title: '优惠券',
+          icon: 'money',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+    ],
+  },
+  {
     path: '*',
     redirect: '/404',
     hidden: true,

@@ -18,7 +18,7 @@ export default {
           key: 'id',
           label: '序号',
           type: Number,
-          hidden: false,
+          hidden: true,
         },
         {
           key: 'name',

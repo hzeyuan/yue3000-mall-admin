@@ -45,13 +45,23 @@ export function register() {
   })
 }
 
+// 获取用户等级权益列表
+export function getUserPrivilegeList() {
+  return request({
+    url: '/mall-admin/user-privileges',
+    method: 'get',
+  })
+}
+
 // 获取用户等级列表
+
 export function userLevelList() {
   return request({
     url: '/mall-admin/user_levels',
     method: 'get',
   })
 }
+
 // 添加用户等级
 export function addUserLevel(data) {
   return request({
@@ -60,6 +70,7 @@ export function addUserLevel(data) {
     data,
   })
 }
+
 //获取用户等级详情
 export function getUserLevel(id) {
   return request({
@@ -67,6 +78,7 @@ export function getUserLevel(id) {
     method: 'get',
   })
 }
+
 // 更新用户等级详情
 export function updateUserLevel(id, data) {
   return request({
@@ -75,6 +87,7 @@ export function updateUserLevel(id, data) {
     data,
   })
 }
+
 // 删除用户等级
 export function deleteUserLevel(id) {
   return request({

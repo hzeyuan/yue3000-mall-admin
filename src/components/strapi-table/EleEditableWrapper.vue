@@ -4,7 +4,6 @@
     <template v-if="noWrapper">
       <slot/>
     </template>
-
     <!-- 需要包裹 -->
     <template v-else>
       <!-- 是否正在被编辑 -->
@@ -53,12 +52,14 @@
                   <el-button
                     @click="handleHideEditing"
                     size="small"
-                  >取消</el-button>
+                  >取消
+                  </el-button>
                   <el-button
                     @click="handleChange"
                     size="small"
                     type="primary"
-                  >确定</el-button>
+                  >确定
+                  </el-button>
                 </div>
               </template>
             </ele-editable-wrapper-form>
@@ -75,7 +76,6 @@
           </el-popover>
         </template>
       </template>
-
       <!-- 没有正在编辑 -->
       <template v-else>
         <ele-editable-wrapper-display
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { on, off } from 'element-ui/src/utils/dom'
+import {on, off} from 'element-ui/src/utils/dom'
 import EleEditableWrapperDisplay from './wrapper/EleEditableWrapperDisplay'
 import EleEditableWrapperForm from './wrapper/EleEditableWrapperForm'
 
@@ -106,7 +106,7 @@ export default {
     title: String,
     // 用于校检
     field: {
-      type: String,
+      type: [Boolean, String],
       required: true
     },
     // 是否弹窗
@@ -122,7 +122,7 @@ export default {
     // 自定义属性
     customAttrs: {
       type: Object,
-      default () {
+      default() {
         return {}
       }
     },
@@ -145,7 +145,7 @@ export default {
     // 显示的值(用于显示)
     displayValue: [String, Number, Boolean, Array, Date]
   },
-  data () {
+  data() {
     return {
       // 显示
       visible: false,
@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     // 提交
-    handleChange () {
+    handleChange() {
       this.visible = false
       this.$nextTick(() => {
         this.isEditing = false
@@ -163,7 +163,7 @@ export default {
       this.$emit('submit')
     },
     // 隐藏编辑
-    handleHideEditing () {
+    handleHideEditing() {
       if (this.visible === false) return
       this.visible = false
       this.$nextTick(() => {
@@ -172,7 +172,7 @@ export default {
       this.$emit('cancel')
     },
     // 显示编辑
-    handleShowEditing () {
+    handleShowEditing() {
       this.hideOthers()
       this.isEditing = true
       this.$nextTick(() => {
@@ -180,12 +180,12 @@ export default {
       })
     },
     // 隐藏其他
-    hideOthers () {
+    hideOthers() {
       const components = this.findComponentsDownward(this.$root, 'EleEditableWrapper')
       components.forEach((component) => component.handleHideEditing())
     },
     // 在上下文下, 根据组件名进行组件查找
-    findComponentsDownward (context, componentName) {
+    findComponentsDownward(context, componentName) {
       return context.$children.reduce((components, child) => {
         if (child.$options.name === componentName) components.push(child)
         const foundChilds = this.findComponentsDownward(child, componentName)
@@ -194,11 +194,11 @@ export default {
     }
   },
 
-  mounted () {
+  mounted() {
     // 其他地方关闭弹窗
     on(document, 'click', this.handleHideEditing, false)
   },
-  destroyed () {
+  destroyed() {
     off(document, 'click', this.handleHideEditing, false)
   }
 }

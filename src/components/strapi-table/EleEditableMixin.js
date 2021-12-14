@@ -87,6 +87,7 @@ export default {
       if (this.noWrapper) {
         this.$emit('change', value)
       } else {
+        console.log('value', value)
         this.$emit('update', value)
       }
     },

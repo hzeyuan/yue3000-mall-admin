@@ -33,7 +33,7 @@ export default {
     inline: Boolean,
     // 用于校检
     field: {
-      type: String,
+      type: [Boolean, String],
       required: true
     },
     // 校检规则

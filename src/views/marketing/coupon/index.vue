@@ -130,7 +130,7 @@
             defaultValue: '暂无',
           },
         ],
-        rowBars: { delete: { name: '结束活动' } },
+        rowBars: { delete: { name: '结束活动', type: 'danger' } },
       }
     },
     methods: {

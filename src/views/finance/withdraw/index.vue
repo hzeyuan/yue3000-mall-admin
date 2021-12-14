@@ -1,6 +1,7 @@
 <template>
   <div>
     <strapi-table
+      ref="strapiTable"
       model="users"
       :router="router"
       showSearch
@@ -16,6 +17,35 @@
             <p>会员昵称:{{ row.username }}</p>
             <p>会员等级:{{ row.level }}</p>
           </div>
+        </div>
+      </template>
+      <template slot="opeator" slot-scope="{ row, $index }">
+        <div>
+          <el-link
+            @click="withdrawDetail(row, $index)"
+            :underline="false"
+            key="detail"
+          >
+            详情
+          </el-link>
+          <el-link
+            v-show="row.status === 1 || row.status === 2"
+            @click="withdrawReview(row, $index)"
+            :underline="false"
+            key="review"
+          >
+            <el-divider direction="vertical"></el-divider>
+            审核
+          </el-link>
+          <el-link
+            v-show="row.status === 2"
+            @click="withdrawTransfer(row, $index)"
+            :underline="false"
+            key="transfer"
+          >
+            <el-divider direction="vertical"></el-divider>
+            转账
+          </el-link>
         </div>
       </template>
     </strapi-table>
@@ -96,6 +126,7 @@
       </div>
     </el-drawer>
     <el-dialog
+      destroy-on-close
       label-width="80px"
       title="提现审核"
       :visible.sync="checkDialogVisible"
@@ -104,8 +135,8 @@
       <el-form :model="form">
         <el-form-item label="提现审核">
           <el-radio-group v-model="form.pass">
-            <el-radio label="审核通过"></el-radio>
-            <el-radio label="审核拒绝"></el-radio>
+            <el-radio :label="1">审核通过</el-radio>
+            <el-radio :label="0">审核拒绝</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-alert
@@ -121,6 +152,45 @@
         <el-button type="primary" @click="formSubmit">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      destroy-on-close
+      label-width="80px"
+      title="审核通过,转账中"
+      :visible.sync="transferDialogVisible"
+      width="30%"
+    >
+      <el-result icon="info" title="提现金额" :subTitle="1"></el-result>
+      <el-form :model="form">
+        <el-form-item label="支付单号">
+          <el-input></el-input>
+        </el-form-item>
+        <el-alert
+          title="审核拒绝后，提现金额会全部退回佣金账户"
+          type="info"
+        ></el-alert>
+        <el-form-item label="转账凭证">
+          <ele-editable
+            :customAttrs="{
+              action: 'https://jsonplaceholder.typicode.com/posts/',
+              responseFn: function (response, file) {
+                return file.url
+              },
+            }"
+            field="transfer_voucher"
+            :request-fn="handleChange"
+            type="upload-image"
+            v-model="form.transfer_voucher"
+          />
+        </el-form-item>
+        <el-form-item label="转账备注">
+          <el-input type="textarea" v-model="form.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="transferDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="formSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -128,6 +198,7 @@
   import { formatDate } from '@/utils/date'
   import { refuse, confirm } from '@/api/withdraw'
   import strapiTable from '@/components/strapi-table' //上传文件组件
+  import EleEditable from '@/components/strapi-table/EleEditable.vue'
   const columns = [
     {
       key: 'id',
@@ -138,7 +209,6 @@
     {
       key: 'sn',
       label: '提现单号',
-      editable: false,
       width: '180px',
       type: String,
     },
@@ -146,32 +216,35 @@
       key: 'userInfo',
       width: '180px',
       label: '会员信息',
-      editable: false,
       type: String,
     },
     {
       key: 'phone',
       label: '手机号码',
-      editable: false,
       type: String,
     },
     {
       key: 'money',
       label: '提现金额',
-      editable: false,
+      displayFormatter: (value) => {
+        return `￥${value}`
+      },
+
       type: String,
     },
     {
       key: 'type',
       label: '提现方式',
-      editable: false,
-      filter: (field) => {
-        if (field == 1) {
-          return '提现到钱包余额'
-        } else if (field == 2) {
-          return '提现到微信零钱'
-        } else if (field == 3) {
-          return '提现到微信收款码'
+      displayFormatter: (value) => {
+        switch (value) {
+          case 1:
+            return '提现到余额'
+          case 2:
+            return '提现到微信'
+          case 3:
+            return '提现到微信收款码'
+          case 4:
+            return '提现到支付宝收款码'
         }
       },
       type: String,
@@ -179,19 +252,19 @@
     {
       key: 'status',
       label: '提现状态',
-      filter: (field) => {
+      displayFormatter: (field) => {
         if (field == 1) {
           return '待提现'
         } else if (field == 2) {
           return '提现中'
         } else if (field == 3) {
-          return '-提现成功'
+          return '提现成功'
         } else if (field == 4) {
-          return '提现失败'
+          return '审核失败'
         }
       },
       editableComponent: 'el-input',
-      editable: false,
+
       type: String,
     },
     {
@@ -209,7 +282,12 @@
         return formatDate(new Date(field), 'yyyy-MM-dd hh:mm:ss')
       },
       editableComponent: 'el-input',
-      editable: false,
+
+      type: String,
+    },
+    {
+      key: 'opeator',
+      label: '操作',
       type: String,
     },
   ]
@@ -220,35 +298,24 @@
     },
   }
   export default {
-    components: { strapiTable },
+    components: { strapiTable, EleEditable },
     data() {
       return {
         checkDialogVisible: false, // 审核对话框
+        transferDialogVisible: false, // 提现对话框
         form: {
-          id: -1,
+          sn: '',
           pass: '',
           remark: '',
         },
         model: 'withdraw',
         drawer: false,
         router: router,
-        diyBars: [
-          {
-            name: '详情',
-            callback: (row, index) => {
-              this.withdrawDetail(row, index)
-            },
-          },
-          {
-            name: '审核',
-            callback: (row, index) => {
-              this.withdrawReview(row, index)
-            },
-          },
-        ],
+        diyBars: [],
         withdrawDetails: {},
       }
     },
+
     computed: {
       columns() {
         return columns
@@ -279,21 +346,27 @@
     methods: {
       // 佣金提现详情
       withdrawDetail(row, index) {
-        ;(this.drawer = true), (this.withdrawDetails = row)
+        this.drawer = true
+        this.withdrawDetails = row
       },
       // 提现审核
       withdrawReview(row, index) {
         this.checkDialogVisible = true
-        this.form.id = row.id
+        this.form.sn = row.sn
+      },
+      async withdrawTransfer(row, index) {
+        this.transferDialogVisible = true
       },
       async formSubmit() {
-        //通过
-        if (form.pass === 1) {
-          const { id, remark } = form
-          await confirm({ id, remark })
+        const { sn, remark, pass } = this.form
+        console.log('tgus,firn', this.form)
+        if (pass === 1) {
+          await confirm({ sn, remark })
         } else {
-          await refuse({ id, remark })
+          await refuse({ sn, remark })
         }
+        this.checkDialogVisible = false
+        this.$refs.strapiTable.getList()
       },
     },
   }

@@ -1,15 +1,17 @@
 import request from '@/utils/request'
 
-export function refuse() {
+export function refuse(form) {
   return request({
-    url: '//withdraw/refuse',
+    url: '/mall-admin/withdraw/refuse',
     method: 'post',
+    data: form,
   })
 }
 
-export function confirm() {
+export function confirm(form) {
   return request({
-    url: '/withdraw/confirm',
+    url: '/mall-admin/withdraw/confirm',
     method: 'post',
+    data: form,
   })
 }

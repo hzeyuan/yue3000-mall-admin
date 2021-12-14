@@ -93,7 +93,7 @@
             </slot>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column label="操作" v-if="diyBars.length > 0" min-width="120">
           <template slot-scope="{ row, $index }">
             <el-link
               :underline="false"

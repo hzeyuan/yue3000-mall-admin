@@ -95,3 +95,45 @@ export function deleteUserLevel(id) {
     method: 'DELETE',
   })
 }
+
+// 冻结用户分销资格
+export function freezeDistribution(id) {
+  return request({
+    url: `/mall-admin/distribution/freeze`,
+    method: 'PUT',
+    data: { id, type: 'freeze' },
+  })
+}
+
+// 解冻用户分销资格
+export function unfreezeDistribution(id) {
+  return request({
+    url: `/mall-admin/distribution/freeze`,
+    method: 'PUT',
+    data: { id, type: 'unfreeze' },
+  })
+}
+
+//分销用户详情
+export function memberInfo(id) {
+  return request({
+    url: `/mall-admin/distribution/info/${id}`,
+    method: 'GET',
+  })
+}
+
+//分销用户粉丝
+export function fans(id) {
+  return request({
+    url: `/mall-admin/distribution/fans/${id}`,
+    method: 'GET',
+  })
+}
+
+//分销用户详情
+export function earningsDetail(id) {
+  return request({
+    url: `/mall-admin/distribution/earningsDetail/${id}`,
+    method: 'GET',
+  })
+}

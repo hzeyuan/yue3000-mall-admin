@@ -15,3 +15,19 @@ export function confirm(form) {
     data: form,
   })
 }
+
+export function transferFail(form) {
+  return request({
+    url: '/mall-admin/withdraw/transferFail',
+    method: 'post',
+    data: form,
+  })
+}
+
+export function transferSuccess(form) {
+  return request({
+    url: '/mall-admin/withdraw/transferSuccess',
+    method: 'post',
+    data: form,
+  })
+}

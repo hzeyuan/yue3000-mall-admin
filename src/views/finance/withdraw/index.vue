@@ -7,6 +7,7 @@
       showSearch
       :columns="columns"
       :rowBars="{}"
+      :actionBars="[]"
       :diyBars="diyBars"
     >
       <template slot="userInfo" slot-scope="{ row }">
@@ -22,13 +23,16 @@
       <template slot="opeator" slot-scope="{ row, $index }">
         <div>
           <el-link
+            type="info"
             @click="withdrawDetail(row, $index)"
             :underline="false"
             key="detail"
           >
             详情
           </el-link>
+
           <el-link
+            type="primary"
             v-show="row.status === 1 || row.status === 2"
             @click="withdrawReview(row, $index)"
             :underline="false"
@@ -38,6 +42,7 @@
             审核
           </el-link>
           <el-link
+            type="danger"
             v-show="row.status === 2"
             @click="withdrawTransfer(row, $index)"
             :underline="false"
@@ -149,7 +154,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="checkDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="formSubmit">确 定</el-button>
+        <el-button type="primary" @click="examineFormSubmit">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -157,38 +162,68 @@
       label-width="80px"
       title="审核通过,转账中"
       :visible.sync="transferDialogVisible"
-      width="30%"
+      width="50%"
     >
-      <el-result icon="info" title="提现金额" :subTitle="1"></el-result>
-      <el-form :model="form">
-        <el-form-item label="支付单号">
-          <el-input></el-input>
-        </el-form-item>
-        <el-alert
-          title="审核拒绝后，提现金额会全部退回佣金账户"
-          type="info"
-        ></el-alert>
-        <el-form-item label="转账凭证">
-          <ele-editable
-            :customAttrs="{
-              action: 'https://jsonplaceholder.typicode.com/posts/',
-              responseFn: function (response, file) {
-                return file.url
-              },
-            }"
-            field="transfer_voucher"
-            :request-fn="handleChange"
-            type="upload-image"
-            v-model="form.transfer_voucher"
-          />
-        </el-form-item>
-        <el-form-item label="转账备注">
-          <el-input type="textarea" v-model="form.remark"></el-input>
-        </el-form-item>
-      </el-form>
+      <div class="flex">
+        <el-result style="padding: 0" title="收款二维码">
+          <template slot="icon">
+            <el-image
+              fit="contain"
+              :preview-src-list="[form.money_qr_code]"
+              style="width: 400px; height: 400px"
+              lazy
+              :src="form.money_qr_code"
+            ></el-image>
+          </template>
+          <template slot="extra">
+            <div class="flex justify-center items-center pb-1">
+              提现金额:
+              <p class="text-red-500 text-xl">￥100</p>
+            </div>
+          </template>
+        </el-result>
+        <el-form
+          style="width: 400px"
+          :model="form"
+          label-width="80px"
+          size="mini"
+        >
+          <el-form-item label="是否转账">
+            <el-switch v-model="form.status"></el-switch>
+          </el-form-item>
+          <el-form-item v-show="form.status" label="支付单号">
+            <el-input v-model="form.payment_no"></el-input>
+          </el-form-item>
+          <el-alert
+            v-show="form.status"
+            title="审核拒绝后，提现金额会全部退回佣金账户"
+            type="info"
+          ></el-alert>
+          <el-form-item v-show="form.status" class="pt-2" label="转账凭证">
+            <ele-upload-image
+              name="files"
+              action="http://localhost:1337/upload"
+              :responseFn="
+                (response, file, fileList) => {
+                  return response[0].url
+                }
+              "
+              multiple
+              v-model="form.transfer_voucher"
+            ></ele-upload-image>
+          </el-form-item>
+          <el-form-item label="转账备注">
+            <el-input
+              type="textarea"
+              v-model="form.transfer_description"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="transferDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="formSubmit">确 定</el-button>
+        <el-button type="primary" @click="transferFormSubmit">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -196,9 +231,15 @@
 
 <script>
   import { formatDate } from '@/utils/date'
-  import { refuse, confirm } from '@/api/withdraw'
-  import strapiTable from '@/components/strapi-table' //上传文件组件
-  import EleEditable from '@/components/strapi-table/EleEditable.vue'
+  import {
+    refuse,
+    confirm,
+    transferFail,
+    transferSuccess,
+  } from '@/api/withdraw'
+  import strapiTable from '@/components/strapi-table'
+  import EleUploadImage from 'vue-ele-upload-image'
+
   const columns = [
     {
       key: 'id',
@@ -209,6 +250,13 @@
     {
       key: 'sn',
       label: '提现单号',
+      search: true,
+      searchCompoent: {
+        name: 'el-input',
+        attr: {
+          placeholder: '请输入查询单号',
+        },
+      },
       width: '180px',
       type: String,
     },
@@ -221,6 +269,15 @@
     {
       key: 'phone',
       label: '手机号码',
+      search: true,
+      qs: 'user_id.phone_contains',
+      searchCompoent: {
+        name: 'el-input',
+
+        attr: {
+          placeholder: '请输入手机号码',
+        },
+      },
       type: String,
     },
     {
@@ -298,7 +355,7 @@
     },
   }
   export default {
-    components: { strapiTable, EleEditable },
+    components: { strapiTable, EleUploadImage },
     data() {
       return {
         checkDialogVisible: false, // 审核对话框
@@ -307,6 +364,7 @@
           sn: '',
           pass: '',
           remark: '',
+          status: true,
         },
         model: 'withdraw',
         drawer: false,
@@ -356,8 +414,10 @@
       },
       async withdrawTransfer(row, index) {
         this.transferDialogVisible = true
+        this.form.sn = row.sn
+        this.form.money_qr_code = row.money_qr_code
       },
-      async formSubmit() {
+      async examineFormSubmit() {
         const { sn, remark, pass } = this.form
         console.log('tgus,firn', this.form)
         if (pass === 1) {
@@ -366,6 +426,22 @@
           await refuse({ sn, remark })
         }
         this.checkDialogVisible = false
+        this.$refs.strapiTable.getList()
+      },
+      async transferFormSubmit() {
+        const data = _.pick(this.form, [
+          'payment_no',
+          'transfer_description',
+          'transfer_voucher',
+          'sn',
+        ])
+        if (this.form.status) {
+          data['transfer_voucher'] = data.transfer_voucher.join(',')
+          await transferSuccess(data)
+        } else {
+          await transferFail(data)
+        }
+        this.transferDialogVisible = false
         this.$refs.strapiTable.getList()
       },
     },

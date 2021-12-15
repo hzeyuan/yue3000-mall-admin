@@ -434,6 +434,30 @@ export const asyncRoutes = [
           noKeepAlive: true,
         },
       },
+      {
+        path: 'distributionMember',
+        name: 'distributionMember',
+        hidden: false,
+        component: () => import('@/views/marketing/distribution/member'),
+        meta: {
+          title: '分销会员',
+          icon: 'money',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'distributionOrder',
+        name: 'distributionOrder',
+        hidden: false,
+        component: () => import('@/views/marketing/distribution/order'),
+        meta: {
+          title: '分销订单',
+          icon: 'money',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
     ],
   },
   {

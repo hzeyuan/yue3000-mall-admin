@@ -79,7 +79,6 @@ export default {
   methods: {
     // 设置新值
     setNewValue() {
-      console.log(' this.computedValue', this.computedValue, this.value)
       this.newValue = this.computedValue
     },
     // 提交
@@ -87,7 +86,6 @@ export default {
       if (this.noWrapper) {
         this.$emit('change', value)
       } else {
-        console.log('value', value)
         this.$emit('update', value)
       }
     },

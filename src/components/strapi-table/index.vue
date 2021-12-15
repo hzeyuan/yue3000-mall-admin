@@ -48,7 +48,15 @@
     <el-card shadow="never">
       <div class="flex items-center justify-between">
         <span class="pr-1">数据列表</span>
-        <el-button type="primary" @click="addRow">新增</el-button>
+        <div v-for="actionBar in showActionBars" :key="actionBar">
+          <el-button
+            v-show="actionBar === 'add'"
+            type="primary"
+            @click="addRow"
+          >
+            新增
+          </el-button>
+        </div>
       </div>
     </el-card>
     <!-- 表格 -->
@@ -319,7 +327,7 @@
         default: 'mall-admin',
       },
       columns: [], // 所有列集合
-      actionBars: [], //操作栏
+      actionBars: ['add'], //操作栏
       rowBars: {
         //每一行的操作栏
         type: Object,
@@ -358,14 +366,14 @@
         const { search, key, componentType, customAttrs } = col
         console.log('type', componentType, customAttrs)
         if (componentType === 'image' || componentType === 'upload-image') {
-          col.customAttrs = {
-            action: 'http://192.168.1.116:1337/upload',
-            name: 'files',
-            responseFn: (response, file, fileList) => {
-              console.log('response', response, file, fileList)
-              return response[0].url
-            },
-          }
+          // col.customAttrs = {
+          //   action: 'http://localhost:1337/upload',
+          //   name: 'files',
+          //   responseFn: (response, file, fileList) => {
+          //     console.log('response', response, file, fileList)
+          //     return response[0].url
+          //   },
+          // }
         }
         if (search) {
           this.$set(this.listQuery, key, '')
@@ -385,8 +393,9 @@
             }
           }
           const fieldsQs = _.keyBy(searchQueryList, 'key')
+          console.log('fieldsQs', fieldsQs, validFields)
           _.map(validFields, (value, key) => {
-            let opeator = `${key}_eq` || fieldsQs[key]['qs']
+            let opeator = fieldsQs[key]['qs'] || `${key}_eq`
             filters[`_where`].push({
               [opeator]: _.trim(value),
             })
@@ -394,7 +403,6 @@
           if (!_.isEmpty(filters)) {
             url += `?${qs.stringify(filters)}`
           }
-          console.log('url', url)
           return request({
             url,
             method,
@@ -448,6 +456,9 @@
       // 过滤所有hidden属性的列
       showColumns() {
         return this.columns.filter((col) => col.hidden !== true)
+      },
+      showActionBars() {
+        return this.actionBars ? this.actionBars : ['add']
       },
       showRowBars() {
         if (this.rowBars.detail && !this.rowBars['detail'].callback) {

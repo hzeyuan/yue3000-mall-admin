@@ -10,11 +10,11 @@
     >
       <template slot="discount" slot-scope="{ row }">
         <el-descriptions>
-          <el-descriptions-item label="面额" v-if="row.discount_type === 1">
-            ¥ {{ row.discount }}
-          </el-descriptions-item>
-          <el-descriptions-item label="折扣" v-else>
+          <el-descriptions-item label="折扣" v-if="row.discount_type === 0 ">
             {{ row.discount * 10 }} 折
+          </el-descriptions-item>
+          <el-descriptions-item label="面额" v-else>
+            ¥ {{ row.discount }}
           </el-descriptions-item>
         </el-descriptions>
       </template>
@@ -277,18 +277,37 @@ export default {
         if (!valid) return;
         let data = _.cloneDeep(this.couponFormData)
         data.begin_time = this.funDate(data.begin_time.date, data.begin_time.time)
+        console.log('上传时间', data.begin_time)
         data.end_time = this.funDate(data.end_time.date, data.end_time.time)
         updateCoupon(data)
-          .then(() => {
-            this.$message({
-              message: '添加成功',
-              type: 'success',
-            })
-            this.$refs['strapi-table'].getList()
-            this.$refs['strapi-table'].modal.visible = false
-            this.$refs[formName].resetFields();
+          .then((res) => {
+            console.log('成功信息', res.code)
+            if (res.code !== 1) {
+              this.$message({
+                message: '优惠码重复，',
+                type: 'warning',
+              })
+              this.couponFormData.code = ''
+            } else {
+              this.$message({
+                message: '添加成功',
+                type: 'success',
+              })
+              this.$refs['strapi-table'].getList()
+              this.$refs['strapi-table'].modal.visible = false
+              this.$refs[formName].resetFields();
+              this.couponFormData.begin_time = {
+                date: '',
+                time: '',
+              }
+              this.couponFormData.end_time = {
+                date: '',
+                time: '',
+              }
+            }
           })
-          .catch(() => {
+          .catch((err) => {
+            console.log('错误信息', err)
             this.$message({
               message: '创建失败，稍后再试',
               type: 'error',
@@ -298,12 +317,11 @@ export default {
     },
     funDate(date, time) {
       date = new Date(date)
-      date = (date.valueOf()) / (1000 * 60 * 60 * 24)
-      console.log('时间1', time)
+      // console.log('日期', date)
       time = new Date(time)
-      console.log('时间2', time)
+      date = (date.valueOf()) / (1000 * 60 * 60 * 24)
+      // console.log('时间', time)
       time = (time.valueOf()) % (1000 * 60 * 60 * 24)
-      console.log('时间3', new Date(time))
       return (new Date((date * 1000 * 60 * 60 * 24) + time))
     },
     handleChange(value) {

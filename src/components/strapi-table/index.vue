@@ -121,24 +121,6 @@
               {{ opeator.name }}
             </el-link>
           </template>
-          <!-- <el-link
-              :underline="false"
-              v-if="showRowBars.detail"
-              type="primary"
-              @click="rowDetail(row, $index)"
-            >
-              <el-divider direction="vertical"></el-divider>
-              {{ showRowBars.detail.name || '详情' }}
-            </el-link>
-            <el-link
-              :underline="false"
-              v-if="showRowBars.delete"
-              type="danger"
-              @click="delRow(row, $index)"
-            >
-              <el-divider direction="vertical"></el-divider>
-              {{ showRowBars.delete.name || '删除' }}
-            </el-link> -->
         </el-table-column>
       </el-table>
     </div>
@@ -161,38 +143,40 @@
       :visible.sync="modal.visible"
       width="30%"
     >
-      <div v-if="modal.visible" class="ml-4">
-        <el-form size="mini" label-position="right" label-width="80px">
-          <el-form-item
-            v-for="column in showColumns"
-            :key="column.key"
-            :label="`${column.label}:`"
-          >
-            <component
-              :is="`${componentName(column.componentType)}`"
-              :customAttrs="column.customAttrs"
-              :displayValue="column.displayValue"
-              :field="column.key"
-              :value="payload[column.key]"
-              :noWrapper="false"
-              :options="column.options"
-              :title="column.label"
-              :type="column.componentType"
-              :computedValue="column.type()"
-              @change="handleChangePayload"
-              @update="
-                (value) => {
-                  handleUpdatePayload(column.key, value)
-                }
-              "
-            ></component>
-          </el-form-item>
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="modal.visible = false">取 消</el-button>
-        <el-button type="primary" @click="submitNewForm">确 定</el-button>
-      </span>
+      <slot name="add">
+        <div v-if="modal.visible" class="ml-4">
+          <el-form size="mini" label-position="right" label-width="80px">
+            <el-form-item
+              v-for="column in showColumns"
+              :key="column.key"
+              :label="`${column.label}:`"
+            >
+              <component
+                :is="`${componentName(column.componentType)}`"
+                :customAttrs="column.customAttrs"
+                :displayValue="column.displayValue"
+                :field="column.key"
+                :value="payload[column.key]"
+                :noWrapper="false"
+                :options="column.options"
+                :title="column.label"
+                :type="column.componentType"
+                :computedValue="column.type()"
+                @change="handleChangePayload"
+                @update="
+                  (value) => {
+                    handleUpdatePayload(column.key, value)
+                  }
+                "
+              ></component>
+            </el-form-item>
+          </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="modal.visible = false">取 消</el-button>
+          <el-button type="primary" @click="submitNewForm">确 定</el-button>
+        </span>
+      </slot>
     </el-dialog>
     <!-- 描述详情模态 -->
     <el-dialog
@@ -208,7 +192,7 @@
           direction="vertical"
           colon
           :column="2"
-          abel-width="80px"
+          label-width="80px"
         >
           <el-descriptions-item
             v-for="column in showColumns"
@@ -216,7 +200,7 @@
             :label="`${column.label}`"
           >
             <ele-editable
-              field="true"
+              :field="column.key"
               :custom-attrs="column.customAttrs"
               :default-value="column.defaultValue"
               :display-formatter="column.displayFormatter"
@@ -579,7 +563,6 @@
       //详情
       rowDetail(row, index) {
         this.currentRow = index
-        console.log('111111111111', row)
         this.detailModal = true
       },
       // 添加模态，组件名称转换

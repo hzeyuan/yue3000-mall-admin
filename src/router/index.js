@@ -233,6 +233,18 @@ export const asyncRoutes = [
           noKeepAlive: true,
         },
       },
+      {
+        path: 'afterSale',
+        name: 'AfterSale',
+        hidden: false,
+        component: () => import('@/views/oms/afterSale'),
+        meta: {
+          title: '售后退款',
+          icon: 'order',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
     ],
   },
   {

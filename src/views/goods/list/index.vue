@@ -129,7 +129,7 @@
         </el-table-column>
         <el-table-column
           show-overflow-tooltip
-          label="商品图片"
+          label="商品信息"
           width="420"
           align="center"
         >

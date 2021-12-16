@@ -117,7 +117,7 @@
           align="center"
         ></el-table-column>
         <el-table-column label="编号" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.id }}</template>
+          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
         </el-table-column>
         <el-table-column label="订单编号" width="180" align="center">
           <template slot-scope="scope">{{ scope.row.order_sn }}</template>
@@ -127,25 +127,83 @@
             {{ scope.row.created_at | formatCreateTime }}
           </template>
         </el-table-column>
-        <el-table-column label="用户账号" align="center">
+        <el-table-column width="210px" label="用户账号" align="center">
           <template slot-scope="scope">
-            {{ `${scope.row.username} ${scope.row.phone}` }}
+            <div class="flex text-xs items-start">
+              <el-image :src="scope.row.avatar" lazy></el-image>
+              <div class="pl-2 text-left">
+                <p>会员编号:{{ scope.row.user_sn }}</p>
+                <p>会员昵称:{{ scope.row.username }}</p>
+                <p>手机号:{{ scope.row.phone }}</p>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          label="商品图片"
+          width="320"
+          align="center"
+        >
+          <template #default="{ row }">
+            <div :key="goods" v-for="goods in row.order_goods" class="flex">
+              <el-image
+                style="width: 70px; height: 70px; min-width: 70px"
+                lazy
+                fit="fill"
+                :src="goods.pic_url"
+              ></el-image>
+              <div class="flex flex-col items-start">
+                <div>{{ goods.goods_name }}</div>
+                <el-row>
+                  <el-col :span="16">
+                    <div>
+                      <span>商品规格：</span>
+                      <span>{{ goods.specifications }}</span>
+                    </div>
+                  </el-col>
+                </el-row>
+                <div>
+                  <span>数量：x {{ goods.number }}</span>
+                </div>
+              </div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="订单金额" width="120" align="center">
-          <template slot-scope="scope">￥{{ scope.row.acutal_price }}</template>
+          <template slot-scope="scope">
+            <div class="flex text-xs items-start">
+              <div class="pl-2 text-left">
+                <p>运费金额:￥{{ scope.row.order_price }}</p>
+                <p>订单金额:￥{{ scope.row.order_price }}</p>
+                <p>优惠金额:￥{{ scope.row.order_price }}</p>
+                <p>实付金额:￥{{ scope.row.order_price }}</p>
+              </div>
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column label="支付方式" width="120" align="center">
+        <el-table-column label="收货信息" width="180" align="center">
+          <template slot-scope="scope">
+            <div class="flex text-xs items-start">
+              <div class="pl-2 text-left">
+                <p>收货人:{{ scope.row.receiver }}</p>
+                <p>手机号码:{{ scope.row.phone }}</p>
+                <p>收货地址:{{ scope.row.address }}</p>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="支付方式" width="80" align="center">
           <template slot-scope="scope">
             {{ scope.row.payWay | formatPayType }}
           </template>
         </el-table-column>
-        <el-table-column label="订单来源" width="120" align="center">
+        <el-table-column label="订单来源" width="80" align="center">
           <template slot-scope="scope">
             {{ scope.row.sourceType | formatSourceType }}
           </template>
         </el-table-column>
-        <el-table-column label="订单状态" width="120" align="center">
+        <el-table-column label="订单状态" width="80" align="center">
           <template slot-scope="scope">
             {{ scope.row.status | formatStatus }}
           </template>

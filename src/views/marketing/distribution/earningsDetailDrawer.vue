@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       tableLoading: false,
-      visible: true,
+      visible: false,
       earningsDetailData: [
         {
           created_at: "2021-11-26T14:13:11.000Z",

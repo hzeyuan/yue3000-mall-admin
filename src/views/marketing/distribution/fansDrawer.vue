@@ -19,7 +19,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="营销信息">
+          label="分销信息">
           <template slot-scope="scope">
             <div class="text-xs items-start">
               <div class="pl-2 text-left">

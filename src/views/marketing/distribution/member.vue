@@ -75,135 +75,142 @@
 </template>
 
 <script>
-  import strapiTable from '@/components/strapi-table'
-  import earningsDetailDrawer from './earningsDetailDrawer.vue'
-  import fansDrawer from './fansDrawer.vue'
-  import { freezeDistribution, unfreezeDistribution } from '@/api/user'
-  export default {
-    components: { strapiTable, fansDrawer, earningsDetailDrawer },
-    data() {
-      return {
-        model: 'distribution',
-        router: {
-          find: {
-            url: '/mall-admin/distributions',
-            method: 'get',
-          },
-          findOne: {
-            url: 'users/me',
-            method: 'get',
-          },
-          update: {
-            url: '/users/:id',
-          },
-        },
-        columns: [
-          {
-            key: 'id',
-            label: 'id',
-            type: Number,
-            componentType: 'text',
-            hidden: true,
-          },
-          {
-            key: 'userInfo',
-            label: '名称',
-            width: '180px',
-            type: String,
-            componentType: 'text',
-          },
-          {
-            key: 'phone',
-            label: '手机号',
-            defaultValue: '暂无',
-            componentType: 'text',
-            search: true,
-            qs: 'phone_starts_with',
-            searchCompoent: {
-              name: 'el-input',
-              attr: {
-                placeholder: '请输入手机号',
-              },
-            },
-            type: String,
-          },
-          {
-            key: 'distribution_money',
-            label: '分销佣金',
-            componentType: 'text',
-            displayFormatter(value) {
-              return `￥${value || 0.0}`
-            },
-            type: Number,
-          },
-          {
-            key: 'distribution_order',
-            label: '分销订单数量',
-            componentType: 'text',
-            type: String,
-          },
-          {
-            key: 'membersRelated',
-            label: '分销关系',
-            componentType: 'text',
-            type: String,
-          },
-          {
-            key: 'freeze_distribution',
-            label: '分销状态',
-            componentType: 'text',
-            type: String,
-          },
-          {
-            key: 'opeator',
-            label: '操作',
-            componentType: 'text',
-            type: String,
-          },
-        ],
-        querys: {
-          level: '',
-        },
-        levelOptions: [
-          { label: '等级1', value: 1 },
-          { label: '等级2', value: 2 },
-          { label: '等级3', value: 3 },
-        ],
-        fans: [],
-      }
-    },
-    methods: {
-      queryReset() {
-        this.querys = { level: '' }
-      },
-      // 冻结用户资格
-      async freezeUserDistribution(row) {
-        await freezeDistribution(row.user_id)
-        this.$refs.strapiTable.getList()
-        this.$message.success({ title: '冻结成功' })
-      },
-      async unfreezeUserDistribution(row) {
-        await unfreezeDistribution(row.user_id)
-        this.$refs.strapiTable.getList()
-        this.$message.success({ title: '解冻成功' })
-      },
+import strapiTable from '@/components/strapi-table'
+import earningsDetailDrawer from './earningsDetailDrawer.vue'
+import fansDrawer from './fansDrawer.vue'
+import {freezeDistribution, unfreezeDistribution} from '@/api/user'
 
-      // 粉丝列表
-      async handleShowFans(row) {
-        this.$refs.fansDrawer.open(row.user_id)
-        // const data = await fans(row.user_id)
-        // console.log('data', data)
-        // this.fans = data
+export default {
+  components: {strapiTable, fansDrawer, earningsDetailDrawer},
+  data() {
+    return {
+      model: 'distribution',
+      router: {
+        find: {
+          url: '/mall-admin/distributions',
+          method: 'get',
+        },
+        findOne: {
+          url: 'users/me',
+          method: 'get',
+        },
+        update: {
+          url: '/users/:id',
+        },
       },
-      //佣金详情
-      async handleShowEarningsDestail(row) {
-        this.$refs.earningsDetailDrawer.open(row.user_id)
-        // const data = await fans(row.user_id)
-        // console.log('data', data)
-        // this.fans = data
+      columns: [
+        {
+          key: 'id',
+          label: 'id',
+          type: Number,
+          componentType: 'text',
+          hidden: true,
+        },
+        {
+          key: 'userInfo',
+          label: '名称',
+          width: '180px',
+          type: String,
+          componentType: 'text',
+        },
+        {
+          key: 'phone',
+          label: '手机号',
+          defaultValue: '暂无',
+          componentType: 'text',
+          search: true,
+          qs: 'phone_starts_with',
+          searchCompoent: {
+            name: 'el-input',
+            attr: {
+              placeholder: '请输入手机号',
+            },
+          },
+          type: String,
+        },
+        {
+          key: 'distribution_money',
+          label: '分销佣金',
+          componentType: 'text',
+          displayFormatter(value) {
+            return `￥${value || 0.0}`
+          },
+          type: Number,
+        },
+        {
+          key: 'distribution_order',
+          label: '分销订单数量',
+          componentType: 'text',
+          type: String,
+        },
+        {
+          key: 'membersRelated',
+          label: '分销关系',
+          componentType: 'text',
+          type: String,
+        },
+        {
+          key: 'freeze_distribution',
+          label: '分销状态',
+          componentType: 'text',
+          type: String,
+        },
+        {
+          key: 'opeator',
+          label: '操作',
+          componentType: 'text',
+          type: String,
+        },
+      ],
+      querys: {
+        level: '',
       },
+      levelOptions: [
+        {label: '等级1', value: 1},
+        {label: '等级2', value: 2},
+        {label: '等级3', value: 3},
+      ],
+      fans: [],
+    }
+  },
+  methods: {
+    queryReset() {
+      this.querys = {level: ''}
     },
-  }
+    // 冻结用户资格
+    async freezeUserDistribution(row) {
+      await freezeDistribution(row.user_id)
+      this.$refs.strapiTable.getList()
+      this.$message.success({
+        title: '冻结成功',
+        type: 'success'
+      })
+    },
+    async unfreezeUserDistribution(row) {
+      await unfreezeDistribution(row.user_id)
+      this.$refs.strapiTable.getList()
+      this.$message.success({
+        title: '解冻成功',
+        type: 'success'
+      })
+    },
+
+    // 粉丝列表
+    async handleShowFans(row) {
+      this.$refs.fansDrawer.open(row.user_id)
+      // const data = await fans(row.user_id)
+      // console.log('data', data)
+      // this.fans = data
+    },
+    //佣金详情
+    async handleShowEarningsDestail(row) {
+      this.$refs.earningsDetailDrawer.open(row.user_id)
+      // const data = await fans(row.user_id)
+      // console.log('data', data)
+      // this.fans = data
+    },
+  },
+}
 </script>
 
 <style></style>

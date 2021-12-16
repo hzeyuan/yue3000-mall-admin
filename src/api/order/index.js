@@ -7,33 +7,46 @@ export function fetchList(params) {
   })
 }
 
-export function closeOrder(params) {
+export function confirmOrder(id) {
   return request({
-    url: '/order/update/close',
-    method: 'post',
-    params: params,
+    url: `/mall-admin/order/confirm/${id}`,
+    method: 'PUT',
   })
 }
 
-export function deleteOrder(params) {
+export function closeOrder(id, data) {
   return request({
-    url: '/order/delete',
-    method: 'post',
-    params: params,
+    url: `/mall-admin/orders/close/${id}`,
+    method: 'PUT',
+  })
+}
+
+export function deleteOrder(data) {
+  return request({
+    url: '/mall-admin/order/delete',
+    method: 'PUT',
+    data,
   })
 }
 // 发货api
 export function deliveryOrder(data) {
   return request({
-    url: `/orders/delivery`,
+    url: `/mall-admin/orders/delivery`,
     method: 'put',
-    data: data,
+    data,
   })
 }
 
 export function getOrderDetail(id) {
   return request({
-    url: '/order/' + id,
+    url: '/mall-admin/order/' + id,
+    method: 'get',
+  })
+}
+
+export function getOrderTraces(id) {
+  return request({
+    url: '/mall-admin/order/traces/' + id,
     method: 'get',
   })
 }
@@ -41,7 +54,7 @@ export function getOrderDetail(id) {
 export function updateReceiverInfo(data) {
   return request({
     url: '/order/update/receiverInfo',
-    method: 'post',
+    method: 'PUT',
     data: data,
   })
 }

@@ -146,7 +146,7 @@
           align="center"
         >
           <template #default="{ row }">
-            <div :key="goods" v-for="goods in row.order_goods" class="flex">
+            <div :key="goods.id" v-for="goods in row.order_goods" class="flex">
               <el-image
                 style="width: 70px; height: 70px; min-width: 70px"
                 lazy
@@ -208,20 +208,24 @@
             {{ scope.row.status | formatStatus }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="操作" width="300">
           <template slot-scope="scope">
             <el-button
               size="mini"
               @click="handleViewOrder(scope.$index, scope.row)"
             >
-              查看订单
+              订单详情
             </el-button>
-            <!-- <el-button
+            <!-- 待发货:取消订单 -->
+            <el-button
               size="mini"
+              type="warning"
               @click="handleCloseOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 0"
-              >关闭订单</el-button
-            > -->
+              v-show="scope.row.status === 200"
+            >
+              取消订单
+            </el-button>
+            <!-- 待发货:发货 -->
             <el-button
               size="mini"
               @click="handleDeliveryOrder(scope.$index, scope.row)"
@@ -229,20 +233,28 @@
             >
               订单发货
             </el-button>
-            <!-- 300:已发货，400：已收货 -->
+            <!-- 待发货，待收货，运输中，已完成:物流查询 -->
             <el-button
               size="mini"
               @click="handleViewLogistics(scope.$index, scope.row)"
-              v-show="scope.row.status === 300 || scope.row.status === 400"
+              v-show="scope.row.status >= 300 && scope.row.status <= 600"
             >
-              订单跟踪
+              物流查询
             </el-button>
-            <!-- 600：已关闭订单，700：已完成订单  -->
+            <!-- 已完成:确认收货 -->
+            <el-button
+              size="mini"
+              @click="handleConfirmOrder(scope.row)"
+              v-show="scope.row.status >= 300 && scope.row.status < 600"
+            >
+              确认收货
+            </el-button>
+            <!-- 已关闭:删除订单 -->
             <el-button
               size="mini"
               type="danger"
               @click="handleDeleteOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 600 || scope.row.status === 700"
+              v-show="scope.row.status === 700"
             >
               删除订单
             </el-button>
@@ -301,16 +313,18 @@
         </el-button>
       </span>
     </el-dialog>
-    <logistics-dialog
-      :orderTraces="orderTraces"
-      v-model="logisticsDialogVisible"
-    ></logistics-dialog>
+    <OrderTracesDrawer ref="orderTraces"></OrderTracesDrawer>
+    <OrderDeliveryDrawer
+      @isDelivery="getList"
+      ref="orderDelivery"
+    ></OrderDeliveryDrawer>
   </div>
 </template>
 <script>
-  import { fetchList, closeOrder, deleteOrder } from '@/api/order'
+  import OrderDeliveryDrawer from './components/OrderDeliveryDrawer'
+  import { fetchList, closeOrder, deleteOrder, confirmOrder } from '@/api/order'
   import { formatDate } from '@/utils/date'
-  import LogisticsDialog from '@/views/oms/order/components/logisticsDialog'
+  import OrderTracesDrawer from './components/OrderTracesDrawer'
   const defaultListQuery = {
     page: 1,
     pageSize: 10,
@@ -323,7 +337,7 @@
   }
   export default {
     name: 'orderList',
-    components: { LogisticsDialog },
+    components: { OrderTracesDrawer, OrderDeliveryDrawer },
     data() {
       return {
         listQuery: Object.assign({}, defaultListQuery),
@@ -398,7 +412,6 @@
           },
         ],
         // 订单物流
-        logisticsDialogVisible: false,
         orderTraces: [],
       }
     },
@@ -438,7 +451,7 @@
         } else if (value === 100) {
           return '待付款'
         } else if (value === 600) {
-          return '已关闭'
+          return '已完成'
         }
       },
     },
@@ -453,33 +466,90 @@
       handleSelectionChange(val) {
         this.multipleSelection = val
       },
+      //查看订单
       handleViewOrder(index, row) {
         this.$router.push({ path: '/oms/orderDetail', query: { id: row.id } })
       },
+      // 取消订单
       handleCloseOrder(index, row) {
-        this.closeOrder.dialogVisible = true
-        this.closeOrder.orderIds = [row.id]
+        this.$confirm('确认取消订单吗?', '信息', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info',
+        })
+          .then(async () => {
+            await closeOrder(row.id)
+            this.$message({
+              type: 'success',
+              message: '取消成功!',
+            })
+            this.getList()
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '操作取消',
+            })
+          })
       },
       // 处理订单发货
       handleDeliveryOrder(index, row) {
-        let listItem = this.covertOrder(row)
-        this.$router.push({
-          path: '/oms/deliverOrderList',
-          query: { list: [listItem] },
-        })
+        this.$refs.orderDelivery.open(row.id)
       },
-      handleViewLogistics(index, row) {
-        if (!row.traces) return
-        const traces = [...row.traces]
-        traces.reverse()
-        this.orderTraces = traces
-        this.logisticsDialogVisible = true
-      },
+      // 删除订单
       handleDeleteOrder(index, row) {
         let ids = []
         ids.push(row.id)
-        this.deleteOrder(ids)
+        this.$confirm('确认删除订单吗?', '信息', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'danger',
+        })
+          .then(async () => {
+            await deleteOrder(ids)
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
+            })
+            this.getList()
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '操作取消',
+            })
+          })
       },
+      // 确认收货
+      handleConfirmOrder(row) {
+        this.$confirm('确认订单商品已收货吗?', '信息', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'danger',
+        })
+          .then(async () => {
+            await confirmOrder(row.id)
+            this.$message({
+              type: 'success',
+              message: '收货成功!',
+            })
+            this.getList()
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '操作取消',
+            })
+          })
+      },
+      // 物流查询
+      handleViewLogistics(index, row) {
+        this.$refs.orderTraces.open(row.id)
+        // const traces = [...row.traces]
+        // traces.reverse()
+        // this.orderTraces = traces
+      },
+
       handleBatchOperate() {
         if (
           this.multipleSelection == null ||
@@ -594,19 +664,6 @@
             this.getList()
           })
         })
-      },
-      covertOrder(order) {
-        let listItem = {
-          orderId: order.id,
-          orderSn: order.order_sn,
-          receiverName: order.username,
-          receiverPhone: order.phone,
-          // receiverPostCode: order.receiverPostCode, // todo；邮政编号
-          address: order.address,
-          deliveryCompany: order.ship_channel,
-          deliverySn: order.ship_sn,
-        }
-        return listItem
       },
     },
   }

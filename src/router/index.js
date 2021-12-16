@@ -219,7 +219,7 @@ export const asyncRoutes = [
     path: '/oms',
     component: Layout,
     redirect: '/oms/order',
-    meta: { title: '订单管理', icon: 'order' },
+    meta: { title: '订单', icon: 'order' },
     children: [
       {
         path: 'order',
@@ -228,6 +228,18 @@ export const asyncRoutes = [
         component: () => import('@/views/oms/order'),
         meta: {
           title: '订单列表',
+          icon: 'order',
+          affix: false,
+          noKeepAlive: true,
+        },
+      },
+      {
+        path: 'orderRefund',
+        name: 'OrderRefund',
+        hidden: false,
+        component: () => import('@/views/oms/order'),
+        meta: {
+          title: '售后退款',
           icon: 'order',
           affix: false,
           noKeepAlive: true,

@@ -361,14 +361,16 @@ export default {
       if (!operateType) {
         this.$message({
           type: 'info',
-          message: '请选择批量操作方法'
+          message: '请选择批量操作方法',
+          duration: 1000,
         })
         return
       }
       if (!this.afterSaleSelect.length > 0) {
         this.$message({
           type: 'info',
-          message: '请勾择需要操作订单'
+          message: '请勾择需要操作订单',
+          duration: 1000,
         })
         return
       }

@@ -53,6 +53,16 @@
               placeholder="请选择时间"
             ></el-date-picker>
           </el-form-item>
+          <el-form-item label="订单来源：">
+            <el-select class="select-width" v-model="listQuery.sourceType" placeholder="请选择订单来源">
+              <el-option
+                v-for="item in sourceTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
         </el-form>
       </div>
       <div class="flex items-center justify-between" style="margin-left: 50px">
@@ -308,7 +318,9 @@ const defaultListQuery = {
   status: 0,
   // 下单时间
   create_at: '',
-  goods_name: ''
+  goods_name: '',
+  // 订单来源
+  sourceType: ''
 
 }
 export default {
@@ -363,16 +375,7 @@ export default {
           value: 1,
         },
       ],
-      sourceTypeOptions: [
-        {
-          label: 'PC订单',
-          value: 0,
-        },
-        {
-          label: 'APP订单',
-          value: 1,
-        },
-      ],
+
       operateOptions: [
         {
           label: '批量发货',
@@ -443,6 +446,17 @@ export default {
           value: 700
         },
       ],
+      // 订单来源
+      sourceTypeOptions: [
+        {
+          label: 'PC订单',
+          value: 0,
+        },
+        {
+          label: 'APP订单',
+          value: 1,
+        },
+      ],
     }
   },
   created() {
@@ -470,16 +484,16 @@ export default {
       }
     },
     formatStatus(value) {
-      if (value === 200) {
+      if (value === 100) {
+        return '待付款'
+      } else if (value === 200) {
         return '待发货'
       } else if (value === 300) {
         return '已发货'
       } else if (value === 400) {
-        return '待评价'
+        return '待收货'
       } else if (value === 500) {
-        return '已完成'
-      } else if (value === 100) {
-        return '待付款'
+        return '待评价'
       } else if (value === 600) {
         return '已完成'
       } else if (value === 700) {
@@ -669,7 +683,7 @@ export default {
       }
       if (status) {
         if (status === 300) {
-          data.status_in = [300, 301, 302, 303]
+          data.status_in = [300, 301, 302, 303] + ''
         } else {
           data.status = status
         }

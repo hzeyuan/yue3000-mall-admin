@@ -196,7 +196,7 @@ export function getAfterSaleList(params) {
         refund_price: '11.00',
         refund_type: '仅退款',
         afterSaleSn: '202104071532033033',
-        status: '退款成功',
+        status: '申请退款',
         user_id: 1912,
         user: {
           avatar:
@@ -259,9 +259,9 @@ export function getAfterSaleList(params) {
         order_status: 3,
         pay_way: 3,
         refund_price: '11.00',
-        refund_type: '仅退款',
+        refund_type: '退货退款',
         afterSaleSn: '202104071532033033',
-        status: '退款成功',
+        status: '等待退款',
         user_id: 1912,
         user: {
           avatar:

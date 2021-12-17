@@ -5,7 +5,10 @@
       :visible.sync="dialogShow"
       width="40%">
       <div class="max-h-96 overflow-y-auto">
-        <el-divider content-position="left">售后信息</el-divider>
+        <el-divider
+          content-position="left">
+          售后信息
+        </el-divider>
         <div class="flex flex-wrap p-5">
           <div class="w-1/3 mb-2">售后单号：{{ afterSaleData.afterSaleSn }}</div>
           <div class="w-1/3 mb-2">退款方式：{{ afterSaleData.refund_type }}</div>
@@ -16,7 +19,10 @@
           <div class="w-1/3 mb-2">申请状态：{{ afterSaleData.status }}</div>
           <div class="w-1/3 mb-2">售后说明：{{ afterSaleData.refund_type }}</div>
         </div>
-        <el-divider content-position="left">订单信息</el-divider>
+        <el-divider
+          content-position="left">
+          订单信息
+        </el-divider>
         <div class="flex flex-wrap p-5">
           <div class="w-1/3 mb-2">订单编号：{{ afterSaleData.order.order_sn }}</div>
           <div class="w-1/3 mb-2">订单金额：{{ afterSaleData.order.order_amount }}</div>
@@ -24,7 +30,10 @@
           <div class="w-1/3 mb-2">配送方式：物流配送</div>
           <div class="w-1/3 mb-2">订单状态：{{ afterSaleData.order.order_status }}</div>
         </div>
-        <el-divider content-position="left">会员信息</el-divider>
+        <el-divider
+          content-position="left">
+          会员信息
+        </el-divider>
         <div class="flex flex-wrap p-5">
           <div class="w-1/3 mb-2">会员编号：{{ afterSaleData.user.user_sn }}</div>
           <div class="w-1/3 mb-2">会员昵称：{{ afterSaleData.user.username }}</div>
@@ -32,7 +41,10 @@
           <div class="w-1/3 mb-2">会员性别：{{ afterSaleData.user.sex }}</div>
           <div class="w-1/3 mb-2">注册时间：{{ afterSaleData.user.create_time }}</div>
         </div>
-        <el-divider content-position="left">退款商品</el-divider>
+        <el-divider
+          content-position="left">
+          退款商品
+        </el-divider>
         <div class="pb-2">
           <el-table :data="afterSaleData.order_goods"
                     :summary-method="getSummaries"
@@ -62,11 +74,60 @@
             </el-table-column>
           </el-table>
         </div>
-        <el-divider content-position="left">售后操作</el-divider>
-        <el-divider content-position="left">售后日志</el-divider>
+        <el-divider
+          content-position="left"
+          v-if="afterSaleData.refund_type === '退货退款'">
+          收货信息
+        </el-divider>
+        <div class="flex flex-wrap p-5"
+             v-if="afterSaleData.refund_type === '退货退款'">
+          <div class="w-1/3 mb-2">快递公司：{{ afterSaleData.user.user_sn }}</div>
+          <div class="w-1/3 mb-2">快递单号：{{ afterSaleData.user.username }}</div>
+          <div class="w-1/3 mb-2">快递说明：{{ afterSaleData.user.phone }}</div>
+          <div class="w-1/3 mb-2">退货地址：{{ afterSaleData.user.sex }}</div>
+          <div class="w-1/3 mb-2">入库方式：{{ afterSaleData.user.create_time }}</div>
+          <div class="w-1/3 mb-2">收货时间：{{ afterSaleData.user.create_time }}</div>
+        </div>
+        <el-divider
+          content-position="left">
+          售后日志
+        </el-divider>
+        <div>
+          <el-timeline>
+            <el-timeline-item
+              v-for="(activity, index) in activities"
+              :key="index"
+              :timestamp="activity.timestamp">
+              <h3>{{ activity.content }}</h3>
+              <span>备注：{{ activity.content }}</span>
+            </el-timeline-item>
+          </el-timeline>
+        </div>
       </div>
+      <el-dialog
+        width="20%"
+        :title="innerDialogTitle"
+        :visible.sync="innerVisibleShow"
+        append-to-body>
+        <div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="innerVisibleShow = false">取 消</el-button>
+          <el-button type="primary" @click="innerVisibleShow = false">确 定</el-button>
+        </span>
+      </el-dialog>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogShow = false">确 定</el-button>
+        <el-button v-if="afterSaleData.status === '申请退款'" type="success"
+                   @click="onSuccessBtn(afterSaleData.status)">同意退款</el-button>
+        <el-button v-if="afterSaleData.status === '申请退款'" type="warning"
+                   @click="onWarningBtn(afterSaleData.status)">拒绝退款</el-button>
+        <el-button v-else-if="afterSaleData.status === '商家待收货'" type="success"
+                   @click="onSuccessBtn(afterSaleData.status)">确认收货</el-button>
+        <el-button v-else-if="afterSaleData.status === '商家待收货'" type="warning"
+                   @click="onWarningBtn(afterSaleData.status)">拒绝收货</el-button>
+        <el-button v-else-if="afterSaleData.status === '等待退款'" type="success"
+                   @click="onSuccessBtn(afterSaleData.status)">确认退款</el-button>
+        <el-button type="primary" @click="dialogShow = false">取 消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -76,9 +137,16 @@
 export default {
   name: "operateDialog",
   props: {},
+  watch: {
+    afterSaleData: {
+      deep: true,
+      handler(value) {
+        console.log('对话框数据', value)
+      }
+    }
+  },
   data() {
     return {
-      dialogShow: false,
       afterSaleData: {
         create_time: '2021-04-07 15:32:03',
         order: {
@@ -143,11 +211,45 @@ export default {
           user_sn: '73177848',
         },
       },
+      // 售后日志列表
+      activities: [
+        {
+          content: '活动按期开始',
+          timestamp: '2018-04-15',
+        },
+        {
+          content: '通过审核',
+          timestamp: '2018-04-13',
+        },
+        {
+          content: '创建成功',
+          timestamp: '2018-04-11',
+        }
+      ],
+      // 外层对话框显示开关
+      dialogShow: false,
+      // 内层对话框显示开关
+      innerVisibleShow: false,
+      innerDialogTitle: '',
+      innerDialogSpan: '',
     }
   },
   mounted() {
   },
   methods: {
+    onSuccessBtn(type) {
+      if (type === '申请退款') {
+        let id = $('.after_sale_id').val();
+        let pay_way = $('.pay_way_text').text();
+        let refund_type = $('.refund_type_text').text();
+        let refund_price = $('.refund_price_text').text();
+        let refund_address = $('.refund_address_text').text();
+      }
+      this.innerVisibleShow = true
+    },
+    onWarningBtn() {
+      this.innerVisibleShow = true
+    },
     getSummaries(param) {
       const {columns, data} = param;
       const sums = [];
@@ -173,6 +275,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+#operateDialog {
+  .el-divider--horizontal {
+    margin: 10px 0;
+  }
+}
 
 </style>

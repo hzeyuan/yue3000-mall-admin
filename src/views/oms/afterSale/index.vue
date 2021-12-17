@@ -67,7 +67,7 @@
       <div class="flex items-center justify-between" style="margin-left: 72px">
         <div class="pt-2">
           <span class="el-form-item__label">售后申请状态：</span>
-          <el-radio-group v-model="listQuery.afterSaleType">
+          <el-radio-group v-model="listQuery.afterSaleType" @change="onSearchList">
             <el-radio-button
               v-for="item in afterSaleOptions"
               :key="item.value"

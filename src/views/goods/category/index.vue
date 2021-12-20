@@ -3,7 +3,7 @@
     <el-card>
       <i class="el-icon-tickets" style="margin-top: 5px"></i>
       <span style="margin-top: 5px">数据列表</span>
-      <el-button class="btn-add" @click="handleAddProductCate()" size="mini">
+      <el-button class="float-right mr-5" type="primary" @click="handleAddProductCate()">
         添加
       </el-button>
     </el-card>
@@ -56,7 +56,8 @@
               lazy
               fit="cover"
               :src="scope.row.pic_url"
-            ></el-image>
+            >
+            </el-image>
           </template>
         </el-table-column>
         <el-table-column
@@ -165,8 +166,10 @@ export default {
         return '一级'
       } else if (value === 'L2') {
         return '二级'
+      } else if (value === 'L3') {
+        return '三级'
       }
-    },
+    }
   },
 }
 </script>

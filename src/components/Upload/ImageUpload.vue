@@ -1,35 +1,34 @@
-<!--单张图片的上传 上传后隐藏上传框-->
 <template>
-  <div class="PictureUpload">
-    <el-upload
-      :class="{disabled:upShow}"
-      action="''"
-      list-type="picture-card"
-      :file-list="fileList"
-      :http-request="reqUpload"
-      :before-remove="beforeRemove"
-      :on-preview="handlePictureCardPreview"
-      :on-remove="handleRemove">
-      <i class="el-icon-plus"></i>
-    </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
-  </div>
+<div id="ImageUpload">
+  <el-upload
+    :class="{disabled:upShow}"
+    action="''"
+    list-type="picture-card"
+    :file-list="fileList"
+    :http-request="reqUpload"
+    :before-remove="beforeRemove"
+    :on-preview="handlePictureCardPreview"
+    :on-remove="handleRemove">
+    <i class="el-icon-plus"></i>
+  </el-upload>
+  <el-dialog :visible.sync="dialogVisible">
+    <img width="100%" :src="dialogImageUrl" alt="">
+  </el-dialog>
+</div>
 </template>
 
 <script>
-import {policy} from '@/api/oss'
+import {policy} from "@/api/oss";
 
 export default {
-  name: "iconUpload",
+  name: "ImageUpload",
   props: {
     icon: String,
   },
   computed: {
     // 计算图片数量 若为1 则隐藏上传窗口
     upShow () {
-      if (this.gallery === '') {
+      if (this.fileList.length === 0) {
         return false
       }
       return true
@@ -71,19 +70,20 @@ export default {
     },
   },
   mounted() {
-    if (this.icon !== null && this.icon !== '' && this.icon !== undefined) {
-      this.fileList = [{
-        url: this.icon,
-        id: 1
-      }]
-      this.gallery = this.icon
-    }
+    if (this.icon === '') return
+    this.fileList = [{
+      url: this.icon,
+      id: 1
+    }]
+    this.gallery = this.icon
   }
 }
 </script>
 
-<style>
-.disabled .el-upload--picture-card {
-  display: none;
+<style lang="scss">
+#ImageUpload{
+  .disabled .el-upload--picture-card {
+    display: none;
+  }
 }
 </style>

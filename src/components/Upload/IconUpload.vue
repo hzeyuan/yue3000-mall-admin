@@ -30,25 +30,26 @@ export default {
       default: false
     }
   },
-  watch: {
-    icon (newValue,oldValue) {
-      if (newValue !== oldValue){
-        this.gallery = this.icon
-        this.fileList = [
-          {
-            url: this.icon
-          }
-        ]
-      }
-    }
-  },
+  // watch: {
+  //   icon(newValue, oldValue) {
+  //     if (newValue !== oldValue) {
+  //       this.gallery = this.icon
+  //       this.fileList = [
+  //         {
+  //           url: this.icon
+  //         }
+  //       ]
+  //     }
+  //   }
+  // },
   computed: {
     // 计算图片数量 若为1 则隐藏上传窗口
-    upShow () {
-      return !this.gallery;
+    upShow() {
+      // console.log('图标数量', this.gallery)
+      return this.gallery;
     },
   },
-  data () {
+  data() {
     return {
       // 图片上传的数据列表
       fileList: [],
@@ -60,9 +61,20 @@ export default {
       dialogVisible: false
     }
   },
+  mounted() {
+    if (this.icon) {
+      this.gallery = this.icon
+      this.fileList = [
+        {
+          id: 1,
+          url: this.icon
+        }
+      ]
+    }
+  },
   methods: {
     // 上传图片
-    async reqUpload (e) {
+    async reqUpload(e) {
       const form_data = new FormData();
       form_data.append("files", e.file);
       const res = await policy(form_data)
@@ -75,11 +87,11 @@ export default {
       this.dialogVisible = true;
     },
     // 删除图片 并对gallery数据进行处理
-    handleRemove () {
+    handleRemove() {
       this.gallery = ''
     },
     // 删除图片前的对话框
-    beforeRemove(file, fileList){
+    beforeRemove(file, fileList) {
       return this.$confirm('确定删除该图片？');
     },
   },

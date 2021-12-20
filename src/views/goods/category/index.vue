@@ -41,9 +41,9 @@
         ></el-table-column>
         <el-table-column label="类目图标" width="100" align="center">
           <template slot-scope="scope">
+            <!--            {{ scope.row.icon_url }}-->
             <el-image
               style="width: 50px; height: 50px"
-              lazy
               fit="fill"
               :src="scope.row.icon_url"
             ></el-image>
@@ -53,7 +53,6 @@
           <template slot-scope="scope">
             <el-image
               style="width: 50px; height: 50px"
-              lazy
               fit="cover"
               :src="scope.row.pic_url"
             >

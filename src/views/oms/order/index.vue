@@ -8,15 +8,13 @@
           style="float: right"
           type="primary"
           @click="handleSearchList()"
-          size="small"
-        >
+          size="small">
           查询搜索
         </el-button>
         <el-button
           style="float: right; margin-right: 15px"
           @click="handleResetSearch()"
-          size="small"
-        >
+          size="small">
           重置
         </el-button>
       </div>
@@ -50,8 +48,8 @@
               v-model="listQuery.create_at"
               value-format="yyyy-MM-dd"
               type="date"
-              placeholder="请选择时间"
-            ></el-date-picker>
+              placeholder="请选择时间">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="订单来源：">
             <el-select class="select-width" v-model="listQuery.sourceType" placeholder="请选择订单来源">
@@ -318,6 +316,7 @@ const defaultListQuery = {
   status: 0,
   // 下单时间
   create_at: '',
+  // 商品名称
   goods_name: '',
   // 订单来源
   sourceType: ''

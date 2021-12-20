@@ -41,12 +41,14 @@
         <el-form-item label="分类图标：">
           <icon-upload
             ref="icon_url"
+            v-if="uploadShow"
             :icon="productCate.icon_url"
           ></icon-upload>
         </el-form-item>
         <el-form-item label="分类图片：">
           <icon-upload
             ref="pic_url"
+            v-if="uploadShow"
             :icon="productCate.pic_url"
           ></icon-upload>
         </el-form-item>
@@ -141,6 +143,7 @@ export default {
         {id: 3, level: 'L3', label: '三级菜单'},
       ],
       filterAttrs: [],
+      uploadShow: true,
     }
   },
   watch: {
@@ -172,8 +175,10 @@ export default {
     },
     // 根据ID获取分类详细
     async getCategoriesById(id) {
+      this.uploadShow = false
       const res = await fetchList('?id=' + id)
       this.productCate = res[0]
+      this.uploadShow = true
     },
     // 修改分类信息
     onSubmit(formName) {

@@ -9,6 +9,9 @@ export function getLotteryRecordList(page) {
   })
 }
 
+
+
+
 //  获取抽奖活动列表
 export function getLotteryActivityList(page) {
   return request({
@@ -57,6 +60,13 @@ export function updateLotteryActivityStatus(id, data){
 
 
 
+// 获取抽奖奖品列表
+export function getLotteryPrizeList(page) {
+  return request({
+    url: 'mall-admin/luckdraw/prizeList?page=' + page,
+    method: 'get'
+  })
+}
 
 // 获取抽奖活动奖品列表
 export function getLotteryActivityPrizeList(id){
@@ -87,7 +97,7 @@ export  function updateLotteryActivityPrize(id, data){
 // 删除抽奖活动奖品
 export function deleteLotteryActivityPrize(id){
   return request({
-    url: 'mall-admin/luckdraw/prize/id',
+    url: 'mall-admin/luckdraw/prize/' + id,
     method: 'delete',
   })
 }

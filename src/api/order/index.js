@@ -78,11 +78,11 @@ export function updateOrderNote(params) {
 }
 
 export function getAfterSaleList(params) {
-  // return request({
-  //   url: '/after_sale/list',
-  //   method: 'post',
-  //   params: params,
-  // })
+  return request({
+    url: 'mall-admin/after-sales/lists',
+    method: 'get',
+    params: params,
+  })
   console.log('售后订单搜索对象', params)
   return {
     list: [

@@ -96,14 +96,14 @@
           <template slot-scope="scope">{{ scope.row.order.order_sn }}</template>
         </el-table-column>
         <el-table-column label="售后编号" width="180" align="center">
-          <template slot-scope="scope">{{ scope.row.afterSaleSn }}</template>
+          <template slot-scope="scope">{{ scope.row.after_sales.sn }}</template>
         </el-table-column>
         <el-table-column label="申请人信息" width="210px" align="center">
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <el-image :src="scope.row.user.avatar" lazy></el-image>
               <div class="pl-2 text-left">
-                <p>会员编号:{{ scope.row.user.user_sn }}</p>
+                <p>会员编号:{{ scope.row.user.sn }}</p>
                 <p>会员昵称:{{ scope.row.user.username }}</p>
                 <p>手机号:{{ scope.row.user.phone }}</p>
               </div>
@@ -113,11 +113,11 @@
         <el-table-column label="商品信息" width="210px" align="center">
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
-              <el-image :src="scope.row.order_goods[0].image" lazy></el-image>
+              <el-image :src="scope.row.order_goods[0].pic_url" lazy></el-image>
               <div class="pl-2 text-left">
-                <p>商品编号:{{ scope.row.order_goods[0].goods_id }}</p>
+                <p>商品编号:{{ scope.row.order_goods[0].goods_sn }}</p>
                 <p class="truncate w-32">商品名称:{{ scope.row.order_goods[0].goods_name }}</p>
-                <p>商品价格:{{ scope.row.order_goods[0].goods_price }}</p>
+                <p>商品价格:{{ scope.row.order_goods[0].price }}</p>
               </div>
             </div>
           </template>
@@ -126,9 +126,9 @@
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <div class="pl-2 text-left">
-                <p>订单状态:{{ scope.row.order.order_status }}</p>
-                <p>支付金额:{{ scope.row.order.order_amount }}</p>
-                <p>支付方式:{{ scope.row.order.pay_way }}</p>
+                <p>订单状态:{{ scope.row.order.status }}</p>
+                <p>支付金额:{{ scope.row.order.order_price }}</p>
+                <p>支付方式:{{ scope.row.order.payWay }}</p>
               </div>
             </div>
           </template>
@@ -137,16 +137,16 @@
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <div class="pl-2 text-left">
-                <p>售后方式:{{ scope.row.refund_type }}</p>
-                <p>退款金额:{{ scope.row.refund_price }}</p>
-                <p>售后状态:{{ scope.row.status }}</p>
+                <p>售后方式:{{ scope.row.after_sales.refund_type }}</p>
+                <p>退款金额:{{ scope.row.after_sales.refund_price }}</p>
+                <p>售后状态:{{ scope.row.after_sales.status }}</p>
               </div>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="申请时间时间" width="180" align="center">
           <template slot-scope="scope">
-            {{ scope.row.create_time | formatCreateTime }}
+            {{ scope.row.create_at | formatCreateTime }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">

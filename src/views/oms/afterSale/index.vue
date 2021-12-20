@@ -291,7 +291,6 @@ export default {
           label: '退款成功',
           value: 7
         },
-
       ],
       // 批量操作方法列表
       operateType: null,

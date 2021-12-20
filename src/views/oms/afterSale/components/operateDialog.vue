@@ -45,7 +45,7 @@
           content-position="left">
           退款商品
         </el-divider>
-        <div class="pb-2">
+        <div class="p-5">
           <el-table :data="afterSaleData.order_goods"
                     :summary-method="getSummaries"
                     show-summary
@@ -92,7 +92,7 @@
           content-position="left">
           售后日志
         </el-divider>
-        <div>
+        <div class="pl-20 p-5">
           <el-timeline>
             <el-timeline-item
               v-for="(activity, index) in activities"
@@ -104,18 +104,6 @@
           </el-timeline>
         </div>
       </div>
-      <el-dialog
-        width="20%"
-        :title="innerDialogTitle"
-        :visible.sync="innerVisibleShow"
-        append-to-body>
-        <div>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="innerVisibleShow = false">取 消</el-button>
-          <el-button type="primary" @click="innerVisibleShow = false">确 定</el-button>
-        </span>
-      </el-dialog>
       <span slot="footer" class="dialog-footer">
         <el-button v-if="afterSaleData.status === '申请退款'" type="success"
                    @click="onSuccessBtn(afterSaleData.status)">同意退款</el-button>
@@ -129,6 +117,33 @@
                    @click="onSuccessBtn(afterSaleData.status)">确认退款</el-button>
         <el-button type="primary" @click="dialogShow = false">取 消</el-button>
       </span>
+    </el-dialog>
+    <el-dialog
+      width="20%"
+      :title="innerDialogTitle"
+      :visible.sync="innerVisibleShow"
+      append-to-body>
+      <div>
+        {{ innerDialogSpan }}
+        <el-form :model="formData" ref="formData" label-width="75px" class="demo-ruleForm">
+          <el-form-item label="提示:">
+            {{ formData.hint }}
+          </el-form-item>
+          <el-form-item label="退款方式:">
+            {{ formData.refund }}
+          </el-form-item>
+          <el-form-item label="退款金额:">
+            {{ formData.amount }}
+          </el-form-item>
+          <el-form-item label="备注:">
+            <el-input type="textarea" v-model="formData.Remark"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="innerVisibleShow = false">取 消</el-button>
+          <el-button type="primary" @click="innerVisibleShow = false">确 定</el-button>
+        </span>
     </el-dialog>
   </div>
 </template>
@@ -228,10 +243,15 @@ export default {
       ],
       // 外层对话框显示开关
       dialogShow: false,
+      // 表单数据
+      formData: {
+        Remark: '',
+      },
       // 内层对话框显示开关
       innerVisibleShow: false,
-      innerDialogTitle: '',
+      innerDialogTitle: '消息',
       innerDialogSpan: '',
+      innerDialogRemark: false,
     }
   },
   mounted() {
@@ -239,15 +259,23 @@ export default {
   methods: {
     onSuccessBtn(type) {
       if (type === '申请退款') {
-        let id = $('.after_sale_id').val();
-        let pay_way = $('.pay_way_text').text();
-        let refund_type = $('.refund_type_text').text();
-        let refund_price = $('.refund_price_text').text();
-        let refund_address = $('.refund_address_text').text();
+        this.formData.hint = '该笔订单通过余额支付付款，商家确认退款后，退款将自动原路退回会员账户。'
+        this.formData.refund = '余额'
+        this.formData.amount = '¥100.00'
       }
+      if (type === '商家待收货') {
+      }
+      if (type === '等待退款') {
+      }
+      this.innerDialogRemark = true
       this.innerVisibleShow = true
     },
-    onWarningBtn() {
+    onWarningBtn(type) {
+      if (type === '申请退款') {
+      }
+      if (type === '商家待收货') {
+      }
+      this.innerDialogRemark = false
       this.innerVisibleShow = true
     },
     getSummaries(param) {

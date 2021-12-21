@@ -8,6 +8,7 @@ export function fetchList(params) {
   })
 }
 
+
 export function confirmOrder(id) {
   return request({
     url: `/mall-admin/order/confirm/${id}`,
@@ -281,4 +282,48 @@ export function getAfterSaleList(params) {
       rowCount: 10,
     },
   }
+}
+
+export function getAfterSaleListDetail(params) {
+  return request({
+    url: 'mall-admin/after-sales/detail',
+    method: 'get',
+    params: params,
+  })
+}
+
+export function afterSalesAgree(id) {
+  return request({
+    url: `mall-admin/after-sales/agree/${id}`,
+    method: 'put',
+    // params: params,
+  })
+}
+
+export function afterSalesRefuse(id) {
+  return request({
+    url: `mall-admin/after-sales/refuse/${id}`,
+    method: 'put',
+    // params: params,
+  })
+}
+
+export function afterSalesTakeGoods(id) {
+  return request({
+    url: `mall-admin/after-sales/takeGoods/${id}`,
+    method: 'put',
+  })
+}
+export function afterSalesRefuseGoods(id) {
+  return request({
+    url: `mall-admin/after-sales/refuseGoods/${id}`,
+    method: 'put',
+  })
+}
+
+export function afterSalesConfirm(id) {
+  return request({
+    url: `mall-admin/after-sales/confirm/${id}`,
+    method: 'put',
+  })
 }

@@ -56,7 +56,7 @@
           <el-form-item label="申请时间：">
             <el-date-picker
               class="input-width"
-              v-model="listQuery.create_at"
+              v-model="listQuery.created_at"
               value-format="yyyy-MM-dd"
               type="date"
               placeholder="请选择时间"
@@ -67,7 +67,7 @@
       <div class="flex items-center justify-between" style="margin-left: 72px">
         <div class="pt-2">
           <span class="el-form-item__label">售后申请状态：</span>
-          <el-radio-group v-model="listQuery.afterSaleType">
+          <el-radio-group v-model="listQuery.status">
             <el-radio-button
               v-for="item in afterSaleOptions"
               :key="item.value"
@@ -144,9 +144,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="申请时间时间" width="180" align="center">
+        <el-table-column label="申请时间" width="180" align="center">
           <template slot-scope="scope">
-            {{ scope.row.create_at | formatCreateTime }}
+            {{ scope.row.created_at | formatCreateTime }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -203,8 +203,8 @@ const defaultListQuery = {
   sn: null,
   userType: null,
   user: null,
-  createAt: '',
-  afterSaleType: 0,
+  created_at: '',
+  status: 0,
 }
 export default {
   name: "afterSale",
@@ -261,35 +261,35 @@ export default {
       afterSaleOptions: [
         {
           label: '全部',
-          value: 0
+          value: ''
         },
         {
           label: '申请退款',
-          value: 1
+          value: 0
         },
         {
           label: '商家拒绝',
-          value: 2
+          value: 1
         },
         {
           label: '商品待退货',
-          value: 3
+          value: 2
         },
         {
           label: '商家待收货',
-          value: 4
+          value: 3
         },
         {
           label: '商家拒收货',
-          value: 5
+          value: 4
         },
         {
           label: '等待退款',
-          value: 6
+          value: 5
         },
         {
           label: '退款成功',
-          value: 7
+          value: 6
         },
 
       ],

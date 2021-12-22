@@ -7,6 +7,7 @@ export async function fetchList(id) {
     method: 'get',
   })
 }
+
 // 获取分类树形列表
 export async function fetchTreeList() {
   return await request({
@@ -22,14 +23,16 @@ export function deleteProductCate(id) {
     method: 'delete',
   })
 }
+
 // 增加分类
 export function addProductCate(data) {
   return request({
-    url: '/categories',
+    url: '/mall-admin/categories',
     method: 'post',
     data,
   })
 }
+
 // 修改分类
 export function updateProductCate(id, data) {
   return request({

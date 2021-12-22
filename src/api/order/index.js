@@ -76,6 +76,7 @@ export function updateOrderNote(params) {
     params: params,
   })
 }
+
 //售后列表
 export function getAfterSaleList(params) {
   // return request({
@@ -93,8 +94,8 @@ export function getAfterSaleList(params) {
           id: 855,
           order_amount: '11.00',
           order_sn: '202104071523031094',
-          order_status: '已完成',
           pay_way: '余额支付', //支付方式
+          // order_status: '已完成',
           order_status: 3, //订单状态
           goods_price: '', //商品价格
           integral_price: '0.00', //积分抵扣价格
@@ -103,8 +104,8 @@ export function getAfterSaleList(params) {
             id: '', //优惠券id,
             name: '', // 名称
           },
-          order_price: '11.00', //订单价格
-          actual_price: '', //实际支付价格
+          order_price: 11.0, //订单价格
+          actual_price: 11.0, //实际支付价格
           // 优惠券信息
         },
         after_sale: {
@@ -150,9 +151,8 @@ export function afterSaleDetail(orderId) {
       id: 855,
       order_amount: '11.00',
       order_sn: '202104071523031094',
-      order_status: '已完成',
       pay_way: '余额支付', //支付方式
-
+      // order_status: '已完成',
       order_status: 3, //订单状态
       goods_price: '', //商品价格
       integral_price: '0.00', //积分抵扣价格
@@ -212,6 +212,7 @@ export function rejectRefund(orderId) {
     method: 'PUT',
   })
 }
+
 //确认收货
 export function confirmReceived(orderId) {
   return request({
@@ -219,6 +220,7 @@ export function confirmReceived(orderId) {
     method: 'PUT',
   })
 }
+
 //确认退款
 export function confirmRefund(orderId) {
   return request({

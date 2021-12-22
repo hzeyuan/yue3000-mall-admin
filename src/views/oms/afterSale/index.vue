@@ -5,36 +5,36 @@
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
         <el-button
-          style="float: right"
-          type="primary"
-          @click="onSearchList()"
-          size="small"
+            style="float: right"
+            type="primary"
+            @click="onSearchList()"
+            size="small"
         >
           查询搜索
         </el-button>
         <el-button
-          style="float: right; margin-right: 15px"
-          @click="onResetSearch()"
-          size="small"
+            style="float: right; margin-right: 15px"
+            @click="onResetSearch()"
+            size="small"
         >
           重置
         </el-button>
       </div>
       <div style="margin-top: 15px">
         <el-form
-          :inline="true"
-          :model="listQuery"
-          size="small"
-          label-width="140px"
+            :inline="true"
+            :model="listQuery"
+            size="small"
+            label-width="140px"
         >
           <el-form-item label="编号搜索">
             <div class="flex">
               <el-select class="select-width" v-model="listQuery.snType" placeholder="请选择编号类型">
                 <el-option
-                  v-for="item in snOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                    v-for="item in snOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
                 </el-option>
               </el-select>
               <el-input class="input-width" v-model="listQuery.sn" placeholder="请输入编号"></el-input>
@@ -44,10 +44,10 @@
             <div class="flex">
               <el-select class="select-width" v-model="listQuery.userType" placeholder="请选择编号类型">
                 <el-option
-                  v-for="item in userOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                    v-for="item in userOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
                 </el-option>
               </el-select>
               <el-input class="input-width" v-model="listQuery.user" placeholder="请输入编号"></el-input>
@@ -55,11 +55,11 @@
           </el-form-item>
           <el-form-item label="申请时间：">
             <el-date-picker
-              class="input-width"
-              v-model="listQuery.create_at"
-              value-format="yyyy-MM-dd"
-              type="date"
-              placeholder="请选择时间"
+                class="input-width"
+                v-model="listQuery.create_at"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="请选择时间"
             ></el-date-picker>
           </el-form-item>
         </el-form>
@@ -69,9 +69,9 @@
           <span class="el-form-item__label">售后申请状态：</span>
           <el-radio-group v-model="listQuery.afterSaleType" @change="onSearchList">
             <el-radio-button
-              v-for="item in afterSaleOptions"
-              :key="item.value"
-              :label="item.value">
+                v-for="item in afterSaleOptions"
+                :key="item.value"
+                :label="item.value">
               {{ item.label }}
             </el-radio-button>
           </el-radio-group>
@@ -84,26 +84,23 @@
                 style="width: 100%"
                 @selection-change="handleSelectionChange"
                 v-loading="tableLoading">
-        <el-table-column
-          type="selection"
-          width="60"
-          align="center"
-        ></el-table-column>
-        <el-table-column label="编号" width="80" align="center">
+        <el-table-column type="selection" width="60" align="center">
+        </el-table-column>
+        <el-table-column label="序号" width="80" align="center">
           <template slot-scope="scope">{{ scope.$index + 1 }}</template>
         </el-table-column>
         <el-table-column label="订单编号" width="180" align="center">
           <template slot-scope="scope">{{ scope.row.order.order_sn }}</template>
         </el-table-column>
         <el-table-column label="售后编号" width="180" align="center">
-          <template slot-scope="scope">{{ scope.row.afterSaleSn }}</template>
+          <template slot-scope="scope">{{ scope.row.sn }}</template>
         </el-table-column>
         <el-table-column label="申请人信息" width="210px" align="center">
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <el-image :src="scope.row.user.avatar" lazy></el-image>
               <div class="pl-2 text-left">
-                <p>会员编号:{{ scope.row.user.user_sn }}</p>
+                <p>会员编号:{{ scope.row.user.id }}</p>
                 <p>会员昵称:{{ scope.row.user.username }}</p>
                 <p>手机号:{{ scope.row.user.phone }}</p>
               </div>
@@ -112,12 +109,14 @@
         </el-table-column>
         <el-table-column label="商品信息" width="210px" align="center">
           <template slot-scope="scope">
-            <div class="flex text-xs items-start">
-              <el-image :src="scope.row.order_goods[0].image" lazy></el-image>
+            <div class="flex text-xs items-start"
+                 v-for="(item, index) in scope.row.order_goods"
+                 :key="index">
+              <el-image :src="item.pic_url" lazy></el-image>
               <div class="pl-2 text-left">
-                <p>商品编号:{{ scope.row.order_goods[0].goods_id }}</p>
-                <p class="truncate w-32">商品名称:{{ scope.row.order_goods[0].goods_name }}</p>
-                <p>商品价格:{{ scope.row.order_goods[0].goods_price }}</p>
+                <p class="truncate w-32">商品名称:{{ item.goods_name }}</p>
+                <p>商品价格:{{ item.goods_price }}</p>
+                <p>购买数量:{{ item.goods_num }}</p>
               </div>
             </div>
           </template>
@@ -126,8 +125,8 @@
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <div class="pl-2 text-left">
-                <p>订单状态:{{ scope.row.order.order_status }}</p>
-                <p>支付金额:{{ scope.row.order.order_amount }}</p>
+                <p>订单状态:{{ scope.row.order.order_status | formatOrderStatus }}</p>
+                <p>支付金额:{{ scope.row.order.actual_price }}</p>
                 <p>支付方式:{{ scope.row.order.pay_way }}</p>
               </div>
             </div>
@@ -137,16 +136,16 @@
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <div class="pl-2 text-left">
-                <p>售后方式:{{ scope.row.refund_type }}</p>
-                <p>退款金额:{{ scope.row.refund_price }}</p>
-                <p>售后状态:{{ scope.row.status }}</p>
+                <p>售后方式:{{ scope.row.after_sale.refund_type }}</p>
+                <p>退款金额:{{ scope.row.after_sale.refund_price }}</p>
+                <p>售后状态:{{ scope.row.after_sale.refund_status | formatRefundType }}</p>
               </div>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="申请时间时间" width="180" align="center">
           <template slot-scope="scope">
-            {{ scope.row.create_time | formatCreateTime }}
+            {{ scope.row.created_at | formatCreateTime }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -159,32 +158,32 @@
     <div class="batch-operate-container ml-5 mt-5">
       <el-select size="small" v-model="operateType" placeholder="批量操作">
         <el-option
-          v-for="item in operateOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+            v-for="item in operateOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
         ></el-option>
       </el-select>
       <el-button
-        style="margin-left: 20px"
-        class="search-button"
-        @click="handleBatchOperate(operateType)"
-        type="primary"
-        size="small"
+          style="margin-left: 20px"
+          class="search-button"
+          @click="handleBatchOperate(operateType)"
+          type="primary"
+          size="small"
       >
         确定
       </el-button>
     </div>
     <div class="pagination-container">
       <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.page"
-        :page-size="listQuery.pageSize"
-        :page-sizes="[5, 10, 15]"
-        :total="total"
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          layout="total, sizes,prev, pager, next,jumper"
+          :current-page.sync="listQuery.page"
+          :page-size="listQuery.pageSize"
+          :page-sizes="[5, 10, 15]"
+          :total="total"
       ></el-pagination>
     </div>
     <Operate-dialog ref="OperateDialog"></Operate-dialog>
@@ -314,6 +313,40 @@ export default {
     formatCreateTime(value) {
       let date = new Date(value)
       return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+    },
+    formatRefundType(value) {
+      switch (value) {
+        case 0:
+          return '申请退款'
+        case 1:
+          return '商家拒绝'
+        case 2:
+          return '商品待退货'
+        case 3:
+          return '商家待收货'
+        case 4:
+          return '商家拒收货'
+        case 5:
+          return '等待退款'
+        case 6:
+          return '退款成功'
+      }
+    },
+    formatOrderStatus(value) {
+      switch (value) {
+        case 1:
+          return '待付款'
+        case 2:
+          return '待发货'
+        case 3:
+          return '已发货'
+        case 4:
+          return '待收货'
+        case 5:
+          return '待评价'
+        case 6:
+          return '已完成'
+      }
     }
   },
   mounted() {

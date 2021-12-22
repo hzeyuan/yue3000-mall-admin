@@ -59,9 +59,8 @@
                 </div>
                 <div class="prize-operate">
                   <i class="el-icon-edit" @click="onUpdateDialog(item)"></i>
-                  <i
-                    class="el-icon-circle-close"
-                    @click="onDeletePrize(item.id, index)"
+                  <i class="el-icon-circle-close"
+                     @click="onDeletePrize(item.id, index)"
                   ></i>
                 </div>
               </div>
@@ -165,273 +164,263 @@
 </template>
 
 <script>
-  import IconUpload from "@/components/Upload/IconUpload";
-  import _ from 'lodash'
-  import {
-    updateLotteryActivityList,
-    addLotteryActivityList,
-    getLotteryActivityPrizeList,
-    addLotteryActivityPrize,
-    updateLotteryActivityPrize,
-    deleteLotteryActivityPrize
-  } from "@/api/config/lottery";
-  import {getLotteryCoupons} from "@/api/coupons";
+import IconUpload from "@/components/Upload/IconUpload";
+import _ from 'lodash'
+import {
+  updateLotteryActivityList,
+  addLotteryActivityList,
+  getLotteryActivityPrizeList,
+  addLotteryActivityPrize,
+  updateLotteryActivityPrize,
+  deleteLotteryActivityPrize
+} from "@/api/config/lottery";
+import {getLotteryCoupons} from "@/api/coupons";
 
-  export default {
-    name: "LotteryDialog",
-    components: {
-      IconUpload
-    },
-    props: {
-      isEdge: Boolean,
-    },
-    data() {
-      return {
-        // 控制活动详情模态框的显示与隐藏
-        dialogShow: false,
-        // 控制奖品详情模态框的显示与隐藏
-        innerDialogShow: false,
-        // 优惠卷列表 后期使用网络请求刷新
-        couponList: [],
-        // 奖品类型列表
-        prizeTypeList: [
-          {
-            id: 1,
-            label: '积分',
-            value: 1
-          },
-          {
-            id: 2,
-            label: '优惠卷',
-            value: 2
-          },
-          {
-            id: 3,
-            label: '谢谢惠顾',
-            value: 3
-          }
+export default {
+  name: "LotteryDialog",
+  components: {
+    IconUpload
+  },
+  props: {
+    isEdge: Boolean,
+  },
+  data() {
+    return {
+      // 控制活动详情模态框的显示与隐藏
+      dialogShow: false,
+      // 控制奖品详情模态框的显示与隐藏
+      innerDialogShow: false,
+      // 优惠卷列表 后期使用网络请求刷新
+      couponList: [],
+      // 奖品类型列表
+      prizeTypeList: [
+        {
+          id: 1,
+          label: '积分',
+          value: 1
+        },
+        {
+          id: 2,
+          label: '优惠卷',
+          value: 2
+        },
+        {
+          id: 3,
+          label: '谢谢惠顾',
+          value: 3
+        }
+      ],
+      // 活动详情数据
+      activityData: {},
+      // 奖品列表数据
+      prizeList: [],
+      // 单个奖品数据
+      prizeData: {},
+      // 表单验证
+      rules: {
+        name: [
+          {required: true, message: '该项不能为空', trigger: 'blur'}
         ],
-        // 活动详情数据
-        activityData: {},
-        // 奖品列表数据
-        prizeList: [],
-        // 单个奖品数据
-        prizeData: {},
-        // 表单验证
-        rules: {
-          name: [
-            {required: true, message: '该项不能为空', trigger: 'blur'}
-          ],
-          message: [
-            {required: true, message: '该项不能为空', trigger: 'blur'}
-          ],
-          probability: {required: true, message: '该项不能为空', trigger: 'blur'},
-          value: {required: true, message: '请选择优惠卷', trigger: 'blur'},
-        }
+        message: [
+          {required: true, message: '该项不能为空', trigger: 'blur'}
+        ],
+        probability: {required: true, message: '该项不能为空', trigger: 'blur'},
+        value: {required: true, message: '请选择优惠卷', trigger: 'blur'},
       }
-    },
-    watch: {
-      activityData: {
-        deep: true,
-        handler() {
-          if (!this.isEdge) {
-            let {id} = this.activityData
-            this.reqGetPrizeList(id)
-          }
-          this.prizeList = []
+    }
+  },
+  watch: {
+    activityData: {
+      deep: true,
+      handler() {
+        if (!this.isEdge) {
+          let {id} = this.activityData
+          this.reqGetPrizeList(id)
         }
+        this.prizeList = []
       }
+    }
+  },
+  methods: {
+    async reqGetPrizeList(id) {
+      const res = await getLotteryActivityPrizeList(id)
+      this.prizeList = res.list
     },
-    methods: {
-      async reqGetPrizeList(id) {
-        const res = await getLotteryActivityPrizeList(id)
-        this.prizeList = res.list
-      },
-      // 点击删除活动奖品
-      onDeletePrize(id, index) {
-        this.$confirm("是否要删除该奖品", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }).then(() => {
-          deleteLotteryActivityPrize(id).then(() => {
-            this.prizeList.splice(index, 1)  //本地删除活动奖品
-            this.$message({
-              type: "success",
-              message: "删除成功",
-              duration: 1000,
-            })
-          })
-        });
-      },
-      // 点击打开增加奖品对话框
-      onAddDialog() {
-        this.prizeData = {
-          name: '',
-          prize_type: '',   //奖品类型 1表示积分 2表示优惠卷 3表示谢谢惠顾
-          number: '',     //奖品数量
-          probability: '', //抽奖概率
-          value: '',        //奖品值
-          image_url: '',  //奖品图片
-        }
-        this.innerDialogShow = true
-      },
-      // 点击增加奖品
-      onAddPrize() {
-        this.$refs['ref-prize-from'].validate((valid) => {
-          if (!valid) return false
-          let data = _.cloneDeep(this.prizeData)
-          data.image_url = this.$refs.IconUpload.gallery
-          addLotteryActivityPrize(data).then((res) => {
-            this.$message({
-              type: "success",
-              message: "奖品添加成功",
-              duration: 1000,
-            })
-            this.prizeList.push(res)
-            this.innerDialogShow = false
+    // 点击删除活动奖品
+    onDeletePrize(id, index) {
+      this.$confirm("是否要删除该奖品", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        deleteLotteryActivityPrize(id).then(() => {
+          this.prizeList.splice(index, 1)  //本地删除活动奖品
+          this.$message({
+            type: "success",
+            message: "删除成功",
+            duration: 1000,
           })
         })
-      },
-      // 点击打开修改奖品对话框
-      onUpdateDialog(prize) {
-        this.prizeData = _.cloneDeep(prize)
-        this.innerDialogShow = true
-      },
-      // 点击修改奖品
-      onUpdatePrize() {
-        this.$refs['ref-prize-from'].validate((valid) => {
-          if (!valid) return false
-          let data = _.cloneDeep(this.prizeData)
-          data.image_url = this.$refs.IconUpload.gallery
-          updateLotteryActivityPrize(this.prizeData.id, data).then((res) => {
-            this.$message({
-              type: "success",
-              message: "修改成功",
-              duration: 1000,
-            })
-            this.prizeList.forEach((item, index) => {
-              if (item.id === res.id) {
-                this.prizeList[index] = res
-              }
-            })
-            this.innerDialogShow = false
+      });
+    },
+    // 点击打开增加奖品对话框
+    onAddDialog() {
+      this.prizeData = {
+        name: '',
+        prize_type: '',   //奖品类型 1表示积分 2表示优惠卷 3表示谢谢惠顾
+        number: '',     //奖品数量
+        probability: '', //抽奖概率
+        value: '',        //奖品值
+        image_url: '',  //奖品图片
+      }
+      this.innerDialogShow = true
+    },
+    // 点击增加奖品
+    onAddPrize() {
+      this.$refs['ref-prize-from'].validate((valid) => {
+        if (!valid) return false
+        let data = _.cloneDeep(this.prizeData)
+        data.image_url = this.$refs.IconUpload.gallery
+        addLotteryActivityPrize(data).then((res) => {
+          this.$message({
+            type: "success",
+            message: "奖品添加成功",
+            duration: 1000,
           })
+          this.prizeList.push(res)
+          this.innerDialogShow = false
         })
-      },
-      // 奖品类型发生变化时 初始化该奖品的value 和 number
-      handlePrizeTypeVary(value) {
-        if (value == 1) {
-          this.prizeData.number = ''
-          this.prizeData.value = 0
-          return
-        }
-        this.prizeData.value = ''
+      })
+    },
+    // 点击打开修改奖品对话框
+    onUpdateDialog(prize) {
+      this.prizeData = _.cloneDeep(prize)
+      this.innerDialogShow = true
+    },
+    // 点击修改奖品
+    onUpdatePrize() {
+      this.$refs['ref-prize-from'].validate((valid) => {
+        if (!valid) return false
+        let data = _.cloneDeep(this.prizeData)
+        data.image_url = this.$refs.IconUpload.gallery
+        updateLotteryActivityPrize(this.prizeData.id, data).then((res) => {
+          this.$message({
+            type: "success",
+            message: "修改成功",
+            duration: 1000,
+          })
+          this.prizeList.forEach((item, index) => {
+            if (item.id === res.id) {
+              this.prizeList[index] = res
+            }
+          })
+          this.innerDialogShow = false
+        })
+      })
+    },
+    // 奖品类型发生变化时 初始化该奖品的value 和 number
+    handlePrizeTypeVary(value) {
+      if (value == 1) {
         this.prizeData.number = ''
-      },
+        this.prizeData.value = 0
+        return
+      }
+      this.prizeData.value = ''
+      this.prizeData.number = ''
+    },
 
-      // 点击修改活动发送请求
-      onUpdateDate() {
-        this.$refs['ref-activity-from'].validate((valid) => {
-          if (!valid) return false
-          let prize_ids = this.prizeList.map(item => item.id)
-          this.activityData.prize_ids = prize_ids
-          updateLotteryActivityList(this.activityData.id, this.activityData).then(() => {
-            this.$message({
-              type: "success",
-              message: "修改成功",
-              duration: 1000,
-            })
+    // 点击修改活动发送请求
+    onUpdateDate() {
+      this.$refs['ref-activity-from'].validate((valid) => {
+        if (!valid) return false
+        let prize_ids = this.prizeList.map(item => item.id)
+        this.activityData.prize_ids = prize_ids
+        updateLotteryActivityList(this.activityData.id, this.activityData).then(() => {
+          this.$message({
+            type: "success",
+            message: "修改成功",
+            duration: 1000,
           })
         })
-      },
-      // 点击添加活动发送请求
-      onAddDate() {
-        this.$refs['ref-activity-from'].validate((valid) => {
-          if (!valid) return false
-          let prize_ids = this.prizeList.map(item => item.id)
-          this.activityData.prize_ids = prize_ids
-          addLotteryActivityList(this.activityData).then(() => {
-            this.$message({
-              type: "success",
-              message: "添加成功",
-              duration: 1000,
-            })
-            this.$parent.getLotteryActivityList(1)
-            this.dialogShow = false
+      })
+    },
+    // 点击添加活动发送请求
+    onAddDate() {
+      this.$refs['ref-activity-from'].validate((valid) => {
+        if (!valid) return false
+        let prize_ids = this.prizeList.map(item => item.id)
+        this.activityData.prize_ids = prize_ids
+        addLotteryActivityList(this.activityData).then(() => {
+          this.$message({
+            type: "success",
+            message: "添加成功",
+            duration: 1000,
           })
+          this.$parent.getLotteryActivityList(1)
+          this.dialogShow = false
         })
+      })
 
-      },
-      // 获取优惠卷列表
-      handlePrizeCoupons() {
-        console.log('123');
-        if (this.couponList.length === 0) {
-          const res = getLotteryCoupons()
-          console.log(res)
-          this.couponList = res.list
-        }
+    },
+    // 获取优惠卷列表
+    handlePrizeCoupons() {
+      console.log('123');
+      if (this.couponList.length === 0) {
+        const res = getLotteryCoupons()
+        console.log(res)
+        this.couponList = res.list
       }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .absolute {
-    top: -10px;
-    right: 0;
-    cursor: pointer;
+.absolute {
+  top: -10px;
+  right: 0;
+  cursor: pointer;
+}
+
+.add-prize {
+  cursor: pointer;
+  text-align: center;
+}
+
+.add-prize:hover {
+  color: #1e6abc;
+}
+
+.prize-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  .prize-operate {
+    display: none;
   }
 
-  .add-prize {
-    cursor: pointer;
-    text-align: center;
-  }
-
-  .add-prize:hover {
-    color: #1e6abc;
-  }
-
-  .prize-box {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-
+  &:hover {
     .prize-operate {
-      display: none;
-    }
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(59, 60, 61, 0.5);
 
-    &:hover {
-      .prize-operate {
+      i {
+        margin: 35px 0 0 15px;
         display: block;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(59, 60, 61, 0.5);
-
-        i {
-          margin: 35px 0 0 15px;
-          display: block;
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          background: rgba(59, 60, 61, 0.5);
-          i {
-            margin: 35px 0 0 15px;
-            display: block;
-            font-size: 24px;
-            color: white;
-            float: left;
-            cursor: pointer;
-          }
-        }
+        font-size: 24px;
+        color: white;
+        float: left;
+        cursor: pointer;
       }
     }
   }
+}
 </style>

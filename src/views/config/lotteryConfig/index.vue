@@ -26,7 +26,7 @@
             v-for="(item, index) in menuList"
             :key="item"
             :class="{ show: menuShow === index + 1 }"
-            @click="switchMenu(index + 1)"
+            @click="menuShow = index + 1"
           >
             {{ item }}
           </div>
@@ -41,77 +41,75 @@
 </template>
 
 <script>
-  import ActivityTable from './components/ActivityTable'
-  import RecordTable from './components/RecordTable'
-  import PrizeTable from './components/PrizeTable'
+import ActivityTable from './components/ActivityTable'
+import RecordTable from './components/RecordTable'
+import PrizeTable from './components/PrizeTable'
 
-  export default {
-    name: 'lottery',
-    components: { ActivityTable, RecordTable, PrizeTable },
-    data() {
-      return {
-        topOpen: true,
-        menuShow: 1,
-      }
-    },
-  }
+export default {
+  name: 'lottery',
+  components: {ActivityTable, RecordTable, PrizeTable},
+  data() {
+    return {
+      topOpen: true,
+      menuShow: 1,
+      menuList: ['活动列表', '中奖记录', '奖品列表'],
+    }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
-  #lottery {
-    .top-box {
-      border: #e6e6e6 1px dashed;
-      margin-bottom: 30px;
+#lottery {
+  .top-box {
+    border: #e6e6e6 1px dashed;
+    margin-bottom: 30px;
 
-      .text-title {
-        padding-left: 20px;
-        line-height: 36px;
-        font-size: 16px;
-        cursor: pointer;
-      }
+    .text-title {
+      padding-left: 20px;
+      line-height: 36px;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-      .text-title:hover {
-        color: #1e6abc;
-      }
+    .text-title:hover {
+      color: #1e6abc;
+    }
 
-      .text-span {
-        padding: 10px;
-        border-top: #e6e6e6 1px solid;
-        font-size: 14px;
-        line-height: 22px;
-        color: #666;
+    .text-span {
+      padding: 10px;
+      border-top: #e6e6e6 1px solid;
+      font-size: 14px;
+      line-height: 22px;
+      color: #666;
 
-        p {
-          padding: 0;
-          margin: 0;
-        }
-      }
-
-      .menu-title {
-        overflow: hidden;
-        padding: 2px 0 0 2px;
-        background-color: #f2f2f2;
-
-        .menu-item {
-          float: left;
-          cursor: pointer;
-          height: 40px;
-          padding: 0 15px;
-          text-align: center;
-          line-height: 40px;
-          color: #666;
-          font-size: 14px;
-        }
-        .page {
-          margin-top: 10px;
-        }
-      }
-
-      .show {
-        font-weight: bold;
-        background-color: #fff;
-        color: #000;
+      p {
+        padding: 0;
+        margin: 0;
       }
     }
   }
+
+  .menu-title {
+    overflow: hidden;
+    padding: 2px 0 0 2px;
+    background-color: #f2f2f2;
+
+    .menu-item {
+      float: left;
+      cursor: pointer;
+      height: 40px;
+      padding: 0 15px;
+      text-align: center;
+      line-height: 40px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .show {
+      font-weight: bold;
+      background-color: #fff;
+      color: #000;
+    }
+  }
+}
 </style>

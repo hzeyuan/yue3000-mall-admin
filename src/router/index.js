@@ -104,7 +104,7 @@ export const asyncRoutes = [
         hidden: false,
         component: () => import('@/views/goods/category'),
         meta: {
-          title: '商城类目',
+          title: '商品类目',
           icon: 'home',
           noKeepAlive: false,
         },
@@ -234,10 +234,6 @@ export const asyncRoutes = [
         },
       },
       {
-        path: 'orderRefund',
-        name: 'OrderRefund',
-        hidden: false,
-        component: () => import('@/views/oms/order'),
         path: 'afterSale',
         name: 'AfterSale',
         hidden: false,

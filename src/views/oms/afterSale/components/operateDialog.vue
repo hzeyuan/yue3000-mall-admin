@@ -1,37 +1,36 @@
 <template>
   <div id="operateDialog">
     <el-dialog
-      title="售后详情"
-      :visible.sync="dialogShow"
-      width="40%">
+        title="售后详情"
+        :visible.sync="dialogShow"
+        width="40%">
       <div class="max-h-96 overflow-y-auto">
         <el-divider
-          content-position="left">
+            content-position="left">
           售后信息
         </el-divider>
         <div class="flex flex-wrap p-5">
-          <div class="w-1/3 mb-2">售后单号：{{ afterSaleData.afterSaleSn }}</div>
-          <div class="w-1/3 mb-2">退款方式：{{ afterSaleData.refund_type }}</div>
-          <div class="w-1/3 mb-2">退款金额：{{ afterSaleData.refund_price }}</div>
-          <div class="w-1/3 mb-2">申请时间：{{ afterSaleData.create_time }}</div>
-          <div class="w-1/3 mb-2">退款原因：{{}}</div>
-          <div class="w-1/3 mb-2">退款说明：{{}}</div>
-          <div class="w-1/3 mb-2">申请状态：{{ afterSaleData.status }}</div>
-          <div class="w-1/3 mb-2">售后说明：{{ afterSaleData.refund_type }}</div>
+          <div class="w-1/3 mb-2">售后单号：{{ afterSaleData.after_sale.sn }}</div>
+          <div class="w-1/3 mb-2">退款方式：{{ afterSaleData.after_sale.refund_type }}</div>
+          <div class="w-1/3 mb-2">退款金额：{{ afterSaleData.after_sale.refund_price }}</div>
+          <div class="w-1/3 mb-2">申请时间：{{ afterSaleData.after_sale.create_time }}</div>
+          <div class="w-1/3 mb-2">退款原因：{{ afterSaleData.after_sale.refund_reason }}</div>
+          <div class="w-1/3 mb-2">退款备注：{{ afterSaleData.after_sale.refund_remark }}</div>
+          <div class="w-1/3 mb-2">申请状态：{{ afterSaleData.after_sale.refund_status }}</div>
         </div>
         <el-divider
-          content-position="left">
+            content-position="left">
           订单信息
         </el-divider>
         <div class="flex flex-wrap p-5">
           <div class="w-1/3 mb-2">订单编号：{{ afterSaleData.order.order_sn }}</div>
           <div class="w-1/3 mb-2">订单金额：{{ afterSaleData.order.order_amount }}</div>
           <div class="w-1/3 mb-2">付款方式：{{ afterSaleData.order.pay_way }}</div>
-          <div class="w-1/3 mb-2">配送方式：物流配送</div>
+          <div class="w-1/3 mb-2">配送方式：{{ afterSaleData.order.pay_way }}</div>
           <div class="w-1/3 mb-2">订单状态：{{ afterSaleData.order.order_status }}</div>
         </div>
         <el-divider
-          content-position="left">
+            content-position="left">
           会员信息
         </el-divider>
         <div class="flex flex-wrap p-5">
@@ -42,7 +41,7 @@
           <div class="w-1/3 mb-2">注册时间：{{ afterSaleData.user.create_time }}</div>
         </div>
         <el-divider
-          content-position="left">
+            content-position="left">
           退款商品
         </el-divider>
         <div class="p-5">
@@ -75,8 +74,8 @@
           </el-table>
         </div>
         <el-divider
-          content-position="left"
-          v-if="afterSaleData.refund_type === '退货退款'">
+            content-position="left"
+            v-if="afterSaleData.refund_type === '退货退款'">
           收货信息
         </el-divider>
         <div class="flex flex-wrap p-5"
@@ -89,15 +88,15 @@
           <div class="w-1/3 mb-2">收货时间：{{ afterSaleData.user.create_time }}</div>
         </div>
         <el-divider
-          content-position="left">
+            content-position="left">
           售后日志
         </el-divider>
         <div class="pl-20 p-5">
           <el-timeline>
             <el-timeline-item
-              v-for="(activity, index) in activities"
-              :key="index"
-              :timestamp="activity.timestamp">
+                v-for="(activity, index) in activities"
+                :key="index"
+                :timestamp="activity.timestamp">
               <h3>{{ activity.content }}</h3>
               <span>备注：{{ activity.content }}</span>
             </el-timeline-item>
@@ -119,10 +118,10 @@
       </span>
     </el-dialog>
     <el-dialog
-      width="20%"
-      :title="innerDialogTitle"
-      :visible.sync="innerVisibleShow"
-      append-to-body>
+        width="20%"
+        :title="innerDialogTitle"
+        :visible.sync="innerVisibleShow"
+        append-to-body>
       <div>
         {{ innerDialogSpan }}
         <el-form :model="formData" ref="formData" label-width="75px" class="demo-ruleForm">
@@ -162,70 +161,7 @@ export default {
   },
   data() {
     return {
-      afterSaleData: {
-        create_time: '2021-04-07 15:32:03',
-        order: {
-          id: 855,
-          order_amount: '11.00',
-          order_sn: '202104071523031094',
-          order_status: '已完成',
-          pay_way: '余额支付',
-          total_amount: '11.00',
-        },
-        order_goods: [
-          {
-            base_image:
-              'http://b2cdemo.likeshop.cn/uploads/images/202103091152406fc596654.jpeg',
-            create_time: 1617780183,
-            discount_price: '0.00',
-            goods_id: 32,
-            goods_info:
-              '{"item_id":254,"goods_id":32,"goods_name":"网红芦荟棉被单双人被芯被套一体学生被芯北欧简约可爱清新","status":1,"del":0,"image":"uploads\\/images\\/202103091152406fc596654.jpeg","stock":1,"free_shipping_type":1,"free_shipping":"0.00","free_shipping_template_id":0,"spec_image":"","spec_value_str":"1111","spec_value_ids":"205","goods_price":"11.00","volume":"4.000","weight":"4.000","third_category_id":63,"goods_num":1,"image_str":"https:\\/\\/likeshop.likemarket.net\\/uploads\\/images\\/202103091152406fc596654.jpeg","is_seckill":0,"discount_price":0,"integral_price":0,"sub_price":11}',
-            goods_name: '网红芦荟棉被单双人被芯被套一体学生被芯北欧简约可爱清新',
-            goods_num: 1,
-            goods_price: '11.00',
-            id: 855,
-            image:
-              'http://b2cdemo.likeshop.cn/uploads/images/202103091152406fc596654.jpeg',
-            integral_price: '0.00',
-            is_comment: 1,
-            is_member: 0,
-            is_seckill: 0,
-            item_id: 254,
-            member_discount: '0.00',
-            member_price: '0.00',
-            order_id: 855,
-            original_price: '0.00',
-            refund_status: 3,
-            spec_value: '1111',
-            spec_value_ids: '205',
-            total_pay_price: '11.00',
-            total_price: '11.00',
-          },
-        ],
-        id: 47,
-        order_goods_id: 855,
-        order_id: 855,
-        order_status: 3,
-        pay_way: 3,
-        refund_price: '11.00',
-        refund_type: '仅退款',
-        afterSaleSn: '202104071532033033',
-        status: '退款成功',
-        user_id: 1912,
-        user: {
-          avatar:
-            'http://b2cdemo.likeshop.cn/uploads/user/avatar/715cc0f2f337c2a59099fc68903ad5e0.jpeg',
-          base_avatar:
-            'uploads/user/avatar/715cc0f2f337c2a59099fc68903ad5e0.jpeg',
-          create_time: '2021-03-22 14:24:00',
-          id: 1912,
-          phone: '18771421011',
-          username: '小黄同学',
-          sex: '未知',
-          user_sn: '73177848',
-        },
-      },
+      afterSaleData: {},
       // 售后日志列表
       activities: [
         {

@@ -104,8 +104,8 @@ export function getAfterSaleList(params) {
             id: '', //优惠券id,
             name: '', // 名称
           },
-          order_price: '11.00', //订单价格
-          actual_price: '', //实际支付价格
+          order_price: 11.0, //订单价格
+          actual_price: 11.0, //实际支付价格
           // 优惠券信息
         },
         after_sale: {

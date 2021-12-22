@@ -7,89 +7,89 @@
         添加
       </el-button>
     </el-card>
-    <div class="table-container">
+    <el-card class="table-container">
       <el-table
-        ref="productCateTable"
-        style="width: 100%"
-        :data="list"
-        row-key="id"
-        @selection-change="handleSelectionChange"
-        v-loading="listLoading"
-        :tree-props="{ children: 'child', hasChildren: 'hasChildren' }"
+          ref="productCateTable"
+          style="width: 100%"
+          :data="list"
+          row-key="id"
+          @selection-change="handleSelectionChange"
+          v-loading="listLoading"
+          :tree-props="{ children: 'child', hasChildren: 'hasChildren' }"
       >
         <el-table-column
-          type="selection"
-          width="60"
-          align="center"
+            type="selection"
+            width="60"
+            align="center"
         ></el-table-column>
         <el-table-column
-          label="编号"
-          width="50"
-          align="center"
-          type="index"
-          :index="indexMethod"
+            label="编号"
+            width="50"
+            align="center"
+            type="index"
+            :index="indexMethod"
         ></el-table-column>
-        <el-table-column label="级别" width="200" align="left">
+        <el-table-column label="级别" width="100" align="left">
           <template slot-scope="scope">
             {{ scope.row.level | levelFilter }}
           </template>
         </el-table-column>
         <el-table-column
-          label="分类名称"
-          prop="name"
-          align="center"
+            label="分类名称"
+            prop="name"
+            align="center"
         ></el-table-column>
         <el-table-column label="类目图标" width="100" align="center">
           <template slot-scope="scope">
             <!--            {{ scope.row.icon_url }}-->
             <el-image
-              style="width: 50px; height: 50px"
-              fit="fill"
-              :src="scope.row.icon_url"
+                style="width: 50px; height: 50px"
+                fit="fill"
+                :src="scope.row.icon_url"
             ></el-image>
           </template>
         </el-table-column>
         <el-table-column label="类目图片" width="150" align="center">
           <template slot-scope="scope">
             <el-image
-              style="width: 50px; height: 50px"
-              fit="cover"
-              :src="scope.row.pic_url"
+                style="width: 50px; height: 50px"
+                fit="cover"
+                :src="scope.row.pic_url"
             >
             </el-image>
           </template>
         </el-table-column>
         <el-table-column
-          label="类别描述"
-          prop="desc"
-          width="200"
-          align="center"
+            label="类别描述"
+            prop="desc"
+            width="200"
+            align="center"
         ></el-table-column>
         <el-table-column
-          label="排序"
-          prop="sort_order"
-          width="100"
-          align="center"
+            label="排序"
+            prop="sort_order"
+            width="100"
+            align="center"
         ></el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button
-              size="mini"
-              @click="handleUpdate(scope.$index, scope.row)"
+                size="mini"
+                @click="handleUpdate(scope.$index, scope.row)"
             >
               编辑
             </el-button>
             <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
             >
               删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -173,4 +173,5 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

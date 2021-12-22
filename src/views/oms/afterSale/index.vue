@@ -113,11 +113,11 @@
         <el-table-column label="商品信息" width="210px" align="center">
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
-              <el-image :src="scope.row.order_goods[0].pic_url" lazy></el-image>
+              <el-image :src="scope.row.orderGoods[0].pic_url" lazy></el-image>
               <div class="pl-2 text-left">
-                <p>商品编号:{{ scope.row.order_goods[0].goods_sn }}</p>
-                <p class="truncate w-32">商品名称:{{ scope.row.order_goods[0].goods_name }}</p>
-                <p>商品价格:{{ scope.row.order_goods[0].price }}</p>
+                <p>商品编号:{{ scope.row.orderGoods[0].goods_sn }}</p>
+                <p class="truncate w-32">商品名称:{{ scope.row.orderGoods[0].goods_name }}</p>
+                <p>商品价格:{{ scope.row.orderGoods[0].price }}</p>
               </div>
             </div>
           </template>
@@ -126,7 +126,7 @@
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <div class="pl-2 text-left">
-                <p>订单状态:{{ scope.row.order.status }}</p>
+                <p>订单状态:{{ scope.row.order.status | formatOrderStatus}}</p>
                 <p>支付金额:{{ scope.row.order.order_price }}</p>
                 <p>支付方式:{{ scope.row.order.payWay }}</p>
               </div>
@@ -137,9 +137,9 @@
           <template slot-scope="scope">
             <div class="flex text-xs items-start">
               <div class="pl-2 text-left">
-                <p>售后方式:{{ scope.row.after_sales.refund_type }}</p>
+                <p>售后方式:{{ scope.row.after_sales.refund_type == 0? '仅退款' : '退款退货' }}</p>
                 <p>退款金额:{{ scope.row.after_sales.refund_price }}</p>
-                <p>售后状态:{{ scope.row.after_sales.status }}</p>
+                <p>售后状态:{{ scope.row.after_sales.status | formatAfStatus }}</p>
               </div>
             </div>
           </template>
@@ -311,12 +311,6 @@ export default {
       ],
     }
   },
-  filters: {
-    formatCreateTime(value) {
-      let date = new Date(value)
-      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
-    }
-  },
   mounted() {
     this.reqGetList()
   },
@@ -326,6 +320,7 @@ export default {
       this.tableLoading = true
       const res = await getAfterSaleList(this.funCovertQuery())
       let {list, pagination} = res
+      console.log('list', list)
       this.afterSaleList = list
       this.total = pagination.rowCount
       this.tableLoading = false
@@ -401,6 +396,101 @@ export default {
       this.$refs.OperateDialog.dialogShow = true
     },
   },
+  filters: {
+     formatCreateTime(value) {
+      let date = new Date(value)
+      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+    },
+      formatAfStatus(status) {
+       //售后状态;0-申请退款;1-商家拒绝;2-商品待退货;3-商家待收货;4-商家拒收货;5-等待退款;6-退款成功
+        let text
+      switch(status) {
+        case 0:
+          text = '申请退款'
+          break;
+         case 1:
+          text = '商家拒绝'
+        break;
+         case 2:
+          text = '待退货退款'
+        break;
+         case 3:
+          text = '商家待收货'
+        break;
+         case 4:
+          text = '商家拒收货'
+        break;
+         case 5:
+          text = '等待退款'
+        break;
+         case 6:
+          text = '退款成功'
+        break;
+        default: 
+          this.statusText = '无状态'
+          break;
+      }
+      return text
+    },
+    formatOrderStatus(status) {
+    //    this.PAY = 100; //待付款
+    // this.TOSHIPPED = 200; //待发货
+    // this.SHIPPED = 300; //待收货
+    // this.COLLECTED = 301; // 已揽收
+    // this.INSHIPPED = 302; // 在途中
+    // this.INSIGN = 303; //已签收  
+    // this.RECEIVED = 400; //已收货(待评价)
+    // this.SHIPPED_TROUBLE = 404; //问题件
+    // this.APPLY_REFUND = 500; // 申请售后
+    // this.REFUNDING = 501; // 501: 售后/退款 处理中
+    // this.REFUNDEND = 502; // 售后/退款完成
+    // this.COMPLETED = 600; // 已完成
+    // this.CLOSED = 700; // 订单关闭
+        let text
+      switch(status) {
+        case 100:
+          text = '申请退款'
+          break;
+         case 200:
+          text = '商家拒绝'
+        break;
+         case 300:
+          text = '待退货退款'
+        break;
+         case 301:
+          text = '商家待收货'
+        break;
+         case 303:
+          text = '商家拒收货'
+        break;
+         case 400:
+          text = '等待退款'
+        break;
+         case 404:
+          text = '退款成功'
+        break;
+         case 500:
+          text = '退款成功'
+        break;
+         case 501:
+          text = '退款成功'
+        break;
+         case 502:
+          text = '退款成功'
+        break;
+          case 600:
+          text = '退款成功'
+        break;
+          case 700:
+          text = '退款成功'
+        break;
+        default: 
+          text = '无状态'
+          break;
+      }
+      return text
+    }
+  }
 }
 </script>
 

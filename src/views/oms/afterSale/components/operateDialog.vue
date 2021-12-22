@@ -13,7 +13,7 @@
           <div class="w-1/3 mb-2">申请时间：{{ afterSaleData.created_at | formatCreateTime}}</div>
           <div class="w-1/3 mb-2">退款原因：{{afterSaleData.after_sales.refund_reason}}</div>
           <div class="w-1/3 mb-2">退款说明：{{afterSaleData.after_sales.refund_remark}}</div>
-          <div class="w-1/3 mb-2">申请状态：{{ afterSaleData.after_sales.status }}</div>
+          <div class="w-1/3 mb-2">申请状态：{{ afterSaleData.after_sales.status | formatAfStatus }}</div>
           <div class="w-1/3 mb-2">售后说明：{{ afterSaleData.after_sales.refund_type }}</div>
         </div>
         <el-divider content-position="left">订单信息</el-divider>
@@ -22,7 +22,7 @@
           <div class="w-1/3 mb-2">订单金额：{{ afterSaleData.order.order_price }}</div>
           <div class="w-1/3 mb-2">付款方式：{{ afterSaleData.order.payWay }}</div>
           <div class="w-1/3 mb-2">配送方式：物流配送</div>
-          <div class="w-1/3 mb-2">订单状态：{{ afterSaleData.order.status }}</div>
+          <div class="w-1/3 mb-2">订单状态：{{ afterSaleData.order.status | formatOrderStatus}}</div>
         </div>
         <el-divider content-position="left">会员信息</el-divider>
         <div class="flex flex-wrap p-5">
@@ -34,7 +34,7 @@
         </div>
         <el-divider content-position="left">退款商品</el-divider>
         <div class="pb-2">
-          <el-table :data="afterSaleData.order_goods"
+          <el-table :data="afterSaleData.orderGoods"
                     style="width: 100%">
             <el-table-column label="商品图片" width="100" align="center">
               <template slot-scope="scope">
@@ -156,6 +156,7 @@ export default {
         refund: '',
         amount: ''
       },
+      statusText: '',
       // 内层对话框显示开关
       innerVisibleShow: false,
       innerDialogTitle: '消息',
@@ -260,6 +261,95 @@ export default {
     formatCreateTime(value) {
       let date = new Date(value)
       return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+    },
+    formatAfStatus(status) {
+       //售后状态;0-申请退款;1-商家拒绝;2-商品待退货;3-商家待收货;4-商家拒收货;5-等待退款;6-退款成功
+        let text
+      switch(status) {
+        case 0:
+          text = '申请退款'
+          break;
+         case 1:
+          text = '商家拒绝'
+        break;
+         case 2:
+          text = '待退货退款'
+        break;
+         case 3:
+          text = '商家待收货'
+        break;
+         case 4:
+          text = '商家拒收货'
+        break;
+         case 5:
+          text = '等待退款'
+        break;
+         case 6:
+          text = '退款成功'
+        break;
+        default: 
+          this.statusText = '无状态'
+          break;
+      }
+      return text
+    },
+     formatOrderStatus(status) {
+    //    this.PAY = 100; //待付款
+    // this.TOSHIPPED = 200; //待发货
+    // this.SHIPPED = 300; //待收货
+    // this.COLLECTED = 301; // 已揽收
+    // this.INSHIPPED = 302; // 在途中
+    // this.INSIGN = 303; //已签收  
+    // this.RECEIVED = 400; //已收货(待评价)
+    // this.SHIPPED_TROUBLE = 404; //问题件
+    // this.APPLY_REFUND = 500; // 申请售后
+    // this.REFUNDING = 501; // 501: 售后/退款 处理中
+    // this.REFUNDEND = 502; // 售后/退款完成
+    // this.COMPLETED = 600; // 已完成
+    // this.CLOSED = 700; // 订单关闭
+        let text
+      switch(status) {
+        case 100:
+          text = '申请退款'
+          break;
+         case 200:
+          text = '商家拒绝'
+        break;
+         case 300:
+          text = '待退货退款'
+        break;
+         case 301:
+          text = '商家待收货'
+        break;
+         case 303:
+          text = '商家拒收货'
+        break;
+         case 400:
+          text = '等待退款'
+        break;
+         case 404:
+          text = '退款成功'
+        break;
+         case 500:
+          text = '退款成功'
+        break;
+         case 501:
+          text = '退款成功'
+        break;
+         case 502:
+          text = '退款成功'
+        break;
+          case 600:
+          text = '退款成功'
+        break;
+          case 700:
+          text = '退款成功'
+        break;
+        default: 
+          text = '无状态'
+          break;
+      }
+      return text
     }
   },
 }

@@ -10,10 +10,10 @@ import 'tailwindcss/tailwind.css'
  * @description 生产环境默认都使用mock，如果正式用于生产环境时，记得去掉
  */
 
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('@/utils/static')
-  mockXHR()
-}
+// if (process.env.NODE_ENV === 'production') {
+//   const { mockXHR } = require('@/utils/static')
+//   mockXHR()
+// }
 
 Vue.config.productionTip = false
 // import EleEditable from 'vue-ele-editable'

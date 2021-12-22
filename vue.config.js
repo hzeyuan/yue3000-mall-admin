@@ -32,7 +32,6 @@ process.env.VUE_APP_TITLE = title || 'vue-admin-beautiful'
 process.env.VUE_APP_AUTHOR = author || 'chuzhixin 1204505056@qq.com'
 process.env.VUE_APP_UPDATE_TIME = time
 process.env.VUE_APP_VERSION = version
-
 const resolve = (dir) => path.join(__dirname, dir)
 const mockServer = () => {
   if (process.env.NODE_ENV === 'development')

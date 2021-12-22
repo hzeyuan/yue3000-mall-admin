@@ -1,12 +1,12 @@
 <template>
   <div class="login-container">
-    <el-alert
+    <!-- <el-alert
       v-if="nodeEnv !== 'development'"
       title="beautiful boys and girls欢迎加入vue-admin-beautifulQQ群：972435319"
       type="success"
       :closable="false"
       style="position: fixed"
-    ></el-alert>
+    ></el-alert> -->
     <el-row>
       <el-col :xs="24" :sm="24" :md="12" :lg="16" :xl="16">
         <div style="color: transparent">占位符</div>
@@ -160,7 +160,8 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.loading = true
-            this.$store.dispatch('user/login', this.form)
+            this.$store
+              .dispatch('user/login', this.form)
               .then(() => {
                 const routerPath =
                   this.redirect === '/404' || this.redirect === '/401'

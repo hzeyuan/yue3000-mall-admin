@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+
 export function fetchList(params) {
   return request({
     url: '/mall-admin/goods',
@@ -15,11 +16,20 @@ export function fetchSimpleList(params) {
   })
 }
 
-export function updateDeleteStatus(params) {
+// 单独删除商品
+export function DeleteGoods(id) {
   return request({
-    url: `/mall-admin/goods`,
+    url: `/mall-admin/goods/${id}`,
     method: 'delete',
-    params,
+  })
+}
+
+// 批量删除商品
+export function updateDeleteStatus(data) {
+  return request({
+    url: `/mall-admin/goods/bulk/deleted`,
+    method: 'put',
+    data: data,
   })
 }
 
@@ -40,6 +50,7 @@ export function updateRecommendStatus(data) {
     data: data,
   })
 }
+
 // 批量设置上/下架
 export function updatePublishStatus(data) {
   return request({

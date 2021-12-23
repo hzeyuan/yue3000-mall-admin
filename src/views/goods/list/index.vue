@@ -43,7 +43,8 @@
           </el-form-item>
           <el-form-item label="商品分类：">
             <el-cascader
-                v-model="selectProductCateValue"
+                v-model="listQuery.productCategoryId"
+                :props="{ value: 'id', label: 'name', children: 'child', checkStrictly: true }"
                 clearable
                 :options="productCateOptions"
             ></el-cascader>
@@ -127,20 +128,18 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column
-            show-overflow-tooltip
-            label="商品信息"
-            width="420"
-            align="center"
+        <el-table-column label="商品信息"
+                         show-overflow-tooltip
+                         width="420"
+                         align="center"
         >
           <template #default="{ row }">
             <div style="display: flex">
               <el-image
                   style="width: 70px; height: 70px"
-                  lazy
-                  fit="fill"
-                  :src="row.pic_url"
-              ></el-image>
+                  fit="cover"
+                  :src="row.pic_url">
+              </el-image>
               <div
                   style="
                   display: flex;
@@ -149,7 +148,7 @@
                   text-align: start;
                 "
               >
-                <div>{{ row.name }}</div>
+                <div class="truncate w-60">{{ row.name }}</div>
                 <el-row>
                   <el-col :span="16">
                     <div>
@@ -161,7 +160,7 @@
                     <div>
                       <span>状态：</span>
                       <span class="font-bold">
-                        {{ row.is_on_sale ? '在售中' : '已下架' }}
+                        {{ row.is_on_sale ? '在售中' : '未上架' }}
                       </span>
                     </div>
                   </el-col>
@@ -252,7 +251,7 @@
                   <el-divider direction="vertical"></el-divider>
                   <el-link
                       :underline="false"
-                      @click="toUpdatePage(scope.$index, scope.row)"
+                      @click="goUpdatePage(scope.$index, scope.row)"
                   >
                     编辑
                   </el-link>
@@ -297,7 +296,9 @@ import {
   updateNewStatus,
   updateRecommendStatus,
   updatePublishStatus,
+  DeleteGoods,
 } from '@/api/product'
+import {fetchTreeList} from "@/api/category";
 
 const _ = require('lodash/core')
 const defaultListQuery = {
@@ -307,7 +308,7 @@ const defaultListQuery = {
   is_on_sale: null,
   verifyStatus: null,
   product_sn: null,
-  productCategoryId: null,
+  productCategoryId: [],
   brandId: null,
 }
 export default {
@@ -359,6 +360,7 @@ export default {
   },
   created() {
     this.getList()
+    this.reqGetCategories()
   },
   methods: {
     // 全部，在售中，未上架
@@ -445,7 +447,7 @@ export default {
     //获取商品库存
     getStock(row) {
       const productsStock = _.map(row.goods_products, 'number')
-      const stock = productsStock.reduce((a, b) => a + b)
+      const stock = productsStock.reduce((a, b) => a + b, 0)
       return stock
     },
     // 获取商品价格区间
@@ -461,7 +463,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then((response) => {
+      fetchList(this.funCovertQuery()).then((response) => {
         this.listLoading = false
         const {list, pagination} = response
         this.list = list
@@ -500,15 +502,21 @@ export default {
       this.selectProductCateValue = []
       this.listQuery = Object.assign({}, defaultListQuery)
     },
+    // 删除商品 单个
     handleDelete(index, row) {
       this.$confirm('是否要进行删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        let ids = []
-        ids.push(row.id)
-        this.updateDeleteStatus(1, ids)
+        DeleteGoods(row.id).then((res) => {
+          this.goAddPage()
+          this.$message({
+            message: '删除成功',
+            type: 'success',
+            duration: 1000,
+          })
+        })
       })
     },
     // 添加商品页面
@@ -570,11 +578,48 @@ export default {
       )
       this.getList()
     },
+    // 获取分类数据
+    async reqGetCategories() {
+      const res = await fetchTreeList()
+      this.productCateOptions = res.list
+    },
+    // 查询参数的处理
+    funCovertQuery() {
+      console.log('123456', this.listQuery)
+      let {productCategoryId, ...query} = this.listQuery
+      // console.log("分类", productCategoryId)
+      let data = {
+        ...query,
+      }
+      if (productCategoryId && productCategoryId.length > 0) {
+        let level = productCategoryId.length
+        let category_id = productCategoryId[level - 1]
+        data = {
+          ...data,
+          level,
+          category_id
+        }
+      }
+      return data
+    }
   },
 }
 </script>
-<style scoped>
-p {
-  margin: 0;
+<style lang="scss" scoped>
+
+#app-container {
+  p {
+    margin: 0;
+  }
+}
+
+.el-image {
+  width: 70px;
+  height: 70px;
+
+  img {
+    width: 70px;
+    height: 70px;
+  }
 }
 </style>

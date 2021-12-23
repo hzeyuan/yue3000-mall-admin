@@ -38,7 +38,9 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="商品上架：">
-        <el-switch v-model="goods.is_on_sale"></el-switch>
+        <el-switch :value="goods.is_on_sale"
+                   :active-value="1"
+                   :inactive-value="0"></el-switch>
       </el-form-item>
       <el-form-item label="商品排序：">
         <el-input
@@ -48,9 +50,13 @@
       </el-form-item>
       <el-form-item label="商品推荐：">
         <span style="margin-right: 10px">新品</span>
-        <el-switch v-model="goods.is_new"></el-switch>
+        <el-switch v-model="goods.is_new"
+                   :active-value="1"
+                   :inactive-value="0"></el-switch>
         <span style="margin-left: 10px; margin-right: 10px">热销</span>
-        <el-switch v-model="goods.is_hot"></el-switch>
+        <el-switch :value="goods.is_hot"
+                   :active-value="1"
+                   :inactive-value="0"></el-switch>
       </el-form-item>
       <el-form-item label="商品单位：">
         <el-input v-model="goods.unit"></el-input>
@@ -70,7 +76,6 @@
       </el-form-item>
       <el-form-item label="商品详情：">
         <vab-quill
-            style="height: 400px"
             v-model="goods.detail"
             :min-height="400"
             :max-width="600"
@@ -366,9 +371,6 @@ export default {
       this.goods = {
         ...data,
         gallery: JSON.parse(data.gallery),
-        is_on_sale: Boolean(data.is_on_sale),
-        is_new: Boolean(data.is_new),
-        is_hot: Boolean(data.is_hot),
         goods_specifications: goods_specifications,
         goods_products,
       }
@@ -403,9 +405,8 @@ export default {
               data.goods_specifications
           )
           const gallery = this.$refs['goodsPic'].fileList
-          console.log('fileList', this.$refs['goodsPic'].fileList)
-          data.pic_url = gallery[0].url
-          data.gallery = _.map(gallery, 'url')
+          // console.log('fileList', this.$refs['goodsPic'].fileList)
+          data.gallery = gallery.map(e => e.url)
           if (isEdit) {
             console.log('goods_specifications', data.goods_specifications)
             // 修改商品
@@ -455,5 +456,10 @@ export default {
   .InputButton:active {
     opacity: 90%;
   }
+}
+
+.ql-container {
+  max-height: 500px;
+  overflow: auto;
 }
 </style>

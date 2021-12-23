@@ -2,36 +2,35 @@
   <el-card>
     <div style="width: 600px; margin: auto">
       <el-form
-        ref="productCateFrom"
-        :model="productCate"
-        :rules="rules"
-        label-width="150px"
-      >
+          ref="productCateFrom"
+          :model="productCate"
+          :rules="rules"
+          label-width="150px">
         <el-form-item label="分类名称：" prop="name">
           <el-input v-model="productCate.name"></el-input>
         </el-form-item>
         <el-form-item label="分类级别：" prop="pid">
           <el-select v-model="productCate.level" placeholder="请选择分类">
             <el-option
-              v-for="item in levelList"
-              :key="item.id"
-              :label="item.label"
-              :value="item.level"
+                v-for="item in levelList"
+                :key="item.id"
+                :label="item.label"
+                :value="item.level"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="上级分类：" prop="pid">
           <el-select
-            filterable
-            v-model="productCate.pid"
-            :disabled="!productCate.level"
-            placeholder="请选择分类"
+              filterable
+              v-model="productCate.pid"
+              :disabled="!productCate.level"
+              placeholder="请选择分类"
           >
             <el-option
-              v-for="item in selectProductCateList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+                v-for="item in selectProductCateList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -40,16 +39,16 @@
         </el-form-item>
         <el-form-item label="分类图标：">
           <icon-upload
-            ref="icon_url"
-            v-if="uploadShow"
-            :icon="productCate.icon_url"
+              ref="icon_url"
+              v-if="uploadShow"
+              :icon="productCate.icon_url"
           ></icon-upload>
         </el-form-item>
         <el-form-item label="分类图片：">
           <icon-upload
-            ref="pic_url"
-            v-if="uploadShow"
-            :icon="productCate.pic_url"
+              ref="pic_url"
+              v-if="uploadShow"
+              :icon="productCate.pic_url"
           ></icon-upload>
         </el-form-item>
         <el-form-item label="关键词：">
@@ -57,23 +56,23 @@
         </el-form-item>
         <el-form-item label="分类描述：">
           <el-input
-            v-model="productCate.desc"
-            type="textarea"
-            :autosize="true"
+              v-model="productCate.desc"
+              type="textarea"
+              :autosize="true"
           ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button
-            v-if="!isEdit"
-            type="primary"
-            @click="addSubmit('productCateFrom')"
+              v-if="!isEdit"
+              type="primary"
+              @click="addSubmit('productCateFrom')"
           >
             提交
           </el-button>
           <el-button
-            v-if="isEdit"
-            type="primary"
-            @click="onSubmit('productCateFrom')"
+              v-if="isEdit"
+              type="primary"
+              @click="onSubmit('productCateFrom')"
           >
             修改
           </el-button>
@@ -149,10 +148,13 @@ export default {
   watch: {
     'productCate.level': {
       deep: true,
-      handler: function () {
-        this.productCate.pid = ''
-        if (!this.productCate.level) return
-        this.getSelectProductCateList()
+      handler: function (newValue, oldValue) {
+        if (newValue) {
+          this.getSelectProductCateList()
+        }
+        if (oldValue) {
+          this.productCate.pid = ''
+        }
       },
     },
   },
@@ -196,14 +198,14 @@ export default {
               pic_url: this.$refs.pic_url.gallery,
             }
             updateProductCate(this.$route.query.id, data).then(
-              (res) => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 1000,
-                })
-                this.$router.back()
-              }
+                (res) => {
+                  this.$message({
+                    message: '修改成功',
+                    type: 'success',
+                    duration: 1000,
+                  })
+                  this.$router.back()
+                }
             )
           })
         } else {

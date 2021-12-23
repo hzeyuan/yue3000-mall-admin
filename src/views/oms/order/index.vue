@@ -5,33 +5,33 @@
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
         <el-button
-          style="float: right"
-          type="primary"
-          @click="handleSearchList()"
-          size="small">
+            style="float: right"
+            type="primary"
+            @click="handleSearchList()"
+            size="small">
           查询搜索
         </el-button>
         <el-button
-          style="float: right; margin-right: 15px"
-          @click="handleResetSearch()"
-          size="small">
+            style="float: right; margin-right: 15px"
+            @click="handleResetSearch()"
+            size="small">
           重置
         </el-button>
       </div>
       <div style="margin-top: 15px">
         <el-form
-          :inline="true"
-          :model="listQuery"
-          size="small"
-          label-width="100px">
+            :inline="true"
+            :model="listQuery"
+            size="small"
+            label-width="100px">
           <el-form-item label="搜索：">
             <div class="flex">
               <el-select class="select-width" v-model="listQuery.search_key" placeholder="请选择编号类型">
                 <el-option
-                  v-for="item in keywordOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                    v-for="item in keywordOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
                 </el-option>
               </el-select>
               <el-input class="input-width" v-model="listQuery.keyword" placeholder="请输入编号"></el-input>
@@ -44,23 +44,23 @@
           </el-form-item>
           <el-form-item label="下单时间：">
             <el-date-picker
-              class="input-width"
-              v-model="listQuery.create_at"
-              value-format="yyyy-MM-dd"
-              type="date"
-              placeholder="请选择时间">
+                class="input-width"
+                v-model="listQuery.create_at"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="请选择时间">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="订单来源：">
-            <el-select class="select-width" v-model="listQuery.sourceType" placeholder="请选择订单来源">
-              <el-option
-                v-for="item in sourceTypeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
+          <!--          <el-form-item label="订单来源：">-->
+          <!--            <el-select class="select-width" v-model="listQuery.sourceType" placeholder="请选择订单来源">-->
+          <!--              <el-option-->
+          <!--                v-for="item in sourceTypeOptions"-->
+          <!--                :key="item.value"-->
+          <!--                :label="item.label"-->
+          <!--                :value="item.value">-->
+          <!--              </el-option>-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
         </el-form>
       </div>
       <div class="flex items-center justify-between" style="margin-left: 50px">
@@ -68,9 +68,9 @@
           <span class="el-form-item__label">订单状态：</span>
           <el-radio-group v-model="listQuery.status" @change="handleCurrentChange(1)">
             <el-radio-button
-              v-for="item in orderStateOptions"
-              :key="item.value"
-              :label="item.value">
+                v-for="item in orderStateOptions"
+                :key="item.value"
+                :label="item.value">
               {{ item.label }}
             </el-radio-button>
           </el-radio-group>
@@ -83,17 +83,17 @@
     </el-card>
     <div class="table-container">
       <el-table
-        ref="orderTable"
-        :data="list"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-        v-loading="listLoading"
-        border
+          ref="orderTable"
+          :data="list"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+          v-loading="listLoading"
+          border
       >
         <el-table-column
-          type="selection"
-          width="60"
-          align="center"
+            type="selection"
+            width="60"
+            align="center"
         ></el-table-column>
         <el-table-column label="编号" width="80" align="center">
           <template slot-scope="scope">{{ scope.$index + 1 }}</template>
@@ -119,18 +119,18 @@
           </template>
         </el-table-column>
         <el-table-column
-          show-overflow-tooltip
-          label="商品图片"
-          width="320"
-          align="center"
+            show-overflow-tooltip
+            label="商品图片"
+            width="320"
+            align="center"
         >
           <template #default="{ row }">
             <div :key="goods.id" v-for="goods in row.order_goods" class="flex">
               <el-image
-                style="width: 70px; height: 70px; min-width: 70px"
-                lazy
-                fit="fill"
-                :src="goods.pic_url"
+                  style="width: 70px; height: 70px; min-width: 70px"
+                  lazy
+                  fit="fill"
+                  :src="goods.pic_url"
               ></el-image>
               <div class="flex flex-col items-start">
                 <div>{{ goods.goods_name }}</div>
@@ -190,50 +190,50 @@
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
             <el-button
-              size="mini"
-              @click="handleViewOrder(scope.$index, scope.row)"
+                size="mini"
+                @click="handleViewOrder(scope.$index, scope.row)"
             >
               订单详情
             </el-button>
             <!-- 待发货:取消订单 -->
             <el-button
-              size="mini"
-              type="warning"
-              @click="handleCloseOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 200"
+                size="mini"
+                type="warning"
+                @click="handleCloseOrder(scope.$index, scope.row)"
+                v-show="scope.row.status === 200"
             >
               取消订单
             </el-button>
             <!-- 待发货:发货 -->
             <el-button
-              size="mini"
-              @click="handleDeliveryOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 200"
+                size="mini"
+                @click="handleDeliveryOrder(scope.$index, scope.row)"
+                v-show="scope.row.status === 200"
             >
               订单发货
             </el-button>
             <!-- 待发货，待收货，运输中，已完成:物流查询 -->
             <el-button
-              size="mini"
-              @click="handleViewLogistics(scope.$index, scope.row)"
-              v-show="scope.row.status >= 300 && scope.row.status <= 600"
+                size="mini"
+                @click="handleViewLogistics(scope.$index, scope.row)"
+                v-show="scope.row.status >= 300 && scope.row.status <= 600"
             >
               物流查询
             </el-button>
             <!-- 已完成:确认收货 -->
             <el-button
-              size="mini"
-              @click="handleConfirmOrder(scope.row)"
-              v-show="scope.row.status >= 300 && scope.row.status < 600"
+                size="mini"
+                @click="handleConfirmOrder(scope.row)"
+                v-show="scope.row.status >= 300 && scope.row.status < 600"
             >
               确认收货
             </el-button>
             <!-- 已关闭:删除订单 -->
             <el-button
-              size="mini"
-              type="danger"
-              @click="handleDeleteOrder(scope.$index, scope.row)"
-              v-show="scope.row.status === 700"
+                size="mini"
+                type="danger"
+                @click="handleDeleteOrder(scope.$index, scope.row)"
+                v-show="scope.row.status === 700"
             >
               删除订单
             </el-button>
@@ -244,46 +244,46 @@
     <div class="batch-operate-container">
       <el-select size="small" v-model="operateType" placeholder="批量操作">
         <el-option
-          v-for="item in operateOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+            v-for="item in operateOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
         ></el-option>
       </el-select>
       <el-button
-        style="margin-left: 20px"
-        class="search-button"
-        @click="handleBatchOperate()"
-        type="primary"
-        size="small"
+          style="margin-left: 20px"
+          class="search-button"
+          @click="handleBatchOperate()"
+          type="primary"
+          size="small"
       >
         确定
       </el-button>
     </div>
     <div class="pagination-container">
       <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.page"
-        :page-size="listQuery.pageSize"
-        :page-sizes="[5, 10, 15]"
-        :total="total"
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          layout="total, sizes,prev, pager, next,jumper"
+          :current-page.sync="listQuery.page"
+          :page-size="listQuery.pageSize"
+          :page-sizes="[5, 10, 15]"
+          :total="total"
       ></el-pagination>
     </div>
     <el-dialog
-      title="关闭订单"
-      :visible.sync="closeOrder.dialogVisible"
-      width="30%"
+        title="关闭订单"
+        :visible.sync="closeOrder.dialogVisible"
+        width="30%"
     >
       <span style="vertical-align: top">操作备注：</span>
       <el-input
-        style="width: 80%"
-        type="textarea"
-        :rows="5"
-        placeholder="请输入内容"
-        v-model="closeOrder.content"
+          style="width: 80%"
+          type="textarea"
+          :rows="5"
+          placeholder="请输入内容"
+          v-model="closeOrder.content"
       ></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="closeOrder.dialogVisible = false">取 消</el-button>
@@ -294,8 +294,8 @@
     </el-dialog>
     <OrderTracesDrawer ref="orderTraces"></OrderTracesDrawer>
     <OrderDeliveryDrawer
-      @isDelivery="getList"
-      ref="orderDelivery"
+        @isDelivery="getList"
+        ref="orderDelivery"
     ></OrderDeliveryDrawer>
   </div>
 </template>
@@ -319,7 +319,7 @@ const defaultListQuery = {
   // 商品名称
   goods_name: '',
   // 订单来源
-  sourceType: ''
+  // sourceType: ''
 
 }
 export default {
@@ -522,20 +522,20 @@ export default {
         cancelButtonText: '取消',
         type: 'info',
       })
-        .then(async () => {
-          await closeOrder(row.id)
-          this.$message({
-            type: 'success',
-            message: '取消成功!',
+          .then(async () => {
+            await closeOrder(row.id)
+            this.$message({
+              type: 'success',
+              message: '取消成功!',
+            })
+            this.getList()
           })
-          this.getList()
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '操作取消',
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '操作取消',
+            })
           })
-        })
     },
     // 处理订单发货
     handleDeliveryOrder(index, row) {
@@ -550,20 +550,20 @@ export default {
         cancelButtonText: '取消',
         type: 'danger',
       })
-        .then(async () => {
-          await deleteOrder(ids)
-          this.$message({
-            type: 'success',
-            message: '删除成功!',
+          .then(async () => {
+            await deleteOrder(ids)
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
+            })
+            this.getList()
           })
-          this.getList()
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '操作取消',
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '操作取消',
+            })
           })
-        })
     },
     // 确认收货
     handleConfirmOrder(row) {
@@ -572,20 +572,20 @@ export default {
         cancelButtonText: '取消',
         type: 'danger',
       })
-        .then(async () => {
-          await confirmOrder(row.id)
-          this.$message({
-            type: 'success',
-            message: '收货成功!',
+          .then(async () => {
+            await confirmOrder(row.id)
+            this.$message({
+              type: 'success',
+              message: '收货成功!',
+            })
+            this.getList()
           })
-          this.getList()
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '操作取消',
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '操作取消',
+            })
           })
-        })
     },
     // 物流查询
     handleViewLogistics(index, row) {
@@ -597,8 +597,8 @@ export default {
 
     handleBatchOperate() {
       if (
-        this.multipleSelection == null ||
-        this.multipleSelection.length < 1
+          this.multipleSelection == null ||
+          this.multipleSelection.length < 1
       ) {
         this.$message({
           message: '请选择要操作的订单',

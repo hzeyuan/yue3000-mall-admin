@@ -8,7 +8,7 @@
             style="float: right"
             type="primary"
             size="small"
-            @click="getList"
+            @click="onSearch()"
         >
           查询结果
         </el-button>
@@ -118,56 +118,20 @@
           :data="list"
           :row-style="{ height: '80px' }"
           style="width: 100%"
-          @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-            type="selection"
-            width="60"
-            align="center"
-        ></el-table-column>
+          @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="60" align="center">
+        </el-table-column>
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column label="商品信息"
-                         show-overflow-tooltip
-                         width="420"
-                         align="center"
-        >
-          <template #default="{ row }">
-            <div style="display: flex">
-              <el-image
-                  style="width: 70px; height: 70px"
-                  fit="cover"
-                  :src="row.pic_url">
-              </el-image>
-              <div
-                  style="
-                  display: flex;
-                  flex-direction: column;
-                  align-items: flex-start;
-                  text-align: start;
-                "
-              >
-                <div class="truncate w-60">{{ row.name }}</div>
-                <el-row>
-                  <el-col :span="16">
-                    <div>
-                      <span>商品ID：</span>
-                      <span>{{ row.id }}</span>
-                    </div>
-                  </el-col>
-                  <el-col :span="8">
-                    <div>
-                      <span>状态：</span>
-                      <span class="font-bold">
-                        {{ row.is_on_sale ? '在售中' : '未上架' }}
-                      </span>
-                    </div>
-                  </el-col>
-                </el-row>
-                <div>
-                  <span>商品编号：{{ row.goods_sn }}</span>
-                </div>
+        <el-table-column label="商品信息" width="400" align="center">
+          <template slot-scope="scope">
+            <div class="flex justify-center text-xs items-start">
+              <el-image :src="scope.row.pic_url" lazy></el-image>
+              <div class="pl-2 text-left">
+                <p class="truncate w-48">商品名称:{{ scope.row.name }}</p>
+                <p>商品价格:{{ scope.row.retail_price }}</p>
+                <p>商品编号:{{ scope.row.goods_sn }}</p>
               </div>
             </div>
           </template>
@@ -192,9 +156,6 @@
             <p>￥{{ getPriceRange(scope.row) }}</p>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="排序" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort}}</template>
-        </el-table-column> -->
         <el-table-column label="库存" width="100" align="center">
           <template slot-scope="scope">
             <p>{{ getStock(scope.row) }}</p>
@@ -209,9 +170,9 @@
         <el-table-column label="销量" width="100" align="center">
           <template slot-scope="scope">{{ scope.row.sale }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <div class="flex">
+            <div class="flex justify-center w-36">
               <div
                   class="flex flex-col items-start"
                   style="border: 1px solid transparent; font-size: 13px"
@@ -499,8 +460,10 @@ export default {
     },
     // 重置搜索条件
     handleResetSearch() {
+      this.listQuery.page = 1
       this.selectProductCateValue = []
       this.listQuery = Object.assign({}, defaultListQuery)
+      this.getList()
     },
     // 删除商品 单个
     handleDelete(index, row) {
@@ -585,7 +548,7 @@ export default {
     },
     // 查询参数的处理
     funCovertQuery() {
-      console.log('123456', this.listQuery)
+      // console.log('123456', this.listQuery)
       let {productCategoryId, ...query} = this.listQuery
       // console.log("分类", productCategoryId)
       let data = {
@@ -601,6 +564,11 @@ export default {
         }
       }
       return data
+    },
+    // 点击查询按钮发送请求
+    onSearch() {
+      this.listQuery.page = 1
+      this.getList()
     }
   },
 }

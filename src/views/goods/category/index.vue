@@ -29,7 +29,7 @@
             type="index"
             :index="indexMethod"
         ></el-table-column>
-        <el-table-column label="级别" width="100" align="left">
+        <el-table-column label="级别" width="130" align="left">
           <template slot-scope="scope">
             {{ scope.row.level | levelFilter }}
           </template>

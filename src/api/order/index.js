@@ -79,12 +79,11 @@ export function updateOrderNote(params) {
 
 //售后列表
 export function getAfterSaleList(params) {
-  // return request({
-  //   url: '/after_sale/list',
-  //   method: 'post',
-  //   params: params,
-  // })
-
+  return request({
+    url: 'mall-admin/after-sales/lists',
+    method: 'get',
+    params: params,
+  })
   console.log('售后订单搜索对象', params)
   return {
     list: [
@@ -143,88 +142,46 @@ export function getAfterSaleList(params) {
   }
 }
 
-// 售后详情
-export function afterSaleDetail(orderId) {
-  return {
-    create_time: '2021-04-07 15:32:03',
-    order: {
-      id: 855,
-      order_amount: '11.00',
-      order_sn: '202104071523031094',
-      pay_way: '余额支付', //支付方式
-      // order_status: '已完成',
-      order_status: 3, //订单状态
-      goods_price: '', //商品价格
-      integral_price: '0.00', //积分抵扣价格
-      coupon: {
-        price: '', //抵扣价格
-        id: '', //优惠券id,
-        name: '', // 名称
-      },
-      order_price: '11.00', //订单价格
-      actual_price: '', //实际支付价格
-      // 优惠券信息
-    },
-    after_sale: {
-      id: 47, //
-      sn: '202104071532033033',
-      refund_price: '11.00',
-      refund_status: 3, // 退款状态  //售后状态;0-申请退款;1-商家拒绝;2-商品待退货;3-商家待收货;4-商家拒收货;5-等待退款;6-退款成功
-      refund_reason: '', // 退款原因
-      refund_remark: '', // 退款备注
-      refund_type: '仅退款', // 退款类型 ，退货退款，仅退款
-    },
-    order_goods: [
-      {
-        pic_url:
-          'http://b2cdemo.likeshop.cn/uploads/images/202103091152406fc596654.jpeg',
-        goods_name: '网红芦荟棉被单双人被芯被套一体学生被芯北欧简约可爱清新',
-        goods_price: '11.00',
-        created_at: 1617780183,
-        goods_id: 32,
-        goods_num: 1,
-        product_id: 254, //产品sku id
-      },
-    ],
-    user: {
-      avatar:
-        'http://b2cdemo.likeshop.cn/uploads/user/avatar/715cc0f2f337c2a59099fc68903ad5e0.jpeg',
-      id: 1912,
-      phone: '18771421011',
-      username: '小黄同学',
-    },
-    log: [],
-  }
-}
-
-// 同意退款
-export function agreeRefund(orderId) {
+export function getAfterSaleListDetail(params) {
   return request({
-    url: `/after_sale/agree/${orderId}`,
-    method: 'PUT',
+    url: 'mall-admin/after-sales/detail',
+    method: 'get',
+    params: params,
   })
 }
 
-// 拒绝退款
-export function rejectRefund(orderId) {
+export function afterSalesAgree(id) {
   return request({
-    url: `/after_sale/reject/${orderId}`,
-    method: 'PUT',
+    url: `mall-admin/after-sales/agree/${id}`,
+    method: 'put',
+    // params: params,
   })
 }
 
-//确认收货
-export function confirmReceived(orderId) {
+export function afterSalesRefuse(id) {
   return request({
-    url: `/after_sale/confirm_received/${orderId}`,
-    method: 'PUT',
+    url: `mall-admin/after-sales/refuse/${id}`,
+    method: 'put',
+    // params: params,
   })
 }
 
-//确认退款
-export function confirmRefund(orderId) {
+export function afterSalesTakeGoods(id) {
   return request({
-    url: `/after_sale/confirm_refund/${orderId}`,
-    method: 'PUT',
+    url: `mall-admin/after-sales/takeGoods/${id}`,
+    method: 'put',
+  })
+}
+export function afterSalesRefuseGoods(id) {
+  return request({
+    url: `mall-admin/after-sales/refuseGoods/${id}`,
+    method: 'put',
+  })
+}
+
+export function afterSalesConfirm(id) {
+  return request({
+    url: `mall-admin/after-sales/confirm/${id}`,
+    method: 'put',
   })
 }

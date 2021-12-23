@@ -16,7 +16,7 @@ const setting = {
   baseURL:
     process.env.NODE_ENV === 'development'
       ? 'http://192.168.1.188:1338/'
-      : 'http://localhost:1337/',
+      : 'http://mall.yue3000.com/api/',
   //标题 （包括初次加载雪花屏的标题 页面的标题 浏览器的标题）
   title: '悦千电商后台管理系统',
   //简写

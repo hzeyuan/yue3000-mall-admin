@@ -25,6 +25,11 @@
                 <img :src="scope.row.image" alt="" width="30px"/>
               </template>
             </el-table-column>
+            <el-table-column label="路由" width="300" align="center">
+              <template slot-scope="scope" class="text-center">
+                {{ scope.row.link_address }}
+              </template>
+            </el-table-column>
             <el-table-column label="操作" width="150" align="center">
               <template slot-scope="scope">
                 <el-button size="small" @click="onOpenDialog(scope.row)">
@@ -48,6 +53,14 @@
               <span>{{ item.name }}</span>
             </div>
           </div>
+          <div class="text-center">
+            <el-button size="small" @click="onDecorateBtn">
+              确认修改
+            </el-button>
+            <el-button size="small" @click="onWaiverBtn">
+              还原配置
+            </el-button>
+          </div>
         </div>
       </div>
     </el-card>
@@ -63,10 +76,7 @@
           <el-form-item label="图标">
             <icon-upload v-if="dialogShow" :icon="menuData.image" ref="uploadIcon"></icon-upload>
           </el-form-item>
-          <el-form-item label="排序">
-            <el-input v-model="menuData.sort"></el-input>
-          </el-form-item>
-          <el-form-item label="路由" prop="link_address">
+          <el-form-item label="路由">
             <el-input v-model="menuData.link_address"></el-input>
           </el-form-item>
         </el-form>
@@ -79,7 +89,7 @@
   </div>
 </template>
 <script>
-import {getAppMy, deleteAppMyById, updateAppMy, addAppMy} from '@/api/furnish/myMenu'
+import {getAppMy, deleteAppMyById, updateAppMy, addAppMy, updateAppMySort} from '@/api/furnish/myMenu'
 import IconUpload from "@/components/Upload/IconUpload"
 import _ from 'lodash'
 
@@ -93,8 +103,6 @@ export default {
   },
   data() {
     return {
-      // 用于刷新页面手机窗口
-      iframeShow: false,
       // 数据列表
       ListData: [],
       // 表格数据刷新遮罩层的显示
@@ -184,6 +192,37 @@ export default {
             this.dialogShow = false
           })
         }
+      })
+    },
+    // 确认修改按钮 提交重新排列数据
+    onDecorateBtn() {
+      this.$confirm('是否要保存该修改', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        let data = thia.ListData.map(item => item.id)
+        updateAppMySort(data).then((response) => {
+          this.$message({
+            message: '修改成功',
+            type: 'success',
+            duration: 1000,
+          })
+        })
+      })
+    },
+    onWaiverBtn() {
+      this.$confirm('是否要放弃该修改', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        this.reqGetAppMy()
+        this.$message({
+          message: '已还原配置',
+          type: 'success',
+          duration: 1000,
+        })
       })
     },
     handleDragstart(index) {
